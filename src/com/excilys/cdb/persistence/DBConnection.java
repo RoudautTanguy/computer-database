@@ -15,7 +15,6 @@ public class DBConnection {
 	private DBConnection() {
 		try {
 			connection = DriverManager.getConnection(URL+param, user, password);
-			System.out.println("Connected");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -27,7 +26,5 @@ public class DBConnection {
 	    }
 	    	return connection;   
 		}  
-	
-	
 	
 }

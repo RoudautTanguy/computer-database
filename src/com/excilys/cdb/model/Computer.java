@@ -8,9 +8,9 @@ public class Computer {
 	private String name;
 	private Date introduced;
 	private Date discontinued;
-	private int companyId;
+	private Integer companyId;
 	
-	public Computer(int pId, String pName, Date pIntroduced, Date pDiscontinued, int pCompanyId) {
+	public Computer(int pId, String pName, Date pIntroduced, Date pDiscontinued, Integer pCompanyId) {
 		setId(pId);
 		setName(pName);
 		setIntroduced(pIntroduced);
@@ -50,11 +50,11 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public int getCompanyId() {
+	public Integer getCompanyId() {
 		return companyId;
 	}
 
-	public void setCompanyId(int companyId) {
+	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
 	}
 	

@@ -1,5 +1,41 @@
 package com.excilys.cdb.service;
 
-public class ServiceComputer {
+import java.util.ArrayList;
+import java.util.List;
 
+import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.mapper.DTOComputer;
+import com.excilys.cdb.mapper.MapperComputer;
+import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.DAOComputer;
+import com.excilys.cdb.persistence.DAOFactory;
+
+public class ServiceComputer {
+	
+	DAOComputer daoComputer = DAOFactory.getDAOComputer();
+
+	public boolean insert(DTOComputer computer) {
+		return daoComputer.insert(MapperComputer.DTOToModel(computer));
+	}
+	
+	public boolean delete(int id){
+		return daoComputer.delete(id);
+	}
+	
+	public boolean update(int id, DTOComputer computer) {
+		return daoComputer.update(id, MapperComputer.DTOToModel(computer));
+	}
+	
+	public List<DTOComputer> list(){
+		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
+		List<Computer> computers = daoComputer.list();
+		for(Computer computer:computers) {
+			dtoComputers.add(MapperComputer.modelToDTO(computer));
+		}
+		return dtoComputers;
+	}
+	
+	public DTOComputer find(int id) throws ComputerNotFoundException {
+		return MapperComputer.modelToDTO(daoComputer.find(id));
+	}
 }

@@ -12,25 +12,25 @@ public abstract class DAO<T> {
   }
    
   /**
-  * Méthode de création
+  * Méthode d'insertion
   * @param obj
   * @return boolean 
   */
-  public abstract boolean create(T obj);
+  public abstract boolean insert(T obj);
 
   /**
-  * Méthode pour effacer
-  * @param obj
-  * @return boolean 
-  */
-  public abstract boolean delete(T obj);
+   * Méthode pour effacer
+   * @param index de l'objet a supprimer
+   * @return boolean 
+   */
+   public abstract boolean delete(int index);
 
   /**
   * Méthode de mise à jour
   * @param obj
   * @return boolean
   */
-  public abstract boolean update(T obj);
+  public abstract boolean update(int id, T obj);
 
   /**
   * Méthode de recherche des informations

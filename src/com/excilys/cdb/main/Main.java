@@ -1,27 +1,27 @@
 package com.excilys.cdb.main;
 
-import java.util.List;
-
-import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.persistence.DAOComputer;
+import java.sql.SQLException;
 import com.excilys.cdb.persistence.DBConnection;
+import com.excilys.cdb.ui.CLI;
 
 public class Main {
 	
 	public static void main(String[] args) {
-		System.out.println("Hello world !");
 		/* Chargement du driver JDBC pour MySQL */
 		try {
 		    Class.forName( "com.mysql.cj.jdbc.Driver" );
-		    System.out.println("OK");
-		    DAOComputer DaoComputer = new DAOComputer(DBConnection.getInstance());
-		    List<Computer> computers = DaoComputer.list();
-		    for(Computer computer:computers) {
-		    	System.out.println(computer);
-		    }
+		    CLI.getInstance().welcome();
+		    CLI.getInstance().startChoice();
 		} catch ( ClassNotFoundException e ) {
-		    /* Gérer les éventuelles erreurs ici. */
+		    e.printStackTrace();
+		} finally {
+			try {
+				DBConnection.getInstance().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+		
 	}
 
 }
