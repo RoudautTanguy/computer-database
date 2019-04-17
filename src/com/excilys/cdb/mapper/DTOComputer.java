@@ -6,14 +6,30 @@ public class DTOComputer {
 	private String name;
 	private String introduced;
 	private String discontinued;
-	private String companyId;
+	private String company;
 	
-	DTOComputer(String pId, String pName, String pIntroduced, String pDiscontinued, String pCompanyId){
+	public DTOComputer(String pName){
+		setId(Integer.toString(0));
+		setName(pName);
+		setIntroduced("NULL");
+		setDiscontinued("NULL");
+		setCompany("NULL");
+	}
+	
+	public DTOComputer(String pName, String pIntroduced, String pDiscontinued, String pCompany){
+		setId(Integer.toString(0));
+		setName(pName);
+		setIntroduced(pIntroduced);
+		setDiscontinued(pDiscontinued);
+		setCompany(pCompany);
+	}
+	
+	public DTOComputer(String pId, String pName, String pIntroduced, String pDiscontinued, String pCompany){
 		setId(pId);
 		setName(pName);
 		setIntroduced(pIntroduced);
 		setDiscontinued(pDiscontinued);
-		setCompanyId(pCompanyId);
+		setCompany(pCompany);
 	}
 
 	public String getId() {
@@ -48,12 +64,12 @@ public class DTOComputer {
 		this.discontinued = discontinued;
 	}
 
-	public String getCompanyId() {
-		return companyId;
+	public String getCompany() {
+		return company;
 	}
 
-	public void setCompanyId(String companyId) {
-		this.companyId = companyId;
+	public void setCompany(String company) {
+		this.company = company;
 	}
 	
 	

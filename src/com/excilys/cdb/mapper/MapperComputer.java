@@ -23,7 +23,7 @@ public class MapperComputer {
 			discontinued = dateFormat.format(computer.getDiscontinued());;
 		}
 		String companyId = "NULL";
-		if(!Integer.toString(computer.getCompanyId()).equals(0)) {
+		if(!computer.getCompanyId().equals(0)) {
 			companyId = Integer.toString(computer.getCompanyId());
 		}
 		return new DTOComputer(id, name, introduced, discontinued, companyId);
@@ -34,14 +34,23 @@ public class MapperComputer {
 		String name = computer.getName();
 		Date introduced;
 		Date discontinued;
+		Integer companyId;
 		try {
 			introduced = dateFormat.parse(computer.getIntroduced());
-			discontinued = dateFormat.parse(computer.getDiscontinued());
 		} catch (ParseException e) {
 			introduced = null;
+		}
+		try {
+			discontinued = dateFormat.parse(computer.getDiscontinued());
+		} catch(ParseException e) {
 			discontinued = null;
 		}
-		int companyId = Integer.parseInt(computer.getCompanyId());
+		try {
+			companyId = Integer.parseInt(computer.getCompany());
+		} catch(NumberFormatException e) {
+			companyId = null;
+		}
+		
 		return new Computer(id, name, introduced, discontinued, companyId);
 	}
 }

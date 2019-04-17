@@ -36,6 +36,6 @@ public class ServiceComputer {
 	}
 	
 	public DTOComputer find(int id) throws ComputerNotFoundException {
-		return MapperComputer.modelToDTO(daoComputer.find(id));
+		return daoComputer.find(id);
 	}
 }

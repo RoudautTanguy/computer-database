@@ -1,6 +1,7 @@
 package com.excilys.cdb.controller;
 
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
 import com.excilys.cdb.ui.CLI;
@@ -12,35 +13,41 @@ public class Controller {
 	private static Controller controller;
 	
 	public void sendToService(int choice) {
+		CLI cli = CLI.getInstance();
 		switch(choice) {
 		case 1:
-			CLI.getInstance().showComputers(serviceComputer.list());
-			CLI.getInstance().startChoice();
+			cli.showComputers(serviceComputer.list());
 			break;
 		case 2:
-			CLI.getInstance().showCompanies(serviceCompany.list());
-			CLI.getInstance().startChoice();
+			cli.showCompanies(serviceCompany.list());
 			break;
 		case 3:
-			int id = CLI.getInstance().askDetails();
+			int detailId = cli.askInteger("Please enter an Id (Integer)");
 			try {
-				CLI.getInstance().showComputerDetails(serviceComputer.find(id));
+				cli.showComputerDetails(serviceComputer.find(detailId));
 			} catch (ComputerNotFoundException e) {
-				CLI.getInstance().printException(e);
-			} finally {
-				CLI.getInstance().startChoice();
+				cli.printException(e);
 			}
 			break;
 		case 4:
-			CLI.getInstance().askComputerCreationInformation();
+			DTOComputer computer;
+			try {
+				computer = cli.askComputerCreationInformation();
+				cli.printCreatedMessage(serviceComputer.insert(computer));
+			} catch(IllegalArgumentException e) {
+				cli.printException(e);
+			}
 			break;
 		case 5:
-			CLI.getInstance().askComputerUpdateInformation();
+			int id = cli.askComputerUpdateId();
+			cli.printUpdatedMessage(serviceComputer.update(id, cli.askComputerCreationInformation()));
 			break;
 		case 6:
-			CLI.getInstance().askComputerDeletionInformation();
+			int deleteId = cli.askInteger("Please enter the Id of the Computer you want to Delete.");
+			cli.printDeletedMessage(serviceComputer.delete(deleteId), deleteId);
 			break;
 		}
+		cli.startChoice();
 	}
 	
 	public static Controller getInstance() {

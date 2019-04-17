@@ -5,7 +5,7 @@ public class DTOCompany {
 	private String id;
 	private String name;
 	
-	DTOCompany(String pId, String pName){
+	public DTOCompany(String pId, String pName){
 		setId(pId);
 		setName(pName);
 	}
