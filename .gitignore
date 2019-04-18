@@ -1,6 +1,7 @@
 .project
 .classpath
 .settings/
+*.properties
 # Compiled class file
 *.class
 
