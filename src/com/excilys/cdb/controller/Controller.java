@@ -16,6 +16,10 @@ public class Controller {
 	private ServiceComputer serviceComputer = new ServiceComputer();
 	private static Controller controller;
 	
+	/**
+	 * Send the choice of the user to the dedicated service
+	 * @param choice of the user
+	 */
 	public void sendToService(int choice) {
 		CLI cli = CLI.getInstance();
 		switch(choice) {
@@ -63,13 +67,20 @@ public class Controller {
 		cli.startChoice();
 	}
 	
+	/**
+	 * Send the choice of the user to the page service.
+	 * @param <T> Type of the page
+	 * @param choice of the user
+	 * @param page
+	 * @return true if there is no error else false
+	 */
 	public <T> boolean sendToPageService(int choice, Page<T> page) {
 		boolean isOk = true;
 		CLI cli = CLI.getInstance();
 		switch(choice) { 
 		case 1:
 			try {
-				ServicePage.changePageToPrevious(page);
+				ServicePage.changeSliceToPrevious(page);
 			} catch (SliceNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
@@ -77,7 +88,7 @@ public class Controller {
 			break;
 		case 2:
 			try {
-				ServicePage.changePageToNext(page);
+				ServicePage.changeSliceToNext(page);
 			} catch (SliceNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
@@ -86,7 +97,7 @@ public class Controller {
 		case 3:
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
-				ServicePage.setPage(page, pageNumber);
+				ServicePage.setSlice(page, pageNumber);
 			} catch (SliceNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
@@ -94,7 +105,7 @@ public class Controller {
 			break;
 		case 4:
 			try {
-				ServicePage.setPage(page, 0);
+				ServicePage.setSlice(page, 0);
 			} catch (SliceNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
@@ -102,7 +113,7 @@ public class Controller {
 			break;
 		case 5:
 			try {
-				ServicePage.setPage(page, page.lastSlice());
+				ServicePage.setSlice(page, page.lastSlice());
 			} catch (SliceNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
@@ -115,6 +126,10 @@ public class Controller {
 		return isOk;
 	}
 	
+	/**
+	 * Get the instance of Controller
+	 * @return the instance of Controller
+	 */
 	public static Controller getInstance() {
 		if(controller == null) {
 			controller =  new Controller();

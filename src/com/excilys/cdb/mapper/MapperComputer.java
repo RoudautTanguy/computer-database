@@ -10,6 +10,11 @@ public class MapperComputer {
 
 	static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	
+	/**
+	 * Map a model Computer to his DTO
+	 * @param computer
+	 * @return the corresponding DTO
+	 */
 	public static DTOComputer modelToDTO(Computer computer) {
 		String id = Integer.toString(computer.getId());
 		String name = computer.getName();
@@ -29,6 +34,11 @@ public class MapperComputer {
 		return new DTOComputer(id, name, introduced, discontinued, company);
 	}
 	
+	/**
+	 * Map a DTO Computer to his model
+	 * @param computer
+	 * @return the corresponding model
+	 */
 	public static Computer DTOToModel(DTOComputer computer) {
 		int id = Integer.parseInt(computer.getId());
 		String name = computer.getName();

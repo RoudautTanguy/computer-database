@@ -14,6 +14,10 @@ public class ServiceCompany {
 
 	DAOCompany daoCompany = DAOFactory.getDAOCompany();
 	
+	/**
+	 * List all the company with pagination
+	 * @return the page of companies
+	 */
 	public Page<DTOCompany> list(){
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
 		List<Company> companies = daoCompany.list();

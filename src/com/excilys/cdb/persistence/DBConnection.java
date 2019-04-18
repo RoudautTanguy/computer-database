@@ -35,6 +35,10 @@ public class DBConnection {
         }
 	}
 	
+	/**
+	 * Get the instance of connection
+	 * @return
+	 */
 	public static Connection getInstance(){
 		if(connection == null){
 			new DBConnection();

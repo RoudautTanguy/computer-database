@@ -15,10 +15,19 @@ public class Page<T> {
 		this.size = pSize;
 	}
 	
+	/**
+	 * Get the current Slice of the page
+	 * @return a list of data
+	 */
 	public List<T> getSlice() {
 		return fullList.subList(sliceIndex*size, Math.min(fullList.size(), (sliceIndex+1)*size));
 	}
 	
+	/**
+	 * Change the slice to the next one
+	 * @return the page
+	 * @throws SliceNotFoundException
+	 */
 	public Page<T> nextSlice() throws SliceNotFoundException {
 		if(sliceIndex >= fullList.size()/size) {
 			throw new SliceNotFoundException("There is no next page !");
@@ -27,6 +36,11 @@ public class Page<T> {
 		return this;
 	}
 	
+	/**
+	 * Change the slice to the previous one
+	 * @return the page
+	 * @throws SliceNotFoundException
+	 */
 	public Page<T> previousSlice() throws SliceNotFoundException {
 		if(sliceIndex <= 0) {
 			throw new SliceNotFoundException("There is no previous page !");
@@ -35,6 +49,12 @@ public class Page<T> {
 		return this;
 	}
 	
+	/**
+	 * Set the slice to an index
+	 * @param pSliceIndex 
+	 * @return the page
+	 * @throws SliceNotFoundException
+	 */
 	public Page<T> setSlice(int pSliceIndex) throws SliceNotFoundException{
 		if(pSliceIndex<0 || pSliceIndex > fullList.size()/size) {
 			throw new SliceNotFoundException("This page doesn't exist !");
@@ -43,6 +63,10 @@ public class Page<T> {
 		return this;
 	}
 	
+	/**
+	 * Get the index of the last slice of the page
+	 * @return the index of the last slice
+	 */
 	public int lastSlice(){
 		return fullList.size()/size;
 	}

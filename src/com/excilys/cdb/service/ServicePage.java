@@ -5,15 +5,37 @@ import com.excilys.cdb.model.Page;
 
 public class ServicePage {
 	
-	public static <T> Page<T> changePageToPrevious(Page<T> page) throws SliceNotFoundException {
+	/**
+	 * Change the slice of a page to the previous one
+	 * @param <T>
+	 * @param page
+	 * @return the page
+	 * @throws SliceNotFoundException
+	 */
+	public static <T> Page<T> changeSliceToPrevious(Page<T> page) throws SliceNotFoundException {
 		return page.previousSlice();
 	}
 	
-	public static <T> Page<T> changePageToNext(Page<T> page) throws SliceNotFoundException {
+	/**
+	 * Change the slice of a page to the next one
+	 * @param <T>
+	 * @param page
+	 * @return the page
+	 * @throws SliceNotFoundException
+	 */
+	public static <T> Page<T> changeSliceToNext(Page<T> page) throws SliceNotFoundException {
 		return page.nextSlice();
 	}
 	
-	public static <T> Page<T> setPage(Page<T> page, int index) throws SliceNotFoundException {
+	/**
+	 * Change the slice of a page with the index of the new slice
+	 * @param <T>
+	 * @param page
+	 * @param index
+	 * @return the page
+	 * @throws SliceNotFoundException
+	 */
+	public static <T> Page<T> setSlice(Page<T> page, int index) throws SliceNotFoundException {
 		return page.setSlice(index);
 	}
 	

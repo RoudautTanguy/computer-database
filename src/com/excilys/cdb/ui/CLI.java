@@ -155,6 +155,10 @@ public class CLI {
 		return askInteger("Please enter the Id of the Computer you want to Update.");
 	}
 	
+	/**
+	 * Print message after insertion of a computer
+	 * @param isInserted if the computer is successfully inserted or not
+	 */
 	public void printCreatedMessage(boolean isInserted) {
 		if(isInserted) {
 			CLIHelper.box("Computer inserted");
@@ -163,6 +167,10 @@ public class CLI {
 		}
 	}
 	
+	/**
+	 * Print message after updating a computer
+	 * @param isUpdated if the computer is successfully updated or not
+	 */
 	public void printUpdatedMessage(boolean isUpdated) {
 		if(isUpdated) {
 			CLIHelper.box("Computer updated");

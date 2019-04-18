@@ -141,6 +141,12 @@ public class DAOComputer extends DAO<Computer> {
 		return computers;
 	}
 	
+	/**
+	 * Find object with his id
+	 * @param id
+	 * @return the object
+	 * @throws ComputerNotFoundException
+	 */
 	public DTOComputer find(int id) throws ComputerNotFoundException{
 		try {
 			PreparedStatement statement = this.connection.prepareStatement("SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;");

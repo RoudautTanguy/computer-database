@@ -14,7 +14,7 @@ public abstract class DAO<T> {
   }
    
   /**
-  * Méthode d'insertion
+  * Insert object
   * @param obj
   * @return boolean 
   * @throws CompanyNotFoundException 
@@ -22,21 +22,21 @@ public abstract class DAO<T> {
   public abstract boolean insert(T obj) throws CompanyNotFoundException;
 
   /**
-   * Méthode pour effacer
-   * @param index de l'objet a supprimer
+   * Delete object
+   * @param index of object to delete
    * @return boolean 
    */
    public abstract boolean delete(int index);
 
   /**
-  * Méthode de mise à jour
+  * Update object
   * @param obj
   * @return boolean
   */
   public abstract boolean update(int id, T obj);
 
   /**
-  * Méthode de recherche des informations
+  * List objects
   * @return List<T>
   */
   public abstract List<T> list();
