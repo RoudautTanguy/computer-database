@@ -1,9 +1,13 @@
 package com.excilys.cdb.controller;
 
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.SliceNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
+import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
+import com.excilys.cdb.service.ServicePage;
 import com.excilys.cdb.ui.CLI;
 
 public class Controller {
@@ -24,7 +28,8 @@ public class Controller {
 		case 3:
 			int detailId = cli.askInteger("Please enter an Id (Integer)");
 			try {
-				cli.showComputerDetails(serviceComputer.find(detailId));
+				DTOComputer computer = serviceComputer.find(detailId);
+				cli.showComputerDetails(computer);
 			} catch (ComputerNotFoundException e) {
 				cli.printException(e);
 			}
@@ -36,11 +41,19 @@ public class Controller {
 				cli.printCreatedMessage(serviceComputer.insert(computer));
 			} catch(IllegalArgumentException e) {
 				cli.printException(e);
+			} catch (CompanyNotFoundException e) {
+				cli.printException(e);
 			}
 			break;
 		case 5:
-			int id = cli.askComputerUpdateId();
-			cli.printUpdatedMessage(serviceComputer.update(id, cli.askComputerCreationInformation()));
+			DTOComputer dtoComputer;
+			try {
+				int id = cli.askComputerUpdateId();
+				dtoComputer = cli.askComputerCreationInformation();
+				cli.printUpdatedMessage(serviceComputer.update(id, dtoComputer));
+			} catch(IllegalArgumentException e) {
+				cli.printException(e);
+			}
 			break;
 		case 6:
 			int deleteId = cli.askInteger("Please enter the Id of the Computer you want to Delete.");
@@ -48,6 +61,58 @@ public class Controller {
 			break;
 		}
 		cli.startChoice();
+	}
+	
+	public <T> boolean sendToPageService(int choice, Page<T> page) {
+		boolean isOk = true;
+		CLI cli = CLI.getInstance();
+		switch(choice) { 
+		case 1:
+			try {
+				ServicePage.changePageToPrevious(page);
+			} catch (SliceNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+		case 2:
+			try {
+				ServicePage.changePageToNext(page);
+			} catch (SliceNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+		case 3:
+			int pageNumber = cli.askInteger("Please enter the number of the page.");
+			try {
+				ServicePage.setPage(page, pageNumber);
+			} catch (SliceNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+		case 4:
+			try {
+				ServicePage.setPage(page, 0);
+			} catch (SliceNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+		case 5:
+			try {
+				ServicePage.setPage(page, page.lastSlice());
+			} catch (SliceNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+		case 6:
+			cli.startChoice();
+			break;
+		}
+		return isOk;
 	}
 	
 	public static Controller getInstance() {

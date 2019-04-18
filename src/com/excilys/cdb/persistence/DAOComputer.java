@@ -1,15 +1,16 @@
 package com.excilys.cdb.persistence;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
@@ -17,15 +18,15 @@ import com.excilys.cdb.model.Computer;
 
 public class DAOComputer extends DAO<Computer> {
 	
-	public final String DB_NAME = "computer-database-db";
-	
-	
 	public DAOComputer(Connection conn) {
 		super(conn);
 	}
 
 	@Override
-	public boolean insert(Computer computer) {
+	public boolean insert(Computer computer) throws CompanyNotFoundException {
+		if(!computer.validate()) {
+			return false;
+		}
 		// the mysql insert statement
 	      String query = " INSERT into computer (name, introduced, discontinued, company_id)"
 	        + " values (?, ?, ?, ?)";
@@ -38,12 +39,12 @@ public class DAOComputer extends DAO<Computer> {
 		    if(computer.getIntroduced()==null) {
 		    	statement.setNull(2, java.sql.Types.TIMESTAMP);
 		    } else {
-		    	statement.setDate(2, new Date(computer.getIntroduced().getTime()));		    	
+		    	statement.setTimestamp(2, computer.getIntroduced());		    	
 		    }
 		    if(computer.getDiscontinued()==null) {
 		    	statement.setNull(3, java.sql.Types.TIMESTAMP);
 		    } else {
-		    	statement.setDate(3, new Date(computer.getDiscontinued().getTime()));	    	
+		    	statement.setTimestamp(3, computer.getDiscontinued());	    	
 		    }
 		    
 		    if(computer.getCompanyId()==null) {
@@ -52,14 +53,14 @@ public class DAOComputer extends DAO<Computer> {
 			    statement.setInt(4, computer.getCompanyId());		    	
 		    }
 
-
 		    // execute the preparedstatement
 		    statement.execute();
 		    return true;
+		} catch (SQLIntegrityConstraintViolationException e) {
+			throw new CompanyNotFoundException("The company "+computer.getCompanyId() + " doesn't exist !");
 		} catch (SQLException e) {
-			e.printStackTrace();
 			return false;
-		}
+		} 
 	}
 	
 	@Override
@@ -70,7 +71,10 @@ public class DAOComputer extends DAO<Computer> {
 			statement.setInt(1, id);
 
 		    // execute the preparedstatement
-		    statement.execute();
+		    int affectedRows = statement.executeUpdate();
+		    if(affectedRows == 0) {
+		    	return false;
+		    }
 		    return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -81,18 +85,21 @@ public class DAOComputer extends DAO<Computer> {
 	@Override
 	public boolean update(int id, Computer computer){
 	      PreparedStatement statement;
+	      if(!computer.validate()) {
+				return false;
+			}
 		try {
 			statement = connection.prepareStatement("UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?");
 			statement.setString(1, computer.getName());
 			if(computer.getIntroduced()==null) {
 		    	statement.setNull(2, java.sql.Types.TIMESTAMP);
 		    } else {
-		    	statement.setDate(2, new Date(computer.getIntroduced().getTime()));		    	
+		    	statement.setTimestamp(2, computer.getIntroduced());		    	
 		    }
 		    if(computer.getDiscontinued()==null) {
 		    	statement.setNull(3, java.sql.Types.TIMESTAMP);
 		    } else {
-		    	statement.setDate(3, new Date(computer.getDiscontinued().getTime()));	    	
+		    	statement.setTimestamp(3, computer.getDiscontinued());	    	
 		    }
 		    
 		    if(computer.getCompanyId()==null) {
@@ -102,7 +109,10 @@ public class DAOComputer extends DAO<Computer> {
 		    }
 		    statement.setInt(5, id);
 		    // execute the java preparedstatement
-		    statement.executeUpdate();
+		    int affectedRows = statement.executeUpdate();
+		    if(affectedRows == 0) {
+		    	return false;
+		    }
 		    return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -133,7 +143,7 @@ public class DAOComputer extends DAO<Computer> {
 	
 	public DTOComputer find(int id) throws ComputerNotFoundException{
 		try {
-			PreparedStatement statement = this.connection.prepareStatement("SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name FROM computer INNER JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;");
+			PreparedStatement statement = this.connection.prepareStatement("SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;");
 			statement.setString(1, Integer.toString(id));
 			ResultSet resultat = statement.executeQuery();
 			if(resultat.next()) {
@@ -144,7 +154,9 @@ public class DAOComputer extends DAO<Computer> {
 			    int companyId = resultat.getInt("company_id");
 			    String companyName = resultat.getString("company_name");
 			    DTOComputer computer = MapperComputer.modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
-			    computer.setCompany(companyName);
+			    if(companyName != null) {
+			    	computer.setCompany(companyName);
+			    }
 				return computer;
 			} else {
 				throw new ComputerNotFoundException("Computer "+id+" is not found !");

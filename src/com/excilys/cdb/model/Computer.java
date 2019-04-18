@@ -1,16 +1,16 @@
 package com.excilys.cdb.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Computer {
 
 	private int id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
+	private Timestamp introduced;
+	private Timestamp discontinued;
 	private Integer companyId;
 	
-	public Computer(int pId, String pName, Date pIntroduced, Date pDiscontinued, Integer pCompanyId) {
+	public Computer(int pId, String pName, Timestamp pIntroduced, Timestamp pDiscontinued, Integer pCompanyId) {
 		setId(pId);
 		setName(pName);
 		setIntroduced(pIntroduced);
@@ -34,19 +34,19 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Date getIntroduced() {
+	public Timestamp getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(Timestamp introduced) {
 		this.introduced = introduced;
 	}
 
-	public Date getDiscontinued() {
+	public Timestamp getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(Timestamp discontinued) {
 		this.discontinued = discontinued;
 	}
 
@@ -56,6 +56,17 @@ public class Computer {
 
 	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
+	}
+	
+	public boolean validate() {
+		// Discontinued should be null if introduced is null
+		if(getIntroduced() == null) {
+			return getDiscontinued() == null;
+		} else if(getDiscontinued() == null) { // Introduced is not null 
+			return true;
+		} else { // Introduced and Discontinued are not null
+			return  getDiscontinued().after(getIntroduced()) && getIntroduced().before(getDiscontinued());
+		}
 	}
 	
 	@Override

@@ -53,10 +53,13 @@ public class CLIHelper {
 	 */
 	public static DTOComputer askComputer() throws IllegalArgumentException{
 		String line = in.nextLine();
-		String[] parsedLine = line.trim().split(",");
+		String[] parsedLine = line.split(",");
 		for(int i=0;i<parsedLine.length;i++) {
 			String trim = parsedLine[i].trim();
 			parsedLine[i] = trim.equals("")?"NULL":trim;
+		}
+		if(parsedLine[0].equals("NULL")) {
+			throw new IllegalArgumentException("Name is mandatory !");
 		}
 		if(parsedLine.length == 1) {
 			return new DTOComputer(parsedLine[0].trim());

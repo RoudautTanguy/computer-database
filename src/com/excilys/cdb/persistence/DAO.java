@@ -4,6 +4,8 @@ package com.excilys.cdb.persistence;
 import java.sql.Connection;
 import java.util.List;
 
+import com.excilys.cdb.exception.CompanyNotFoundException;
+
 public abstract class DAO<T> {
   protected Connection connection = null;
    
@@ -15,8 +17,9 @@ public abstract class DAO<T> {
   * Méthode d'insertion
   * @param obj
   * @return boolean 
+  * @throws CompanyNotFoundException 
   */
-  public abstract boolean insert(T obj);
+  public abstract boolean insert(T obj) throws CompanyNotFoundException;
 
   /**
    * Méthode pour effacer

@@ -8,6 +8,7 @@ import com.excilys.cdb.controller.Controller;
 import com.excilys.cdb.exception.NotAChoiceException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
+import com.excilys.cdb.model.Page;
 
 public class CLI {
 	
@@ -55,7 +56,7 @@ public class CLI {
 				CLIHelper.box(CHOICES,true);
 				choice = CLIHelper.choice(CHOICES);
 			} catch (NotAChoiceException e) {
-				boxUsage(CHOICE_NUMBER);;
+				boxUsage(CHOICE_NUMBER);
 			}
 		}
 		controller.sendToService(choice);
@@ -65,18 +66,47 @@ public class CLI {
 	 * Show a list of companies
 	 * @param companies list of companies
 	 */
-	public void showCompanies(List<DTOCompany> companies) {
-		String[] headers = {"ID","Company Name"};
-		CLIHelper.listCompaniesHelper(headers, companies);
+	public void showCompanies(Page<DTOCompany> companyPage) {
+		int choice = -1;
+		boolean showPage = true;
+		while (choice != 6) {
+			if(showPage) {
+				String[] headers = {"ID","Company Name"};
+				CLIHelper.listCompaniesHelper(headers, companyPage.getSlice());
+			}
+			String[] menu = {"Previous page","Next page","Set Page","First Page","Last Page","Quit"};
+			CLIHelper.box(menu,true);
+			try {
+				choice = CLIHelper.choice(menu);
+				showPage = controller.sendToPageService(choice,companyPage);
+			} catch (NotAChoiceException e) {
+				boxUsage(menu.length);
+			}
+		}
 	}
 
 	/**
 	 * Show a list of computers
 	 * @param computers list of computers
 	 */
-	public void showComputers(List<DTOComputer> computers) {
-		String[] headers = {"ID", "Computer Name", "Introduced", "Discontinued", "Company Id"};
-		CLIHelper.listComputersHelper(headers, computers);
+	public void showComputers(Page<DTOComputer> computerPage) {
+		int choice = -1;
+		boolean showPage = true;
+		
+		while (choice != 6) {
+			if(showPage) {
+				String[] headers = {"ID", "Computer Name", "Introduced", "Discontinued", "Company Id"};
+				CLIHelper.listComputersHelper(headers, computerPage.getSlice());
+			}
+			String[] menu = {"Previous page","Next page","Set Page","First Page","Last Page","Quit"};
+			CLIHelper.box(menu,true);
+			try {
+				choice = CLIHelper.choice(menu);
+				showPage = controller.sendToPageService(choice,computerPage);
+			} catch (NotAChoiceException e) {
+				boxUsage(menu.length);
+			}
+		}
 	}
 	
 	/**
@@ -95,8 +125,8 @@ public class CLI {
 	 * @return the integer the user enter
 	 */
 	public int askInteger(String message) {
-		int id = 0;
-		while(id==0) {
+		int id = -1;
+		while(id == -1) {
 			try {
 				CLIHelper.box(message);
 				id = CLIHelper.askIntegerHelper();
@@ -111,7 +141,9 @@ public class CLI {
 	 * Ask the user to enter a new Computer
 	 */
 	public DTOComputer askComputerCreationInformation() throws IllegalArgumentException {
-		String[] messages = {"Please enter a new Computer (Name) ","or (Name, Introduced Date,Discontinued Date, Company Id).","Use a \",\" as separator between fields.","Name is mandatory, the rest is optional."};
+		String[] messages = {"Please enter a new Computer (Name) or (Name, Introduced Date,Discontinued Date, Company Id).",
+						 	 "Use a \",\" as separator between fields. Name is mandatory, the rest is optional.",
+						 	 "Date must be with the following format : \"dd-mm-yyyy\" and start at 02-01-1970."};
 		CLIHelper.box(messages, false);
 		return CLIHelper.askComputer();
 	}
@@ -127,7 +159,7 @@ public class CLI {
 		if(isInserted) {
 			CLIHelper.box("Computer inserted");
 		} else {
-			CLIHelper.box("Error. Please ensure that you respect the rules of creation !");
+			CLIHelper.box("Error. Please ensure that you respect the rules above.");
 		}
 	}
 	
@@ -135,7 +167,7 @@ public class CLI {
 		if(isUpdated) {
 			CLIHelper.box("Computer updated");
 		} else {
-			String[] messages = {"Error. Please ensure that the computer exist","or that you followed the creation rules."};
+			String[] messages = {"Error. Please ensure that the computer exist","or that you followed the creation above."};
 			CLIHelper.box(messages,false);
 		}
 	}

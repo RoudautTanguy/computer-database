@@ -72,5 +72,13 @@ public class DTOComputer {
 		this.company = company;
 	}
 	
+	@Override
+	public String toString() {
+		return "DTOComputer@" + this.id + ":" + this.name + 
+				"[Introduced:" + this.introduced +
+				"Discontinued:" + this.discontinued + 
+				"Company:"+this.company + "]";
+	}
+	
 	
 }

@@ -1,8 +1,8 @@
 package com.excilys.cdb.mapper;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.excilys.cdb.model.Computer;
 
@@ -22,26 +22,26 @@ public class MapperComputer {
 		if(computer.getDiscontinued() != null) {
 			discontinued = dateFormat.format(computer.getDiscontinued());;
 		}
-		String companyId = "NULL";
-		if(!computer.getCompanyId().equals(0)) {
-			companyId = Integer.toString(computer.getCompanyId());
+		String company = "NULL";
+		if(!computer.getCompanyId().equals(0) && computer.getCompanyId() != null) {
+			company = Integer.toString(computer.getCompanyId());
 		}
-		return new DTOComputer(id, name, introduced, discontinued, companyId);
+		return new DTOComputer(id, name, introduced, discontinued, company);
 	}
 	
 	public static Computer DTOToModel(DTOComputer computer) {
 		int id = Integer.parseInt(computer.getId());
 		String name = computer.getName();
-		Date introduced;
-		Date discontinued;
+		Timestamp introduced;
+		Timestamp discontinued;
 		Integer companyId;
 		try {
-			introduced = dateFormat.parse(computer.getIntroduced());
+			introduced = new Timestamp(dateFormat.parse(computer.getIntroduced()).getTime());
 		} catch (ParseException e) {
 			introduced = null;
 		}
 		try {
-			discontinued = dateFormat.parse(computer.getDiscontinued());
+			discontinued = new Timestamp(dateFormat.parse(computer.getDiscontinued()).getTime());
 		} catch(ParseException e) {
 			discontinued = null;
 		}
