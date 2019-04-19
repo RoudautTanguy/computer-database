@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.excilys.cdb.exception.NotAChoiceException;
+import com.excilys.cdb.exception.WrongComputerArgumentException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
 
@@ -51,7 +52,7 @@ public class CLIHelper {
 	 * @return the DTOComputer that the user enter
 	 * @throws IllegalArgumentException
 	 */
-	public static DTOComputer askComputer() throws IllegalArgumentException{
+	public static DTOComputer askComputer() throws WrongComputerArgumentException{
 		String line = in.nextLine();
 		String[] parsedLine = line.split(",");
 		for(int i=0;i<parsedLine.length;i++) {
@@ -59,14 +60,14 @@ public class CLIHelper {
 			parsedLine[i] = trim.equals("")?"NULL":trim;
 		}
 		if(parsedLine[0].equals("NULL")) {
-			throw new IllegalArgumentException("Name is mandatory !");
+			throw new WrongComputerArgumentException("Name is mandatory !");
 		}
 		if(parsedLine.length == 1) {
 			return new DTOComputer(parsedLine[0].trim());
 		} else if (parsedLine.length == 4) {
 			return new DTOComputer(parsedLine[0], parsedLine[1], parsedLine[2], parsedLine[3]);
 		} else {
-			throw new IllegalArgumentException("Wrong number of argument !");
+			throw new WrongComputerArgumentException("Wrong number of argument !");
 		}
 	}
 	

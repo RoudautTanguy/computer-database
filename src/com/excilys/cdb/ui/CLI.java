@@ -3,9 +3,11 @@ package com.excilys.cdb.ui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.cdb.controller.Controller;
 import com.excilys.cdb.exception.NotAChoiceException;
+import com.excilys.cdb.exception.WrongComputerArgumentException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
@@ -140,12 +142,18 @@ public class CLI {
 	/**
 	 * Ask the user to enter a new Computer
 	 */
-	public DTOComputer askComputerCreationInformation() throws IllegalArgumentException {
+	public Optional<DTOComputer> askComputerCreationInformation(){
 		String[] messages = {"Please enter a new Computer (Name) or (Name, Introduced Date,Discontinued Date, Company Id).",
 						 	 "Use a \",\" as separator between fields. Name is mandatory, the rest is optional.",
 						 	 "Date must be with the following format : \"dd-mm-yyyy\" and start at 02-01-1970."};
 		CLIHelper.box(messages, false);
-		return CLIHelper.askComputer();
+		Optional<DTOComputer> computer = Optional.empty();
+		try {
+			computer =  Optional.ofNullable(CLIHelper.askComputer());
+		} catch (WrongComputerArgumentException e) {
+			printException(e);
+		}
+		return computer;
 	}
 
 	/**

@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
@@ -24,9 +25,6 @@ public class DAOComputer extends DAO<Computer> {
 
 	@Override
 	public boolean insert(Computer computer) throws CompanyNotFoundException {
-		if(!computer.validate()) {
-			return false;
-		}
 		// the mysql insert statement
 	      String query = " INSERT into computer (name, introduced, discontinued, company_id)"
 	        + " values (?, ?, ?, ?)";
@@ -85,9 +83,6 @@ public class DAOComputer extends DAO<Computer> {
 	@Override
 	public boolean update(int id, Computer computer){
 	      PreparedStatement statement;
-	      if(!computer.validate()) {
-				return false;
-			}
 		try {
 			statement = connection.prepareStatement("UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?");
 			statement.setString(1, computer.getName());

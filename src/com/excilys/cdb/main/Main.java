@@ -5,7 +5,6 @@ import com.excilys.cdb.persistence.DBConnection;
 import com.excilys.cdb.ui.CLI;
 
 public class Main {
-	
 	public static void main(String[] args) {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
