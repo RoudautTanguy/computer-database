@@ -1,7 +1,5 @@
 package com.excilys.cdb.main;
 
-import java.sql.SQLException;
-import com.excilys.cdb.persistence.DBConnection;
 import com.excilys.cdb.ui.CLI;
 
 public class Main {
@@ -9,18 +7,12 @@ public class Main {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
 		    Class.forName( "com.mysql.cj.jdbc.Driver" );
-		    CLI.getInstance().welcome();
-		    CLI.getInstance().startChoice();
+		    CLI cli = new CLI();
+		    cli.welcome();
+		    cli.startChoice();
 		} catch ( ClassNotFoundException e ) {
 		    e.printStackTrace();
-		} finally {
-			try {
-				DBConnection.getInstance().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
-		
 	}
 
 }

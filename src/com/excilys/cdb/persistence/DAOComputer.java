@@ -1,11 +1,11 @@
 package com.excilys.cdb.persistence;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,20 +19,26 @@ import com.excilys.cdb.model.Computer;
 
 public class DAOComputer extends DAO<Computer> {
 	
-	public DAOComputer(Connection conn) {
-		super(conn);
-	}
+	public static final  String INSERT = "INSERT into computer (name, introduced, discontinued, company_id)"
+	        + " values (?, ?, ?, ?)";
+	public static final String DELETE = "DELETE FROM computer where id = ?";
+	public static final String UPDATE = "UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
+	public static final String SELECT_ALL = "SELECT * FROM computer;";
+	public static final String SELECT_BY_ID = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
+			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;";
 
+	private static DAOComputer instance;
+	
+	public static DAOComputer getInstance() {
+		if(instance == null) {
+			instance = new DAOComputer();
+		}
+		return instance;
+	}
 	@Override
 	public boolean insert(Computer computer) throws CompanyNotFoundException {
-		// the mysql insert statement
-	      String query = " INSERT into computer (name, introduced, discontinued, company_id)"
-	        + " values (?, ?, ?, ?)";
-
-	      // create the mysql insert preparedstatement
-	      PreparedStatement statement;
-		try {
-			statement = connection.prepareStatement(query);
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+			PreparedStatement statement = connection.prepareStatement(INSERT)){
 		    statement.setString(1, computer.getName());
 		    if(computer.getIntroduced()==null) {
 		    	statement.setNull(2, java.sql.Types.TIMESTAMP);
@@ -50,8 +56,6 @@ public class DAOComputer extends DAO<Computer> {
 		    } else {
 			    statement.setInt(4, computer.getCompanyId());		    	
 		    }
-
-		    // execute the preparedstatement
 		    statement.execute();
 		    return true;
 		} catch (SQLIntegrityConstraintViolationException e) {
@@ -63,9 +67,8 @@ public class DAOComputer extends DAO<Computer> {
 	
 	@Override
 	public boolean delete(int id){
-	      PreparedStatement statement;
-		try {
-			statement = connection.prepareStatement("DELETE FROM computer where id = ?");
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+			PreparedStatement statement = connection.prepareStatement(DELETE)){
 			statement.setInt(1, id);
 
 		    // execute the preparedstatement
@@ -82,9 +85,8 @@ public class DAOComputer extends DAO<Computer> {
 
 	@Override
 	public boolean update(int id, Computer computer){
-	      PreparedStatement statement;
-		try {
-			statement = connection.prepareStatement("UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?");
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+			PreparedStatement statement = connection.prepareStatement(UPDATE)){
 			statement.setString(1, computer.getName());
 			if(computer.getIntroduced()==null) {
 		    	statement.setNull(2, java.sql.Types.TIMESTAMP);
@@ -119,9 +121,9 @@ public class DAOComputer extends DAO<Computer> {
 	public List<Computer> list() {
 		List<Computer> computers = new ArrayList<Computer>();
 		
-		try {
-			Statement statement = this.connection.createStatement();
-			ResultSet resultat = statement.executeQuery( "SELECT * FROM computer;" );
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+			PreparedStatement statement = connection.prepareStatement(SELECT_ALL)){
+			ResultSet resultat = statement.executeQuery( SELECT_ALL );
 			while ( resultat.next() ) {
 			    int idComputer = resultat.getInt( "id" );
 			    String nameComputer = resultat.getString( "name" );
@@ -143,8 +145,8 @@ public class DAOComputer extends DAO<Computer> {
 	 * @throws ComputerNotFoundException
 	 */
 	public DTOComputer find(int id) throws ComputerNotFoundException{
-		try {
-			PreparedStatement statement = this.connection.prepareStatement("SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;");
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+			PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)){
 			statement.setString(1, Integer.toString(id));
 			ResultSet resultat = statement.executeQuery();
 			if(resultat.next()) {
@@ -154,7 +156,7 @@ public class DAOComputer extends DAO<Computer> {
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 			    int companyId = resultat.getInt("company_id");
 			    String companyName = resultat.getString("company_name");
-			    DTOComputer computer = MapperComputer.modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
+			    DTOComputer computer = MapperComputer.getInstance().modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
 			    if(companyName != null) {
 			    	computer.setCompany(companyName);
 			    }
@@ -163,7 +165,6 @@ public class DAOComputer extends DAO<Computer> {
 				throw new ComputerNotFoundException("Computer "+id+" is not found !");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
 			throw new ComputerNotFoundException("Computer "+id+" is not found !");
 		}
 	}

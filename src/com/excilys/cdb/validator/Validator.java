@@ -9,6 +9,7 @@ import com.excilys.cdb.mapper.DTOComputer;
 public class Validator {
 
 	public SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	
 	public boolean validateDTOComputer(DTOComputer computer) {
 		if(computer.getName() == null || computer.getName() == "NULL") {
 			return false;
@@ -26,8 +27,6 @@ public class Validator {
 			} catch (ParseException e) {
 				return false;
 			}
-			
-			
 		}
 	}
 }

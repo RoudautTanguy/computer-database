@@ -10,12 +10,21 @@ public class MapperComputer {
 
 	static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	
+	private static MapperComputer instance;
+	
+	public static MapperComputer getInstance() {
+		if(instance == null) {
+			instance = new MapperComputer();
+		}
+		return instance;
+	}
+	
 	/**
 	 * Map a model Computer to his DTO
 	 * @param computer
 	 * @return the corresponding DTO
 	 */
-	public static DTOComputer modelToDTO(Computer computer) {
+	public DTOComputer modelToDTO(Computer computer) {
 		String id = Integer.toString(computer.getId());
 		String name = computer.getName();
 		String introduced = "NULL";
@@ -39,7 +48,7 @@ public class MapperComputer {
 	 * @param computer
 	 * @return the corresponding model
 	 */
-	public static Computer DTOToModel(DTOComputer computer) {
+	public Computer DTOToModel(DTOComputer computer) {
 		int id = Integer.parseInt(computer.getId());
 		String name = computer.getName();
 		Timestamp introduced;

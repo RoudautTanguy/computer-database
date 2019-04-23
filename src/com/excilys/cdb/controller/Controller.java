@@ -21,19 +21,29 @@ public class Controller {
 	private static Controller controller;
 	
 	/**
+	 * Get the instance of Controller
+	 * @return the instance of Controller
+	 */
+	public static Controller getInstance() {
+		if(controller == null) {
+			controller =  new Controller();
+		}
+		return controller;
+	}
+	
+	/**
 	 * Send the choice of the user to the dedicated service
 	 * @param choice of the user
 	 */
-	public void sendToService(int choice) {
-		CLI cli = CLI.getInstance();
+	public void sendToService(CLI cli, ChoiceMenuEnum choice) {
 		switch(choice) {
-		case 1:
+		case LIST_COMPUTERS:
 			cli.showComputers(serviceComputer.list());
 			break;
-		case 2:
+		case LIST_COMPANIES:
 			cli.showCompanies(serviceCompany.list());
 			break;
-		case 3:
+		case SHOW_COMPUTER_DETAIL:
 			int detailId = cli.askInteger("Please enter an Id (Integer)");
 			try {
 				DTOComputer computer = serviceComputer.find(detailId);
@@ -42,7 +52,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 4:
+		case CREATE_COMPUTER:
 			DTOComputer computer;
 			try {
 				Optional<DTOComputer> optionalComputer = cli.askComputerCreationInformation();
@@ -60,7 +70,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 5:
+		case UPDATE_COMPUTER:
 			DTOComputer dtoComputer;
 			try {
 				int id = cli.askComputerUpdateId();
@@ -73,7 +83,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 6:
+		case DELETE_COMPUTER:
 			int deleteId = cli.askInteger("Please enter the Id of the Computer you want to Delete.");
 			cli.printDeletedMessage(serviceComputer.delete(deleteId), deleteId);
 			break;
@@ -88,11 +98,10 @@ public class Controller {
 	 * @param page
 	 * @return true if there is no error else false
 	 */
-	public <T> boolean sendToPageService(int choice, Page<T> page) {
+	public <T> boolean sendToPageService(CLI cli, PageMenuEnum choice, Page<T> page) {
 		boolean isOk = true;
-		CLI cli = CLI.getInstance();
 		switch(choice) { 
-		case 1:
+		case PREVIOUS_PAGE:
 			try {
 				ServicePage.changeSliceToPrevious(page);
 			} catch (SliceNotFoundException e) {
@@ -100,7 +109,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 2:
+		case NEXT_PAGE:
 			try {
 				ServicePage.changeSliceToNext(page);
 			} catch (SliceNotFoundException e) {
@@ -108,7 +117,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 3:
+		case SET_PAGE:
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
 				ServicePage.setSlice(page, pageNumber);
@@ -117,7 +126,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 4:
+		case FIRST_PAGE:
 			try {
 				ServicePage.setSlice(page, 0);
 			} catch (SliceNotFoundException e) {
@@ -125,7 +134,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 5:
+		case LAST_PAGE:
 			try {
 				ServicePage.setSlice(page, page.lastSlice());
 			} catch (SliceNotFoundException e) {
@@ -133,22 +142,11 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-		case 6:
+		case QUIT:
 			cli.startChoice();
 			break;
 		}
 		return isOk;
-	}
-	
-	/**
-	 * Get the instance of Controller
-	 * @return the instance of Controller
-	 */
-	public static Controller getInstance() {
-		if(controller == null) {
-			controller =  new Controller();
-		}
-		return controller;
 	}
 
 }

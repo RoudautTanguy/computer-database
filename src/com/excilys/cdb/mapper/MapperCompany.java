@@ -4,12 +4,21 @@ import com.excilys.cdb.model.Company;
 
 public class MapperCompany {
 
+	private static MapperCompany instance;
+	
+	public static MapperCompany getInstance() {
+		if(instance == null) {
+			instance = new MapperCompany();
+		}
+		return instance;
+	}
+	
 	/**
 	 * Map a model Company to his DTO
 	 * @param company
 	 * @return the corresponding DTO
 	 */
-	public static DTOCompany modelToDTO(Company company) {
+	public DTOCompany modelToDTO(Company company) {
 		return new DTOCompany(Integer.toString(company.getId()),company.getName());
 	}
 	
@@ -18,7 +27,7 @@ public class MapperCompany {
 	 * @param dtoCompany
 	 * @return the corresponding model
 	 */
-	public static Company DTOToModel(DTOCompany dtoCompany) {
+	public Company DTOToModel(DTOCompany dtoCompany) {
 		return new Company(Integer.parseInt(dtoCompany.getId()),dtoCompany.getName());
 	}
 }

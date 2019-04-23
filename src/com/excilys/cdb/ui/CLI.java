@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import com.excilys.cdb.controller.ChoiceMenuEnum;
 import com.excilys.cdb.controller.Controller;
+import com.excilys.cdb.controller.PageMenuEnum;
 import com.excilys.cdb.exception.NotAChoiceException;
 import com.excilys.cdb.exception.WrongComputerArgumentException;
 import com.excilys.cdb.mapper.DTOCompany;
@@ -13,32 +16,16 @@ import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 
 public class CLI {
-	
-	private final String[] CHOICES = {"List computers","List companies","Show computer details","Create a computer","Update a computer","Delete a computer"};
-	private final int CHOICE_NUMBER = CHOICES.length;
-	
+
 	private Controller controller = new Controller();
-	
-	private static CLI cli;
-	
-	/**
-	 * Get the instance of CLI
-	 * @return the instance
-	 */
-	public static CLI getInstance() {
-		if(cli == null){
-			cli = new CLI();
-	    }
-    	return cli;   
-	}
-	
+
 	/**
 	 * Welcome the user to use the CLI
 	 */
 	public void welcome() {
 		CLIHelper.box("Welcome to the Computer Database Interface");
 	}
-	
+
 	/**
 	 * Help the user if he enter a bad choice
 	 * @param maxChoiceNumber maximum number of choice
@@ -46,24 +33,24 @@ public class CLI {
 	public void boxUsage(int maxChoiceNumber) {
 		CLIHelper.box("Please enter an integer between 1 and " + maxChoiceNumber);
 	}
-	
+
 	/**
 	 * Show the menu and wait the choice of the user
 	 */
 	public void startChoice() {
 		int choice = 0;
+		String[] choiceMenu = Stream.of(ChoiceMenuEnum.values()).map(ChoiceMenuEnum::getMenuMessage).toArray(String[]::new);
 		while(choice==0) {
 			try {
-				//Make the box with choices
-				CLIHelper.box(CHOICES,true);
-				choice = CLIHelper.choice(CHOICES);
+				CLIHelper.box(choiceMenu,true);
+				choice = CLIHelper.choice(choiceMenu);
 			} catch (NotAChoiceException e) {
-				boxUsage(CHOICE_NUMBER);
+				boxUsage(choiceMenu.length);
 			}
 		}
-		controller.sendToService(choice);
+		controller.sendToService(this,ChoiceMenuEnum.values()[choice-1]);
 	}
-	
+
 	/**
 	 * Show a list of companies
 	 * @param companies list of companies
@@ -76,11 +63,11 @@ public class CLI {
 				String[] headers = {"ID","Company Name"};
 				CLIHelper.listCompaniesHelper(headers, companyPage.getSlice());
 			}
-			String[] menu = {"Previous page","Next page","Set Page","First Page","Last Page","Quit"};
+			String[] menu = Stream.of(PageMenuEnum.values()).map(PageMenuEnum::getMenuMessage).toArray(String[]::new);
 			CLIHelper.box(menu,true);
 			try {
 				choice = CLIHelper.choice(menu);
-				showPage = controller.sendToPageService(choice,companyPage);
+				showPage = controller.sendToPageService(this, PageMenuEnum.values()[choice-1], companyPage);
 			} catch (NotAChoiceException e) {
 				boxUsage(menu.length);
 			}
@@ -94,23 +81,23 @@ public class CLI {
 	public void showComputers(Page<DTOComputer> computerPage) {
 		int choice = -1;
 		boolean showPage = true;
-		
+
 		while (choice != 6) {
 			if(showPage) {
 				String[] headers = {"ID", "Computer Name", "Introduced", "Discontinued", "Company Id"};
 				CLIHelper.listComputersHelper(headers, computerPage.getSlice());
 			}
-			String[] menu = {"Previous page","Next page","Set Page","First Page","Last Page","Quit"};
+			String[] menu = Stream.of(PageMenuEnum.values()).map(PageMenuEnum::getMenuMessage).toArray(String[]::new);
 			CLIHelper.box(menu,true);
 			try {
 				choice = CLIHelper.choice(menu);
-				showPage = controller.sendToPageService(choice,computerPage);
+				showPage = controller.sendToPageService(this, PageMenuEnum.values()[choice-1], computerPage);
 			} catch (NotAChoiceException e) {
 				boxUsage(menu.length);
 			}
 		}
 	}
-	
+
 	/**
 	 * Show one computer
 	 * @param computer
@@ -120,7 +107,7 @@ public class CLI {
 		String[] headers = {"ID", "Computer Name", "Introduced", "Discontinued", "Company Name"};
 		CLIHelper.listComputersHelper(headers, computers);
 	}
-	
+
 	/**
 	 * Ask the user to enter an integer
 	 * @param message The message that the user will see
@@ -138,14 +125,14 @@ public class CLI {
 		}
 		return id;
 	}  
-	
+
 	/**
 	 * Ask the user to enter a new Computer
 	 */
 	public Optional<DTOComputer> askComputerCreationInformation(){
 		String[] messages = {"Please enter a new Computer (Name) or (Name, Introduced Date,Discontinued Date, Company Id).",
-						 	 "Use a \",\" as separator between fields. Name is mandatory, the rest is optional.",
-						 	 "Date must be with the following format : \"dd-mm-yyyy\" and start at 02-01-1970."};
+				"Use a \",\" as separator between fields. Name is mandatory, the rest is optional.",
+		"Date must be with the following format : \"dd-mm-yyyy\" and start at 02-01-1970."};
 		CLIHelper.box(messages, false);
 		Optional<DTOComputer> computer = Optional.empty();
 		try {
@@ -162,7 +149,7 @@ public class CLI {
 	public int askComputerUpdateId() {
 		return askInteger("Please enter the Id of the Computer you want to Update.");
 	}
-	
+
 	/**
 	 * Print message after insertion of a computer
 	 * @param isInserted if the computer is successfully inserted or not
@@ -174,7 +161,7 @@ public class CLI {
 			CLIHelper.box("Error. Please ensure that you respect the rules above.");
 		}
 	}
-	
+
 	/**
 	 * Print message after updating a computer
 	 * @param isUpdated if the computer is successfully updated or not
@@ -200,7 +187,7 @@ public class CLI {
 			CLIHelper.box("Error. Please ensure that the computer " + id + " exist.");
 		}
 	}
-	
+
 	/**
 	 * Print exception in a box
 	 * @param e
@@ -211,8 +198,8 @@ public class CLI {
 
 
 
-	
 
-	
+
+
 }
 
