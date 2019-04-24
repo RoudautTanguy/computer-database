@@ -5,12 +5,12 @@ import java.util.Optional;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
-import com.excilys.cdb.exception.SliceNotFoundException;
+import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
-import com.excilys.cdb.service.ServicePage;
 import com.excilys.cdb.ui.CLI;
 import com.excilys.cdb.validator.Validator;
 
@@ -38,11 +38,21 @@ public class Controller {
 	public void sendToService(CLI cli, ChoiceMenuEnum choice) {
 		switch(choice) {
 		case LIST_COMPUTERS:
-			cli.showComputers(serviceComputer.list());
+			try {
+				cli.showComputers(serviceComputer.list());
+			} catch (PageNotFoundException e1) {
+				e1.printStackTrace();
+			}
 			break;
+			
 		case LIST_COMPANIES:
-			cli.showCompanies(serviceCompany.list());
+			try {
+				cli.showCompanies(serviceCompany.list());
+			} catch (PageNotFoundException e1) {
+				e1.printStackTrace();
+			}
 			break;
+			
 		case SHOW_COMPUTER_DETAIL:
 			int detailId = cli.askInteger("Please enter an Id (Integer)");
 			try {
@@ -52,6 +62,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
+			
 		case CREATE_COMPUTER:
 			DTOComputer computer;
 			try {
@@ -70,6 +81,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
+			
 		case UPDATE_COMPUTER:
 			DTOComputer dtoComputer;
 			try {
@@ -83,6 +95,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
+			
 		case DELETE_COMPUTER:
 			int deleteId = cli.askInteger("Please enter the Id of the Computer you want to Delete.");
 			cli.printDeletedMessage(serviceComputer.delete(deleteId), deleteId);
@@ -92,56 +105,129 @@ public class Controller {
 	}
 	
 	/**
-	 * Send the choice of the user to the page service.
-	 * @param <T> Type of the page
-	 * @param choice of the user
+	 * 
+	 * @param <T>
+	 * @param cli
+	 * @param choice
 	 * @param page
-	 * @return true if there is no error else false
+	 * @return
 	 */
-	public <T> boolean sendToPageService(CLI cli, PageMenuEnum choice, Page<T> page) {
+	public boolean sendToServiceCompany(CLI cli, PageMenuEnum choice, Page<DTOCompany> page) {
 		boolean isOk = true;
 		switch(choice) { 
 		case PREVIOUS_PAGE:
 			try {
-				ServicePage.changeSliceToPrevious(page);
-			} catch (SliceNotFoundException e) {
+				page.setList(ServiceCompany.getInstance().list(page.decrementIndex()).getList());
+			} catch (PageNotFoundException e) {
 				isOk = false;
+				page.incrementIndex();
 				cli.printException(e);
 			}
 			break;
+			
 		case NEXT_PAGE:
 			try {
-				ServicePage.changeSliceToNext(page);
-			} catch (SliceNotFoundException e) {
+				page.setList(ServiceCompany.getInstance().list(page.incrementIndex()).getList());
+			} catch (PageNotFoundException e) {
 				isOk = false;
+				page.decrementIndex();
 				cli.printException(e);
 			}
 			break;
 		case SET_PAGE:
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
-				ServicePage.setSlice(page, pageNumber);
-			} catch (SliceNotFoundException e) {
+				page.setList(ServiceCompany.getInstance().list(pageNumber).getList());
+				page.setIndex(pageNumber);
+			} catch (PageNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
 			}
 			break;
+			
 		case FIRST_PAGE:
 			try {
-				ServicePage.setSlice(page, 0);
-			} catch (SliceNotFoundException e) {
+				page.setList(ServiceCompany.getInstance().list(0).getList());
+				page.setIndex(0);
+			} catch (PageNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
 			}
 			break;
+			
 		case LAST_PAGE:
 			try {
-				ServicePage.setSlice(page, page.lastSlice());
-			} catch (SliceNotFoundException e) {
+				int lastSlice = ServiceCompany.getInstance().count();
+				page.setList(ServiceCompany.getInstance().list(lastSlice).getList());
+				page.setIndex(lastSlice);
+			} catch (PageNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
 			}
 			break;
+			
+		case QUIT:
+			cli.startChoice();
+			break;
+		}
+		return isOk;
+	}
+	
+	public boolean sendToServiceComputer(CLI cli, PageMenuEnum choice, Page<DTOComputer> page) {
+		boolean isOk = true;
+		switch(choice) { 
+		case PREVIOUS_PAGE:
+			try {
+				page.setList(ServiceComputer.getInstance().list(page.decrementIndex()).getList());
+			} catch (PageNotFoundException e) {
+				isOk = false;
+				page.incrementIndex();
+				cli.printException(e);
+			}
+			break;
+			
+		case NEXT_PAGE:
+			try {
+				page.setList(ServiceComputer.getInstance().list(page.incrementIndex()).getList());
+			} catch (PageNotFoundException e) {
+				isOk = false;
+				page.decrementIndex();
+				cli.printException(e);
+			}
+			break;
+			
+		case SET_PAGE:
+			int pageNumber = cli.askInteger("Please enter the number of the page.");
+			try {
+				page.setList(ServiceComputer.getInstance().list(pageNumber).getList());
+				page.setIndex(pageNumber);
+			} catch (PageNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+			
+		case FIRST_PAGE:
+			try {
+				page.setList(ServiceComputer.getInstance().list(0).getList());
+				page.setIndex(0);
+			} catch (PageNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+			
+		case LAST_PAGE:
+			try {
+				int lastSlice = ServiceComputer.getInstance().count();
+				page.setList(ServiceComputer.getInstance().list(lastSlice).getList());
+				page.setIndex(lastSlice);
+			} catch (PageNotFoundException e) {
+				isOk = false;
+				cli.printException(e);
+			}
+			break;
+			
 		case QUIT:
 			cli.startChoice();
 			break;

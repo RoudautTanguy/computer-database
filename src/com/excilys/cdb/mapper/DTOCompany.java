@@ -26,5 +26,9 @@ public class DTOCompany {
 		this.name = name;
 	}
 	
+	@Override
+	public String toString() {
+		return "DTOCompany@" + this.id + ":" + this.name;
+	}
 	
 }

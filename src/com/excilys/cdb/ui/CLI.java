@@ -61,13 +61,13 @@ public class CLI {
 		while (choice != 6) {
 			if(showPage) {
 				String[] headers = {"ID","Company Name"};
-				CLIHelper.listCompaniesHelper(headers, companyPage.getSlice());
+				CLIHelper.listCompaniesHelper(headers, companyPage.getList());
 			}
 			String[] menu = Stream.of(PageMenuEnum.values()).map(PageMenuEnum::getMenuMessage).toArray(String[]::new);
 			CLIHelper.box(menu,true);
 			try {
 				choice = CLIHelper.choice(menu);
-				showPage = controller.sendToPageService(this, PageMenuEnum.values()[choice-1], companyPage);
+				showPage = controller.sendToServiceCompany(this, PageMenuEnum.values()[choice-1], companyPage);
 			} catch (NotAChoiceException e) {
 				boxUsage(menu.length);
 			}
@@ -85,13 +85,13 @@ public class CLI {
 		while (choice != 6) {
 			if(showPage) {
 				String[] headers = {"ID", "Computer Name", "Introduced", "Discontinued", "Company Id"};
-				CLIHelper.listComputersHelper(headers, computerPage.getSlice());
+				CLIHelper.listComputersHelper(headers, computerPage.getList());
 			}
 			String[] menu = Stream.of(PageMenuEnum.values()).map(PageMenuEnum::getMenuMessage).toArray(String[]::new);
 			CLIHelper.box(menu,true);
 			try {
 				choice = CLIHelper.choice(menu);
-				showPage = controller.sendToPageService(this, PageMenuEnum.values()[choice-1], computerPage);
+				showPage = controller.sendToServiceComputer(this, PageMenuEnum.values()[choice-1], computerPage);
 			} catch (NotAChoiceException e) {
 				boxUsage(menu.length);
 			}

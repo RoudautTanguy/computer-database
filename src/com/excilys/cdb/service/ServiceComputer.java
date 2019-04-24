@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
@@ -13,7 +14,7 @@ import com.excilys.cdb.persistence.DAOComputer;
 
 public class ServiceComputer {
 	
-	DAOComputer daoComputer = DAOComputer.getInstance();
+	private static final int COMPUTERS_NUMBER_PER_PAGE = 50;
 
 	private static ServiceComputer instance;
 	
@@ -31,7 +32,7 @@ public class ServiceComputer {
 	 * @throws CompanyNotFoundException
 	 */
 	public boolean insert(DTOComputer computer) throws CompanyNotFoundException {
-		return daoComputer.insert(MapperComputer.getInstance().DTOToModel(computer));
+		return DAOComputer.getInstance().insert(MapperComputer.getInstance().DTOToModel(computer));
 	}
 	
 	/**
@@ -40,7 +41,7 @@ public class ServiceComputer {
 	 * @return if the computer is deleted or not
 	 */
 	public boolean delete(int id){
-		return daoComputer.delete(id);
+		return DAOComputer.getInstance().delete(id);
 	}
 	
 	/**
@@ -50,20 +51,35 @@ public class ServiceComputer {
 	 * @return if the computer is updated or not
 	 */
 	public boolean update(int id, DTOComputer computer) {
-		return daoComputer.update(id, MapperComputer.getInstance().DTOToModel(computer));
+		return DAOComputer.getInstance().update(id, MapperComputer.getInstance().DTOToModel(computer));
 	}
 	
 	/**
 	 * List all the computers with pagination
 	 * @return the current page of computer
+	 * @throws PageNotFoundException 
 	 */
-	public Page<DTOComputer> list(){
+	public Page<DTOComputer> list() throws PageNotFoundException{
 		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
-		List<Computer> computers = daoComputer.list();
+		List<Computer> computers = DAOComputer.getInstance().list(0,COMPUTERS_NUMBER_PER_PAGE);
 		for(Computer computer:computers) {
 			dtoComputers.add(MapperComputer.getInstance().modelToDTO(computer));
 		}
-		return new Page<DTOComputer>(dtoComputers,50);
+		return new Page<DTOComputer>(dtoComputers, COMPUTERS_NUMBER_PER_PAGE);
+	}
+	
+	/**
+	 * List all the computers with pagination the index of the page
+	 * @param index
+	 * @return
+	 */
+	public Page<DTOComputer> list(int index) throws PageNotFoundException{
+		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
+		List<Computer> computers = DAOComputer.getInstance().list(index, COMPUTERS_NUMBER_PER_PAGE);
+		for(Computer computer:computers) {
+			dtoComputers.add(MapperComputer.getInstance().modelToDTO(computer));
+		}
+		return new Page<DTOComputer>(dtoComputers, index, COMPUTERS_NUMBER_PER_PAGE);
 	}
 	
 	/**
@@ -73,6 +89,10 @@ public class ServiceComputer {
 	 * @throws ComputerNotFoundException if not found
 	 */
 	public DTOComputer find(int id) throws ComputerNotFoundException {
-		return daoComputer.find(id);
+		return DAOComputer.getInstance().find(id);
+	}
+	
+	public int count() {
+		return DAOComputer.getInstance().count()/COMPUTERS_NUMBER_PER_PAGE;
 	}
 }

@@ -10,9 +10,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
@@ -24,9 +24,11 @@ public class DAOComputer extends DAO<Computer> {
 	public static final String DELETE = "DELETE FROM computer where id = ?";
 	public static final String UPDATE = "UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
 	public static final String SELECT_ALL = "SELECT * FROM computer;";
+	public static final String SELECT_ALL_PAGINATED = "SELECT * FROM computer LIMIT ?,?;";
 	public static final String SELECT_BY_ID = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;";
-
+	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer;";
+	
 	private static DAOComputer instance;
 	
 	public static DAOComputer getInstance() {
@@ -123,7 +125,37 @@ public class DAOComputer extends DAO<Computer> {
 		
 		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
 			PreparedStatement statement = connection.prepareStatement(SELECT_ALL)){
-			ResultSet resultat = statement.executeQuery( SELECT_ALL );
+			ResultSet resultat = statement.executeQuery( );
+			while ( resultat.next() ) {
+			    int idComputer = resultat.getInt( "id" );
+			    String nameComputer = resultat.getString( "name" );
+			    Timestamp introduced = resultat.getTimestamp( "introduced" );
+			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
+			    int idCompany = resultat.getInt("company_id");
+			    computers.add(new Computer(idComputer,nameComputer,introduced ,discontinued ,idCompany));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return computers;
+	}
+	
+	@Override
+	public List<Computer> list(int index, int limit) throws PageNotFoundException{
+		if(index < 0) {
+			throw new PageNotFoundException("This page doesn't exist"); 
+		}
+		int offset = index * limit;
+		List<Computer> computers = new ArrayList<Computer>();
+		
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+			PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PAGINATED)){
+			statement.setInt(1, offset);
+			statement.setInt(2, limit);
+			ResultSet resultat = statement.executeQuery( );
+			if (!resultat.isBeforeFirst() ) {    
+			    throw new PageNotFoundException("This page doesn't exist"); 
+			} 
 			while ( resultat.next() ) {
 			    int idComputer = resultat.getInt( "id" );
 			    String nameComputer = resultat.getString( "name" );
@@ -167,6 +199,21 @@ public class DAOComputer extends DAO<Computer> {
 		} catch (SQLException e) {
 			throw new ComputerNotFoundException("Computer "+id+" is not found !");
 		}
+	}
+	
+	public int count() {
+		int count = 0;
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+				PreparedStatement statement = connection.prepareStatement(COUNT)){
+			ResultSet resultat = statement.executeQuery();
+			
+			if(resultat.next()) {
+				count =  resultat.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 	
 }

@@ -1,13 +1,13 @@
 package com.excilys.cdb.exception;
 
-public class SliceNotFoundException extends Exception{
+public class PageNotFoundException extends Exception{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SliceNotFoundException(String message) {
+	public PageNotFoundException(String message) {
 		super(message);
 	}
 }

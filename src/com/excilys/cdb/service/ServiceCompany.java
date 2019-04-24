@@ -3,6 +3,7 @@ package com.excilys.cdb.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.model.Company;
@@ -11,6 +12,8 @@ import com.excilys.cdb.persistence.DAOCompany;
 
 public class ServiceCompany {
 
+	private static final int COMPANIES_NUMBER_PER_PAGE = 20;
+	
 	DAOCompany daoCompany = DAOCompany.getInstance();
 	
 	private static ServiceCompany instance;
@@ -23,16 +26,31 @@ public class ServiceCompany {
 	}
 	
 	/**
-	 * List all the company with pagination
+	 * List companies with pagination
 	 * @return the page of companies
+	 * @throws PageNotFoundException 
 	 */
-	public Page<DTOCompany> list(){
+	public Page<DTOCompany> list() throws PageNotFoundException{
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
-		List<Company> companies = daoCompany.list();
+		List<Company> companies = daoCompany.list(0, COMPANIES_NUMBER_PER_PAGE);
 		for(Company company:companies) {
 			dtoCompanies.add(MapperCompany.getInstance().modelToDTO(company));
 		}
 		
-		return new Page<DTOCompany>(dtoCompanies,20);
+		return new Page<DTOCompany>(dtoCompanies, COMPANIES_NUMBER_PER_PAGE);
+	}
+	
+	public Page<DTOCompany> list(int index) throws PageNotFoundException{
+		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
+		List<Company> companies = daoCompany.list(index, COMPANIES_NUMBER_PER_PAGE);
+		for(Company company:companies) {
+			dtoCompanies.add(MapperCompany.getInstance().modelToDTO(company));
+		}
+		
+		return new Page<DTOCompany>(dtoCompanies, index, COMPANIES_NUMBER_PER_PAGE);
+	}
+	
+	public int count() {
+		return daoCompany.count()/COMPANIES_NUMBER_PER_PAGE;
 	}
 }
