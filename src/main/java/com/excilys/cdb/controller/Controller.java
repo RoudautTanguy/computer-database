@@ -157,7 +157,7 @@ public class Controller {
 			
 		case LAST_PAGE:
 			try {
-				int lastSlice = ServiceCompany.getInstance().count();
+				int lastSlice = ServiceCompany.getInstance().getLastPage();
 				page.setList(ServiceCompany.getInstance().list(lastSlice).getList());
 				page.setIndex(lastSlice);
 			} catch (PageNotFoundException e) {

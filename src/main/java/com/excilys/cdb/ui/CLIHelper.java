@@ -7,7 +7,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.NotAChoiceException;
+import com.excilys.cdb.exception.NotAnIntegerException;
 import com.excilys.cdb.exception.WrongComputerArgumentException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
@@ -15,6 +19,7 @@ import com.excilys.cdb.mapper.DTOComputer;
 public class CLIHelper {
 
 	private static Scanner in = new Scanner(System.in);
+	private static final Logger logger = LoggerFactory.getLogger(CLIHelper.class);
 	
 	/**
 	 * Get the choice of the user and throw an exception if not correct
@@ -28,9 +33,13 @@ public class CLIHelper {
 			if(intChoice>=1 && intChoice<=choices.length) {
 				return intChoice;
 			} else {
-				throw new NotAChoiceException("Le choix "+choice + " n'est pas possible !");
+				String message = "Le choix " + choice + " n'est pas possible !";
+				logger.warn(message);
+				throw new NotAChoiceException(message);
 			}
-	    } catch(NumberFormatException e) {
+	    } catch (NumberFormatException e) {
+	    	String message = "Le choix " + choice + " n'est pas possible !";
+			logger.warn(message);
 	    	throw new NotAChoiceException("Le choix " + choice + " n'est pas possible !");
 	    }
 	}
@@ -39,12 +48,19 @@ public class CLIHelper {
 	 * Ask the user to enter an integer. Fail if it's not an integer
 	 * @param message
 	 * @return the integer the user entered
+	 * @throws NotAnIntegerException 
 	 * @throws NumberFormatException if not an integer
 	 */
-	public static int askIntegerHelper() throws NumberFormatException{
+	public static int askIntegerHelper() throws NotAnIntegerException{
 		String integer = in.nextLine();
-		int intChoice = Integer.parseInt(integer); // If this doesn't fail then it's integer
-		return intChoice;
+		try {
+			int intChoice = Integer.parseInt(integer); // If this doesn't fail then it's integer
+			return intChoice;
+		} catch (NumberFormatException e) {
+			String message = "Expected Integer, actual " + integer;
+			logger.error(message);
+			throw new NotAnIntegerException(message);
+		}
 	}
 	
 	/**
@@ -60,6 +76,7 @@ public class CLIHelper {
 			parsedLine[i] = trim.equals("")?"NULL":trim;
 		}
 		if(parsedLine[0].equals("NULL")) {
+			logger.error("Input : Empty computer");
 			throw new WrongComputerArgumentException("Name is mandatory !");
 		}
 		if(parsedLine.length == 1) {
@@ -67,7 +84,9 @@ public class CLIHelper {
 		} else if (parsedLine.length == 4) {
 			return new DTOComputer(parsedLine[0], parsedLine[1], parsedLine[2], parsedLine[3]);
 		} else {
-			throw new WrongComputerArgumentException("Wrong number of argument !");
+			String message = "Wrong number of argument !";
+			logger.error(message + " Input : {}",line);
+			throw new WrongComputerArgumentException(message);
 		}
 	}
 	

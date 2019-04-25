@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
 
@@ -15,10 +18,13 @@ public abstract class DAO<T> {
 	private String user;
 	private String password;
 
+	private static final String configFileName = "config.properties";
+	private static final Logger logger = LoggerFactory.getLogger(DAO.class);
+	
 	DAO(){
 		try {
-			InputStream input = new FileInputStream("config.properties");
-
+			InputStream input = new FileInputStream(configFileName);
+			logger.info("Config file loaded ");
 			Properties prop = new Properties();
 
 			// load a properties file
@@ -33,6 +39,7 @@ public abstract class DAO<T> {
 			this.setUser(user);
 			this.setPassword(password);
 		} catch (IOException ex) {
+			logger.error("Config file {} doesn't exist", configFileName);
 			ex.printStackTrace();
 		}
 	}

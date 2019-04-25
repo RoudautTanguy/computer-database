@@ -58,6 +58,7 @@ public class ServiceComputer {
 	 * List all the computers with pagination
 	 * @return the current page of computer
 	 * @throws PageNotFoundException 
+	 * @return page
 	 */
 	public Page<DTOComputer> list() throws PageNotFoundException{
 		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
@@ -71,7 +72,8 @@ public class ServiceComputer {
 	/**
 	 * List all the computers with pagination the index of the page
 	 * @param index
-	 * @return
+	 * @throws PageNotFoundException
+	 * @return page
 	 */
 	public Page<DTOComputer> list(int index) throws PageNotFoundException{
 		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();

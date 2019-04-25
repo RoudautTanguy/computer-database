@@ -4,11 +4,16 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.model.Computer;
 
 public class MapperComputer {
 
 	static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	
+	private static final Logger logger = LoggerFactory.getLogger(MapperComputer.class);
 	
 	private static MapperComputer instance;
 	
@@ -31,7 +36,6 @@ public class MapperComputer {
 		if(computer.getIntroduced() != null) {
 			introduced = dateFormat.format(computer.getIntroduced());
 		}
-		
 		String discontinued = "NULL";
 		if(computer.getDiscontinued() != null) {
 			discontinued = dateFormat.format(computer.getDiscontinued());;
@@ -57,16 +61,19 @@ public class MapperComputer {
 		try {
 			introduced = new Timestamp(dateFormat.parse(computer.getIntroduced()).getTime());
 		} catch (ParseException e) {
+			logger.warn("Can't parse introduced date {}", computer.getIntroduced());
 			introduced = null;
 		}
 		try {
 			discontinued = new Timestamp(dateFormat.parse(computer.getDiscontinued()).getTime());
 		} catch(ParseException e) {
+			logger.warn("Can't parse discontinued date {}", computer.getDiscontinued());
 			discontinued = null;
 		}
 		try {
 			companyId = Integer.parseInt(computer.getCompany());
 		} catch(NumberFormatException e) {
+			logger.warn("Can't parse company id {}", computer.getCompany());
 			companyId = null;
 		}
 		

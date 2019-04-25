@@ -10,6 +10,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -28,6 +31,8 @@ public class DAOComputer extends DAO<Computer> {
 	public static final String SELECT_BY_ID = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;";
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer;";
+	
+	private static final Logger logger = LoggerFactory.getLogger(DAOComputer.class);
 	
 	private static DAOComputer instance;
 	
@@ -61,8 +66,10 @@ public class DAOComputer extends DAO<Computer> {
 		    statement.execute();
 		    return true;
 		} catch (SQLIntegrityConstraintViolationException e) {
+			logger.error("Trying to insert a computer with an inexisting computer id");
 			throw new CompanyNotFoundException("The company "+computer.getCompanyId() + " doesn't exist !");
 		} catch (SQLException e) {
+			logger.trace("Can't connect. ",e);
 			return false;
 		} 
 	}
@@ -76,11 +83,13 @@ public class DAOComputer extends DAO<Computer> {
 		    // execute the preparedstatement
 		    int affectedRows = statement.executeUpdate();
 		    if(affectedRows == 0) {
+		    	logger.warn("0 computer deleted");
 		    	return false;
 		    }
+		    logger.info("Computer {} deleted", id);
 		    return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 			return false;
 		}
 	}
@@ -110,11 +119,12 @@ public class DAOComputer extends DAO<Computer> {
 		    // execute the java preparedstatement
 		    int affectedRows = statement.executeUpdate();
 		    if(affectedRows == 0) {
+		    	logger.warn("0 computer updated");
 		    	return false;
 		    }
 		    return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 			return false;
 		}
 	}
@@ -135,7 +145,7 @@ public class DAOComputer extends DAO<Computer> {
 			    computers.add(new Computer(idComputer,nameComputer,introduced ,discontinued ,idCompany));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 		}
 		return computers;
 	}
@@ -143,6 +153,7 @@ public class DAOComputer extends DAO<Computer> {
 	@Override
 	public List<Computer> list(int index, int limit) throws PageNotFoundException{
 		if(index < 0) {
+			logger.error("Trying to access a negative page");
 			throw new PageNotFoundException("This page doesn't exist"); 
 		}
 		int offset = index * limit;
@@ -153,7 +164,8 @@ public class DAOComputer extends DAO<Computer> {
 			statement.setInt(1, offset);
 			statement.setInt(2, limit);
 			ResultSet resultat = statement.executeQuery( );
-			if (!resultat.isBeforeFirst() ) {    
+			if (!resultat.isBeforeFirst() ) {   
+				logger.error("Query have no result, trying to access a page that doesn't exist");
 			    throw new PageNotFoundException("This page doesn't exist"); 
 			} 
 			while ( resultat.next() ) {
@@ -165,7 +177,7 @@ public class DAOComputer extends DAO<Computer> {
 			    computers.add(new Computer(idComputer,nameComputer,introduced ,discontinued ,idCompany));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 		}
 		return computers;
 	}
@@ -190,13 +202,17 @@ public class DAOComputer extends DAO<Computer> {
 			    String companyName = resultat.getString("company_name");
 			    DTOComputer computer = MapperComputer.getInstance().modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
 			    if(companyName != null) {
+			    	logger.info("Replacing company id with company name");
 			    	computer.setCompany(companyName);
 			    }
 				return computer;
 			} else {
-				throw new ComputerNotFoundException("Computer "+id+" is not found !");
+				String message = "Computer "+id+" is not found !";
+				logger.warn(message);
+				throw new ComputerNotFoundException(message);
 			}
 		} catch (SQLException e) {
+			logger.trace("Can't connect. ",e);
 			throw new ComputerNotFoundException("Computer "+id+" is not found !");
 		}
 	}
@@ -211,7 +227,7 @@ public class DAOComputer extends DAO<Computer> {
 				count =  resultat.getInt("count");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 		}
 		return count;
 	}

@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.model.Company;
 
@@ -17,6 +20,8 @@ public class DAOCompany extends DAO<Company> {
 	public final static String SELECT_ALL = "SELECT * FROM company;";
 	public final static String SELECT_ALL_PAGINATED = "SELECT * FROM company LIMIT ?,?;";
 	public final static String COUNT = "SELECT COUNT(*) AS count FROM company;";
+	
+	private static final Logger logger = LoggerFactory.getLogger(DAOCompany.class);
 
 	private static DAOCompany instance;
 	
@@ -57,7 +62,7 @@ public class DAOCompany extends DAO<Company> {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 		}
 		return companies;
 	}
@@ -75,8 +80,10 @@ public class DAOCompany extends DAO<Company> {
 			statement.setInt(1, offset);
 			statement.setInt(2, limit);
 			ResultSet resultat = statement.executeQuery( );
-			if (!resultat.isBeforeFirst()) {    
-			    throw new PageNotFoundException("This page doesn't exist"); 
+			if (!resultat.isBeforeFirst()) {   
+				String message = "This page doesn't exist";
+				logger.error(message);
+			    throw new PageNotFoundException(message); 
 			} 
 			while ( resultat.next() ) {
 			    int idComputer = resultat.getInt( "id" );
@@ -85,7 +92,7 @@ public class DAOCompany extends DAO<Company> {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 		}
 		return companies;
 	}
@@ -101,7 +108,7 @@ public class DAOCompany extends DAO<Company> {
 				count =  resultat.getInt("count");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.trace("Can't connect. ",e);
 		}
 		return count;
 	}

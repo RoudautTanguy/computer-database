@@ -29,6 +29,7 @@ public class ServiceCompany {
 	 * List companies with pagination
 	 * @return the page of companies
 	 * @throws PageNotFoundException 
+	 * @return page
 	 */
 	public Page<DTOCompany> list() throws PageNotFoundException{
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
@@ -40,6 +41,12 @@ public class ServiceCompany {
 		return new Page<DTOCompany>(dtoCompanies, COMPANIES_NUMBER_PER_PAGE);
 	}
 	
+	/**
+	 * List companies with pagination and index page
+	 * @param index
+	 * @return page
+	 * @throws PageNotFoundException
+	 */
 	public Page<DTOCompany> list(int index) throws PageNotFoundException{
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
 		List<Company> companies = daoCompany.list(index, COMPANIES_NUMBER_PER_PAGE);
@@ -50,7 +57,11 @@ public class ServiceCompany {
 		return new Page<DTOCompany>(dtoCompanies, index, COMPANIES_NUMBER_PER_PAGE);
 	}
 	
-	public int count() {
+	/**
+	 * Get the last page possible
+	 * @return page
+	 */
+	public int getLastPage() {
 		return daoCompany.count()/COMPANIES_NUMBER_PER_PAGE;
 	}
 }

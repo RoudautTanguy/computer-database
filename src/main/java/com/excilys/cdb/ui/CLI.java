@@ -10,6 +10,7 @@ import com.excilys.cdb.controller.ChoiceMenuEnum;
 import com.excilys.cdb.controller.Controller;
 import com.excilys.cdb.controller.PageMenuEnum;
 import com.excilys.cdb.exception.NotAChoiceException;
+import com.excilys.cdb.exception.NotAnIntegerException;
 import com.excilys.cdb.exception.WrongComputerArgumentException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
@@ -62,7 +63,7 @@ public class CLI {
 			if(showPage) {
 				String[] headers = {"ID","Company Name"};
 				CLIHelper.listCompaniesHelper(headers, companyPage.getList());
-			}
+			} 
 			String[] menu = Stream.of(PageMenuEnum.values()).map(PageMenuEnum::getMenuMessage).toArray(String[]::new);
 			CLIHelper.box(menu,true);
 			try {
@@ -119,7 +120,7 @@ public class CLI {
 			try {
 				CLIHelper.box(message);
 				id = CLIHelper.askIntegerHelper();
-			} catch(NumberFormatException e) {
+			} catch(NotAnIntegerException e) {
 				CLIHelper.box("This is not an Integer !");
 			}
 		}
