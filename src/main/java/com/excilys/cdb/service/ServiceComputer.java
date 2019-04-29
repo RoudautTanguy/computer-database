@@ -114,6 +114,10 @@ public class ServiceComputer {
 	}
 	
 	public int count() {
+		return DAOComputer.getInstance().count();
+	}
+	
+	public int lastPage() {
 		return DAOComputer.getInstance().count()/COMPUTERS_NUMBER_PER_PAGE;
 	}
 }

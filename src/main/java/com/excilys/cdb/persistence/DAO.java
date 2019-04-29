@@ -1,7 +1,5 @@
 package com.excilys.cdb.persistence;
 
-
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -19,30 +17,38 @@ public abstract class DAO<T> {
 	private String user;
 	private String password;
 
-	private static final String configFileName = "config.properties";
+	private static final String configFileName = "/config.properties";
 	private static final Logger logger = LoggerFactory.getLogger(DAO.class);
 	
 	DAO(){
 		try {
-			InputStream input = new FileInputStream(configFileName);
-			logger.info("Config file loaded ");
-			Properties prop = new Properties();
-
-			// load a properties file
-			prop.load(input);
-
+			Class.forName( "com.mysql.cj.jdbc.Driver" );
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			Properties properties = new Properties();
+			InputStream input = getClass().getResourceAsStream(configFileName);
+			if(input != null) {
+				properties.load(input);
+				logger.info("Config file loaded ");
+			} else {
+				System.out.println("Error");
+				logger.error("Config file {} doesn't exist", configFileName);
+			}
+			
 			// get the property value and print it out
-			String url = prop.getProperty("db.url");
-			String param = prop.getProperty("db.param");
-			String user = prop.getProperty("db.user");
-			String password = prop.getProperty("db.password");
+			String url = properties.getProperty("db.url");
+			String param = properties.getProperty("db.param");
+			String user = properties.getProperty("db.user");
+			String password = properties.getProperty("db.password");
 			this.setUrl(url + param);
 			this.setUser(user);
 			this.setPassword(password);
 		} catch (IOException ex) {
 			logger.error("Config file {} doesn't exist", configFileName);
 			ex.printStackTrace();
-		}
+		} 
 	}
 
 

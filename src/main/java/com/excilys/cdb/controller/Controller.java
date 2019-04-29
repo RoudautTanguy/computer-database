@@ -213,7 +213,7 @@ public class Controller {
 			
 		case LAST_PAGE:
 			try {
-				int lastSlice = ServiceComputer.getInstance().count();
+				int lastSlice = ServiceComputer.getInstance().lastPage();
 				page.setList(ServiceComputer.getInstance().list(lastSlice).getList());
 				page.setIndex(lastSlice);
 			} catch (PageNotFoundException e) {
