@@ -44,5 +44,15 @@ public class DAOCompanyTest {
 	public void listWithNegativeIndexTest() throws PageNotFoundException {
 		dao.list(-1,50);
 	}
+	
+	@Test(expected = PageNotFoundException.class)
+	public void listWithNegativeLimitTest() throws PageNotFoundException {
+		dao.list(0,-1);
+	}
+	
+	@Test(expected = PageNotFoundException.class)
+	public void listWithUnexistingIndexTest() throws PageNotFoundException {
+		dao.list(50,50);
+	}
 
 }
