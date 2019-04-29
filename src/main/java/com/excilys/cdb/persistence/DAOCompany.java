@@ -69,7 +69,7 @@ public class DAOCompany extends DAO<Company> {
 	
 	@Override
 	public List<Company> list(int index, int limit) throws PageNotFoundException{
-		if(index < 0) {
+		if(index < 0 || limit < 0) {
 			throw new PageNotFoundException("This page doesn't exist"); 
 		}
 		List<Company> companies = new ArrayList<Company>();

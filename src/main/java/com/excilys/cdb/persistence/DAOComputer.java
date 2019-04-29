@@ -13,8 +13,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
@@ -31,6 +31,7 @@ public class DAOComputer extends DAO<Computer> {
 	public static final String SELECT_BY_ID = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;";
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer;";
+	public static final String LAST_COMPUTER_ID = "SELECT MAX(id) AS id FROM computer;";
 	
 	private static final Logger logger = LoggerFactory.getLogger(DAOComputer.class);
 	
@@ -43,9 +44,14 @@ public class DAOComputer extends DAO<Computer> {
 		return instance;
 	}
 	@Override
-	public boolean insert(Computer computer) throws CompanyNotFoundException {
+	public boolean insert(Computer computer) throws NotAValidComputerException {
 		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
 			PreparedStatement statement = connection.prepareStatement(INSERT)){
+			if(computer.getName()==null) {
+				String message = "Name is mandatory to insert a new Computer";
+				logger.warn(message);
+				throw new NotAValidComputerException(message);
+			}
 		    statement.setString(1, computer.getName());
 		    if(computer.getIntroduced()==null) {
 		    	statement.setNull(2, java.sql.Types.TIMESTAMP);
@@ -67,7 +73,7 @@ public class DAOComputer extends DAO<Computer> {
 		    return true;
 		} catch (SQLIntegrityConstraintViolationException e) {
 			logger.error("Trying to insert a computer with an inexisting computer id");
-			throw new CompanyNotFoundException("The company "+computer.getCompanyId() + " doesn't exist !");
+			throw new NotAValidComputerException("The company "+computer.getCompanyId() + " doesn't exist !");
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
 			return false;
@@ -95,9 +101,14 @@ public class DAOComputer extends DAO<Computer> {
 	}
 
 	@Override
-	public boolean update(int id, Computer computer){
+	public boolean update(int id, Computer computer) throws NotAValidComputerException{
 		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
 			PreparedStatement statement = connection.prepareStatement(UPDATE)){
+			if(computer.getName()==null) {
+				String message = "Name is mandatory to insert a new Computer";
+				logger.warn(message);
+				throw new NotAValidComputerException(message);
+			}
 			statement.setString(1, computer.getName());
 			if(computer.getIntroduced()==null) {
 		    	statement.setNull(2, java.sql.Types.TIMESTAMP);
@@ -109,7 +120,6 @@ public class DAOComputer extends DAO<Computer> {
 		    } else {
 		    	statement.setTimestamp(3, computer.getDiscontinued());	    	
 		    }
-		    
 		    if(computer.getCompanyId()==null) {
 		    	statement.setNull(4, java.sql.Types.INTEGER);
 		    } else {
@@ -154,6 +164,9 @@ public class DAOComputer extends DAO<Computer> {
 	public List<Computer> list(int index, int limit) throws PageNotFoundException{
 		if(index < 0) {
 			logger.error("Trying to access a negative page");
+			throw new PageNotFoundException("This page doesn't exist"); 
+		} else if(limit < 0) {
+			logger.error("Trying to access a page with negative limit");
 			throw new PageNotFoundException("This page doesn't exist"); 
 		}
 		int offset = index * limit;
@@ -230,6 +243,21 @@ public class DAOComputer extends DAO<Computer> {
 			logger.trace("Can't connect. ",e);
 		}
 		return count;
+	}
+	
+	public int getLastComputerId() {
+		int lastId = 0;
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+				PreparedStatement statement = connection.prepareStatement(LAST_COMPUTER_ID)){
+			ResultSet resultat = statement.executeQuery();
+			
+			if(resultat.next()) {
+				lastId =  resultat.getInt("id");
+			}
+		} catch (SQLException e) {
+			logger.trace("Can't connect. ",e);
+		}
+		return lastId;
 	}
 	
 }

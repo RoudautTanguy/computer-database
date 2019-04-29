@@ -3,14 +3,18 @@ package com.excilys.cdb.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.excilys.cdb.exception.CompanyNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.persistence.DAOComputer;
+import com.excilys.cdb.validator.Validator;
 
 public class ServiceComputer {
 	
@@ -25,14 +29,22 @@ public class ServiceComputer {
 		return instance;
 	}
 	
+	private static Logger logger = LoggerFactory.getLogger( ServiceComputer.class );
+	
 	/**
 	 * Insert a new computer
 	 * @param computer
 	 * @return if the computer is inserted or not
-	 * @throws CompanyNotFoundException
+	 * @throws NotAValidComputerException 
 	 */
-	public boolean insert(DTOComputer computer) throws CompanyNotFoundException {
-		return DAOComputer.getInstance().insert(MapperComputer.getInstance().DTOToModel(computer));
+	public boolean insert(DTOComputer dtoComputer) throws NotAValidComputerException {
+		Computer computer = MapperComputer.getInstance().DTOToModel(dtoComputer);
+		Validator validator = new Validator();
+		if(!validator.validateComputer(computer)) {
+			logger.warn("Back validation reject this computer : {}", computer);
+			throw new NotAValidComputerException("This is not a valid Computer");
+		}
+		return DAOComputer.getInstance().insert(computer);
 	}
 	
 	/**
@@ -49,9 +61,16 @@ public class ServiceComputer {
 	 * @param id of the computer to update
 	 * @param computer the new computer
 	 * @return if the computer is updated or not
+	 * @throws NotAValidComputerException 
 	 */
-	public boolean update(int id, DTOComputer computer) {
-		return DAOComputer.getInstance().update(id, MapperComputer.getInstance().DTOToModel(computer));
+	public boolean update(int id, DTOComputer dtoComputer) throws NotAValidComputerException {
+		Computer computer = MapperComputer.getInstance().DTOToModel(dtoComputer);
+		Validator validator = new Validator();
+		if(!validator.validateComputer(computer)) {
+			logger.warn("Back validation reject this computer : {}", computer);
+			throw new NotAValidComputerException("This is not a valid Computer");
+		}
+		return DAOComputer.getInstance().update(id, computer);
 	}
 	
 	/**

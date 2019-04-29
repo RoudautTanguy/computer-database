@@ -156,6 +156,9 @@ public class CLIHelper {
 	 * @param computers
 	 */
 	public static void listComputersHelper(String[] headers, List<DTOComputer> computers) {
+		if(headers.length == 0 || computers.isEmpty()) {
+			return;
+		}
 		int maxIdLength = 			Math.max(headers[0].length(), computers.stream()
 									   			 						   .map(DTOComputer::getId)
 									   			 						   .mapToInt(String::length)

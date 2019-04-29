@@ -2,7 +2,6 @@ package com.excilys.cdb.controller;
 
 import java.util.Optional;
 
-import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -12,7 +11,6 @@ import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
 import com.excilys.cdb.ui.CLI;
-import com.excilys.cdb.validator.Validator;
 
 public class Controller {
 	
@@ -69,14 +67,8 @@ public class Controller {
 				Optional<DTOComputer> optionalComputer = cli.askComputerCreationInformation();
 				if(optionalComputer.isPresent()) {
 					computer = optionalComputer.get();
-					if(new Validator().validateDTOComputer(computer)) {
-						cli.printCreatedMessage(serviceComputer.insert(computer));
-					} else {
-						throw new NotAValidComputerException("The computer is not valid");
-					}
+					cli.printCreatedMessage(serviceComputer.insert(computer));
 				}
-			} catch (CompanyNotFoundException e) {
-				cli.printException(e);
 			} catch (NotAValidComputerException e) {
 				cli.printException(e);
 			}
@@ -92,6 +84,8 @@ public class Controller {
 					cli.printUpdatedMessage(serviceComputer.update(id, dtoComputer));
 				}
 			} catch(IllegalArgumentException e) {
+				cli.printException(e);
+			} catch (NotAValidComputerException e) {
 				cli.printException(e);
 			}
 			break;

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.exception.CompanyNotFoundException;
+import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 
 public abstract class DAO<T> {
@@ -50,8 +51,9 @@ public abstract class DAO<T> {
 	 * @param obj
 	 * @return boolean 
 	 * @throws CompanyNotFoundException 
+	 * @throws NotAValidComputerException 
 	 */
-	public abstract boolean insert(T obj) throws CompanyNotFoundException;
+	public abstract boolean insert(T obj) throws NotAValidComputerException;
 
 	/**
 	 * Delete object
@@ -64,8 +66,9 @@ public abstract class DAO<T> {
 	 * Update object
 	 * @param obj
 	 * @return boolean
+	 * @throws NotAValidComputerException 
 	 */
-	public abstract boolean update(int id, T obj);
+	public abstract boolean update(int id, T obj) throws NotAValidComputerException;
 
 	/**
 	 * List objects
