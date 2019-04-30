@@ -31,3 +31,12 @@ input[type='checkbox'] {
 .pagination > li >a.active {
   background-color: #eee;
 }
+
+.number {
+  color: #449d44;
+}
+
+.disabled {
+    pointer-events:none; 
+    opacity:0.6;
+}

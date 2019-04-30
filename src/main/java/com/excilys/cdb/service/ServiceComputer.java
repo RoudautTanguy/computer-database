@@ -73,19 +73,13 @@ public class ServiceComputer {
 		return DAOComputer.getInstance().update(id, computer);
 	}
 	
-	/**
-	 * List all the computers with pagination
-	 * @return the current page of computer
-	 * @throws PageNotFoundException 
-	 * @return page
-	 */
-	public Page<DTOComputer> list() throws PageNotFoundException{
+	public Page<DTOComputer> list(int index, int limit) throws PageNotFoundException{
 		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
-		List<Computer> computers = DAOComputer.getInstance().list(0,COMPUTERS_NUMBER_PER_PAGE);
+		List<Computer> computers = DAOComputer.getInstance().list(index, limit);
 		for(Computer computer:computers) {
 			dtoComputers.add(MapperComputer.getInstance().modelToDTO(computer));
 		}
-		return new Page<DTOComputer>(dtoComputers, COMPUTERS_NUMBER_PER_PAGE);
+		return new Page<DTOComputer>(dtoComputers, index, limit);
 	}
 	
 	/**
@@ -95,13 +89,22 @@ public class ServiceComputer {
 	 * @return page
 	 */
 	public Page<DTOComputer> list(int index) throws PageNotFoundException{
-		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
-		List<Computer> computers = DAOComputer.getInstance().list(index, COMPUTERS_NUMBER_PER_PAGE);
-		for(Computer computer:computers) {
-			dtoComputers.add(MapperComputer.getInstance().modelToDTO(computer));
-		}
-		return new Page<DTOComputer>(dtoComputers, index, COMPUTERS_NUMBER_PER_PAGE);
+		return list(index, COMPUTERS_NUMBER_PER_PAGE);
 	}
+	
+	/**
+	 * List all the computers with pagination
+	 * @return the current page of computer
+	 * @throws PageNotFoundException 
+	 * @return page
+	 */
+	public Page<DTOComputer> list() throws PageNotFoundException{
+		return list(0);
+	}
+	
+	
+	
+	
 	
 	/**
 	 * Find a computer by is id
@@ -118,6 +121,11 @@ public class ServiceComputer {
 	}
 	
 	public int lastPage() {
-		return DAOComputer.getInstance().count()/COMPUTERS_NUMBER_PER_PAGE;
+		return lastPage(COMPUTERS_NUMBER_PER_PAGE);
+	}
+	
+	public int lastPage(int limit) {
+		int count = DAOComputer.getInstance().count();
+		return (count%limit==0)?count/limit:count/limit+1;
 	}
 }

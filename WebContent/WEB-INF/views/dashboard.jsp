@@ -20,7 +20,7 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                <c:out value="${ variable }">104</c:out> Computers found
+                <c:out value="<b class=\"number\" >${ count }</b> Computers found" escapeXml="false">Error</c:out> 
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
@@ -76,150 +76,20 @@
                 </thead>
                 <!-- Browse attribute computers -->
                 <tbody id="results">
+            	<c:forEach items="${ computers }" var="computer">
                     <tr>
                         <td class="editMode">
                             <input type="checkbox" name="cb" class="cb" value="0">
                         </td>
                         <td>
-                            <a href="editComputer" onclick="">MacBook Pro</a>
+                            <a href="editComputer" onclick="">${computer.name}</a>
                         </td>
-                        <td>2006-01-10</td>
-                        <td></td>
-                        <td>Apple Inc.</td>
+                        <td>${computer.introduced}</td>
+                        <td>${computer.discontinued}</td>
+                        <td>${computer.company}</td>
 
                     </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">Connection Machine</a>
-                        </td>
-                        <td>1987-01-01</td>
-                        <td></td>
-                        <td>Thinking Machines</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">PowerBook</a>
-                        </td>
-                        <td>1991-01-01</td>
-                        <td>2006-01-01</td>
-                        <td>Apple Inc.</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">Commodore 64</a>
-                        </td>
-                        <td>1982-08-01</td>
-                        <td>1994-01-01</td>
-                        <td>Commodore International</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">Altair 8800</a>
-                        </td>
-                        <td>1974-12-19</td>
-                        <td></td>
-                        <td>Micro Instrumentation and Telemetry Systems</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">Canon Cat</a>
-                        </td>
-                        <td>1987-01-01</td>
-                        <td></td>
-                        <td>Canon</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">Nokia 770</a>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td>Nokia</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">NeXTcube</a>
-                        </td>
-                        <td>1988-01-01</td>
-                        <td>1993-01-01</td>
-                        <td>NeXT</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">IBM 650</a>
-                        </td>
-                        <td>1953-01-01</td>
-                        <td>1962-01-01</td>
-                        <td>IBM</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">PlayStation 2</a>
-                        </td>
-                        <td>2000-03-24</td>
-                        <td></td>
-                        <td>Sony</td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">Archos 101</a>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="editComputer" onclick="">Nintendo 3DS</a>
-                        </td>
-                        <td>2010-03-23</td>
-                        <td></td>
-                        <td>Nintendo</td>
-
-                    </tr>
+                </c:forEach>
                     
                 </tbody>
             </table>
@@ -229,33 +99,72 @@
     <footer class="navbar-fixed-bottom">
         <div class="container text-center">
             <ul class="pagination">
-                <li>
-                    <a href="#" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
+              <li id="First">
+                  <a href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;</span>
                   </a>
               </li>
-              <li><a class="active" href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li>
-                <a href="#" aria-label="Next">
+              <li id="Previous">
+                  <a href="?page=${currentPage - 1 }" aria-label="Previous">
+                    <span aria-hidden="true">&#8249;</span>
+                  </a>
+              </li>
+              <li><a href="?page=${pagination-2}">${pagination-2}</a></li>
+              <li><a href="?page=${pagination-1}">${pagination-1}</a></li>
+              <li><a href="?page=${pagination}">${pagination}</a></li>
+              <li><a href="?page=${pagination+1}">${pagination+1}</a></li>
+              <li><a href="?page=${pagination+2}">${pagination+2}</a></li>
+              <li id ="Next">
+                  <a href="?page=${currentPage + 1 }" aria-label="Next">
+                    <span aria-hidden="true">&#8250;</span>
+                  </a>
+              </li>
+              <li id="Last">
+                <a href="?page=${ lastPage }" aria-label="Last">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
-            </li>
-        </ul>
+              </li>
+        	</ul>
 
-        <div class="btn-group btn-group-sm pull-right" role="group" >
-            <button type="button" class="btn btn-default">10</button>
-            <button type="button" class="btn btn-default">50</button>
-            <button type="button" class="btn btn-default">100</button>
+			<ul id="size" class="pagination pull-right">
+				<li><a href="?size=10">10</a></li>
+				<li><a href="?size=50">50</a></li>
+				<li><a href="?size=100">100</a></li>
+			</ul>
         </div>
 
     </footer>
-<script src="../js/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/dashboard.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		
+		var activePage = '${currentPage}';
+		$('.pagination li a:not(:has(> span))').each(function(){
+			if($(this).text() == activePage){
+				$(this).addClass("active");
+			}
+		});
+		
+		if(activePage == 1){
+			$("#First,#Previous").each(function(){
+				$(this).addClass("disabled");
+			});
+		} else if(activePage == "${lastPage}"){
+			$("#Last,#Next").each(function(){
+				$(this).addClass("disabled");
+			});
+		}
+		
+		$("#size li a").each(function(){
+			if($(this).text() == "${size}"){
+				$(this).addClass("active");
+			}
+		});
+	
+	});
+	</script>
 
 </body>
 </html>
