@@ -14,19 +14,19 @@ import com.excilys.cdb.ui.CLI;
 
 public class Controller {
 	
-	private ServiceCompany serviceCompany = new ServiceCompany();
-	private ServiceComputer serviceComputer = new ServiceComputer();
-	private static Controller controller;
+	private ServiceCompany serviceCompany = ServiceCompany.getInstance();
+	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
+	private static Controller instance;
 	
 	/**
 	 * Get the instance of Controller
 	 * @return the instance of Controller
 	 */
 	public static Controller getInstance() {
-		if(controller == null) {
-			controller =  new Controller();
+		if(instance == null) {
+			instance =  new Controller();
 		}
-		return controller;
+		return instance;
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class Controller {
 		switch(choice) { 
 		case PREVIOUS_PAGE:
 			try {
-				page.setList(ServiceCompany.getInstance().list(page.decrementIndex()).getList());
+				page.setList(serviceCompany.list(page.decrementIndex()).getList());
 			} catch (PageNotFoundException e) {
 				isOk = false;
 				page.incrementIndex();
@@ -121,7 +121,7 @@ public class Controller {
 			
 		case NEXT_PAGE:
 			try {
-				page.setList(ServiceCompany.getInstance().list(page.incrementIndex()).getList());
+				page.setList(serviceCompany.list(page.incrementIndex()).getList());
 			} catch (PageNotFoundException e) {
 				isOk = false;
 				page.decrementIndex();
@@ -131,7 +131,7 @@ public class Controller {
 		case SET_PAGE:
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
-				page.setList(ServiceCompany.getInstance().list(pageNumber).getList());
+				page.setList(serviceCompany.list(pageNumber).getList());
 				page.setIndex(pageNumber);
 			} catch (PageNotFoundException e) {
 				isOk = false;
@@ -141,7 +141,7 @@ public class Controller {
 			
 		case FIRST_PAGE:
 			try {
-				page.setList(ServiceCompany.getInstance().list(0).getList());
+				page.setList(serviceCompany.list(0).getList());
 				page.setIndex(0);
 			} catch (PageNotFoundException e) {
 				isOk = false;
@@ -151,8 +151,8 @@ public class Controller {
 			
 		case LAST_PAGE:
 			try {
-				int lastSlice = ServiceCompany.getInstance().getLastPage();
-				page.setList(ServiceCompany.getInstance().list(lastSlice).getList());
+				int lastSlice = serviceCompany.getLastPage();
+				page.setList(serviceCompany.list(lastSlice).getList());
 				page.setIndex(lastSlice);
 			} catch (PageNotFoundException e) {
 				isOk = false;
@@ -172,7 +172,7 @@ public class Controller {
 		switch(choice) { 
 		case PREVIOUS_PAGE:
 			try {
-				page.setList(ServiceComputer.getInstance().list(page.decrementIndex()).getList());
+				page.setList(serviceComputer.list(page.decrementIndex()).getList());
 			} catch (PageNotFoundException e) {
 				isOk = false;
 				page.incrementIndex();
@@ -182,7 +182,7 @@ public class Controller {
 			
 		case NEXT_PAGE:
 			try {
-				page.setList(ServiceComputer.getInstance().list(page.incrementIndex()).getList());
+				page.setList(serviceComputer.list(page.incrementIndex()).getList());
 			} catch (PageNotFoundException e) {
 				isOk = false;
 				page.decrementIndex();
@@ -193,7 +193,7 @@ public class Controller {
 		case SET_PAGE:
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
-				page.setList(ServiceComputer.getInstance().list(pageNumber).getList());
+				page.setList(serviceComputer.list(pageNumber).getList());
 				page.setIndex(pageNumber);
 			} catch (PageNotFoundException e) {
 				isOk = false;
@@ -203,7 +203,7 @@ public class Controller {
 			
 		case FIRST_PAGE:
 			try {
-				page.setList(ServiceComputer.getInstance().list(0).getList());
+				page.setList(serviceComputer.list(0).getList());
 				page.setIndex(0);
 			} catch (PageNotFoundException e) {
 				isOk = false;
@@ -213,8 +213,8 @@ public class Controller {
 			
 		case LAST_PAGE:
 			try {
-				int lastSlice = ServiceComputer.getInstance().lastPage();
-				page.setList(ServiceComputer.getInstance().list(lastSlice).getList());
+				int lastSlice = serviceComputer.lastPage();
+				page.setList(serviceComputer.list(lastSlice).getList());
 				page.setIndex(lastSlice);
 			} catch (PageNotFoundException e) {
 				isOk = false;

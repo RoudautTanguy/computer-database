@@ -20,6 +20,8 @@ public class ServiceComputer {
 	
 	private static final int COMPUTERS_NUMBER_PER_PAGE = 50;
 	private Validator validator = Validator.getInstance();
+	private MapperComputer mapperComputer = MapperComputer.getInstance();
+	private DAOComputer daoComputer = DAOComputer.getInstance();
 	
 	private static ServiceComputer instance;
 	
@@ -39,10 +41,10 @@ public class ServiceComputer {
 	 * @throws NotAValidComputerException 
 	 */
 	public boolean insert(DTOComputer dtoComputer) throws NotAValidComputerException {
-		Computer computer = MapperComputer.getInstance().DTOToModel(dtoComputer);
+		Computer computer = mapperComputer.DTOToModel(dtoComputer);
 		try{
 			validator.validateComputer(computer);
-			return DAOComputer.getInstance().insert(computer);
+			return daoComputer.insert(computer);
 		} catch(NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
@@ -55,7 +57,7 @@ public class ServiceComputer {
 	 * @return if the computer is deleted or not
 	 */
 	public boolean delete(int id){
-		return DAOComputer.getInstance().delete(id);
+		return daoComputer.delete(id);
 	}
 	
 	/**
@@ -66,10 +68,10 @@ public class ServiceComputer {
 	 * @throws NotAValidComputerException 
 	 */
 	public boolean update(int id, DTOComputer dtoComputer) throws NotAValidComputerException {
-		Computer computer = MapperComputer.getInstance().DTOToModel(dtoComputer);
+		Computer computer = mapperComputer.DTOToModel(dtoComputer);
 		try {
 			validator.validateComputer(computer);
-			return DAOComputer.getInstance().update(id, computer);
+			return daoComputer.update(id, computer);
 		} catch (NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
@@ -78,9 +80,9 @@ public class ServiceComputer {
 	
 	public Page<DTOComputer> list(int index, int limit) throws PageNotFoundException{
 		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
-		List<Computer> computers = DAOComputer.getInstance().list(index, limit);
+		List<Computer> computers = daoComputer.list(index, limit);
 		for(Computer computer:computers) {
-			dtoComputers.add(MapperComputer.getInstance().modelToDTO(computer));
+			dtoComputers.add(mapperComputer.modelToDTO(computer));
 		}
 		return new Page<DTOComputer>(dtoComputers, index, limit);
 	}
@@ -112,7 +114,7 @@ public class ServiceComputer {
 	 * @return page
 	 */
 	public Page<DTOComputer> listWithNames(int index, int limit) throws PageNotFoundException{
-		return new Page<DTOComputer>(DAOComputer.getInstance().listWithNames(index, limit), index, limit);
+		return new Page<DTOComputer>(daoComputer.listWithNames(index, limit), index, limit);
 	}
 	
 	/**
@@ -122,11 +124,11 @@ public class ServiceComputer {
 	 * @throws ComputerNotFoundException if not found
 	 */
 	public DTOComputer find(int id) throws ComputerNotFoundException {
-		return DAOComputer.getInstance().find(id);
+		return daoComputer.find(id);
 	}
 	
 	public int count() {
-		return DAOComputer.getInstance().count();
+		return daoComputer.count();
 	}
 	
 	public int lastPage() {
@@ -134,7 +136,7 @@ public class ServiceComputer {
 	}
 	
 	public int lastPage(int limit) {
-		int count = DAOComputer.getInstance().count();
+		int count = count();
 		return (count%limit==0)?count/limit:count/limit+1;
 	}
 }

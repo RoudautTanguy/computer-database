@@ -35,6 +35,8 @@ public class DAOComputer extends DAO<Computer> {
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer;";
 	public static final String LAST_COMPUTER_ID = "SELECT MAX(id) AS id FROM computer;";
 	
+	private MapperComputer mapperComputer = MapperComputer.getInstance();
+	
 	private static final Logger logger = LoggerFactory.getLogger(DAOComputer.class);
 	
 	private static DAOComputer instance;
@@ -224,7 +226,7 @@ public class DAOComputer extends DAO<Computer> {
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 			    int companyId = resultat.getInt("company_id");
 			    String companyName = resultat.getString("company_name");
-			    DTOComputer computer = MapperComputer.getInstance().modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
+			    DTOComputer computer = mapperComputer.modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
 			    if(companyName != null) {
 			    	logger.info("Replacing company id with company name");
 			    	computer.setCompany(companyName);
@@ -258,7 +260,7 @@ public class DAOComputer extends DAO<Computer> {
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 			    int companyId = resultat.getInt("company_id");
 			    String companyName = resultat.getString("company_name");
-			    DTOComputer computer = MapperComputer.getInstance().modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
+			    DTOComputer computer = mapperComputer.modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
 			    if(companyName != null) {
 			    	logger.info("Replacing company id with company name");
 			    	computer.setCompany(companyName);

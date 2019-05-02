@@ -21,8 +21,11 @@ public class ServletAddComputer extends HttpServlet{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private ServiceCompany serviceCompany = ServiceCompany.getInstance();
+	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<DTOCompany> companies = ServiceCompany.getInstance().list();
+		List<DTOCompany> companies = serviceCompany.list();
 		request.setAttribute("companies", companies);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/addComputer.jsp" ).forward( request, response );
 	}
@@ -35,7 +38,7 @@ public class ServletAddComputer extends HttpServlet{
         String companyId = request.getParameter("companyId");
         DTOComputer dtoComputer = new DTOComputer(username, introduced, discontinued, companyId);
         try {
-			ServiceComputer.getInstance().insert(dtoComputer);
+        	serviceComputer.insert(dtoComputer);
 			response.sendRedirect(request.getContextPath() + "/dashboard");
 		} catch (NotAValidComputerException e) {
 			e.printStackTrace();

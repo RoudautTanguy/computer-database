@@ -14,7 +14,8 @@ public class ServiceCompany {
 
 	private static final int COMPANIES_NUMBER_PER_PAGE = 20;
 	
-	DAOCompany daoCompany = DAOCompany.getInstance();
+	private DAOCompany daoCompany = DAOCompany.getInstance();
+	private MapperCompany mapperCompany = MapperCompany.getInstance();
 	
 	private static ServiceCompany instance;
 	
@@ -35,7 +36,7 @@ public class ServiceCompany {
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
 		List<Company> companies = daoCompany.list();
 		for(Company company:companies) {
-			dtoCompanies.add(MapperCompany.getInstance().modelToDTO(company));
+			dtoCompanies.add(mapperCompany.modelToDTO(company));
 		}
 		return dtoCompanies;
 	}
@@ -60,7 +61,7 @@ public class ServiceCompany {
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
 		List<Company> companies = daoCompany.list(index, limit);
 		for(Company company:companies) {
-			dtoCompanies.add(MapperCompany.getInstance().modelToDTO(company));
+			dtoCompanies.add(mapperCompany.modelToDTO(company));
 		}
 		
 		return new Page<DTOCompany>(dtoCompanies, index, limit);
