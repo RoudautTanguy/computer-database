@@ -20,7 +20,7 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                <c:out value="<b class=\"number\" >${ count }</b> Computers found" escapeXml="false">Error</c:out> 
+                <c:out value="<b class=\"number\">${ count }</b> Computers found" escapeXml="false">Error</c:out> 
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">

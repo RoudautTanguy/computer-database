@@ -3,6 +3,9 @@ package com.excilys.cdb.mapper;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,27 +59,40 @@ public class MapperComputer {
 		int id = Integer.parseInt(computer.getId());
 		String name = computer.getName();
 		Timestamp introduced;
+		Optional<Timestamp> optionalIntroduced = tryParse(computer.getIntroduced());
 		Timestamp discontinued;
+		Optional<Timestamp> optionalDiscontinued = tryParse(computer.getDiscontinued());
 		Integer companyId;
-		try {
-			introduced = new Timestamp(dateFormat.parse(computer.getIntroduced()).getTime());
-		} catch (ParseException e) {
+		
+		if(!optionalIntroduced.isEmpty()) {
+			introduced = optionalIntroduced.get();
+		} else {
 			logger.warn("Can't parse introduced date {}", computer.getIntroduced());
 			introduced = null;
 		}
-		try {
-			discontinued = new Timestamp(dateFormat.parse(computer.getDiscontinued()).getTime());
-		} catch(ParseException e) {
-			logger.warn("Can't parse discontinued date {}", computer.getDiscontinued());
+		if(!optionalDiscontinued.isEmpty()) {
+			discontinued = optionalDiscontinued.get();
+		} else {
+			logger.warn("Can't parse introduced date {}", computer.getDiscontinued());
 			discontinued = null;
 		}
+		
 		try {
 			companyId = Integer.parseInt(computer.getCompany());
 		} catch(NumberFormatException e) {
 			logger.warn("Can't parse company id {}", computer.getCompany());
 			companyId = null;
 		}
-		
 		return new Computer(id, name, introduced, discontinued, companyId);
+	}
+	
+	Optional<Timestamp> tryParse(String dateString){
+		List<String> formatStrings = Arrays.asList("yyyy-MM-dd","dd-MM-yyyy");
+	    for (String formatString : formatStrings) {
+	        try {
+	            return Optional.ofNullable(new Timestamp(new SimpleDateFormat(formatString).parse(dateString).getTime()));
+	        } catch (ParseException e) {}
+	    }
+	    return Optional.empty();
 	}
 }

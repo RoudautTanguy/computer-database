@@ -45,7 +45,7 @@ public class Controller {
 			
 		case LIST_COMPANIES:
 			try {
-				cli.showCompanies(serviceCompany.list());
+				cli.showCompanies(serviceCompany.list(0));
 			} catch (PageNotFoundException e1) {
 				e1.printStackTrace();
 			}

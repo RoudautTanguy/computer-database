@@ -31,14 +31,13 @@ public class ServiceCompany {
 	 * @throws PageNotFoundException 
 	 * @return page
 	 */
-	public Page<DTOCompany> list() throws PageNotFoundException{
+	public List<DTOCompany> list(){
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
-		List<Company> companies = daoCompany.list(0, COMPANIES_NUMBER_PER_PAGE);
+		List<Company> companies = daoCompany.list();
 		for(Company company:companies) {
 			dtoCompanies.add(MapperCompany.getInstance().modelToDTO(company));
 		}
-		
-		return new Page<DTOCompany>(dtoCompanies, COMPANIES_NUMBER_PER_PAGE);
+		return dtoCompanies;
 	}
 	
 	/**
@@ -48,13 +47,23 @@ public class ServiceCompany {
 	 * @throws PageNotFoundException
 	 */
 	public Page<DTOCompany> list(int index) throws PageNotFoundException{
+		return list(index, COMPANIES_NUMBER_PER_PAGE);
+	}
+	
+	/**
+	 * List companies with pagination and index page and limit
+	 * @param index
+	 * @return page
+	 * @throws PageNotFoundException
+	 */
+	public Page<DTOCompany> list(int index, int limit) throws PageNotFoundException{
 		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
-		List<Company> companies = daoCompany.list(index, COMPANIES_NUMBER_PER_PAGE);
+		List<Company> companies = daoCompany.list(index, limit);
 		for(Company company:companies) {
 			dtoCompanies.add(MapperCompany.getInstance().modelToDTO(company));
 		}
 		
-		return new Page<DTOCompany>(dtoCompanies, index, COMPANIES_NUMBER_PER_PAGE);
+		return new Page<DTOCompany>(dtoCompanies, index, limit);
 	}
 	
 	/**

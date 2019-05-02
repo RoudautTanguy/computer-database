@@ -15,7 +15,7 @@ public class Validator {
 	
 	
 	public boolean validateComputer(Computer computer) {
-		if(computer.getName() == null) {
+		if(computer.getName() == null || computer.getName() == "") {
 			logger.error("Computer name is null");
 			return false;
 		}

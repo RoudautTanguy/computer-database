@@ -64,7 +64,7 @@ public class DAOComputer extends DAO<Computer> {
 		    	statement.setTimestamp(3, computer.getDiscontinued());	    	
 		    }
 		    
-		    if(computer.getCompanyId()==null) {
+		    if(computer.getCompanyId()==null || computer.getCompanyId()==0) {
 		    	statement.setNull(4, java.sql.Types.INTEGER);
 		    } else {
 			    statement.setInt(4, computer.getCompanyId());		    	
