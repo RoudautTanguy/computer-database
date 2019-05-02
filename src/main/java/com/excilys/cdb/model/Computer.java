@@ -11,11 +11,15 @@ public class Computer {
 	private Integer companyId;
 	
 	public Computer(int pId, String pName, Timestamp pIntroduced, Timestamp pDiscontinued, Integer pCompanyId) {
-		setId(pId);
-		setName(pName);
-		setIntroduced(pIntroduced);
-		setDiscontinued(pDiscontinued);
-		setCompanyId(pCompanyId);
+		this.companyId = pId;
+		this.name = pName;
+		this.introduced = pIntroduced;
+		this.discontinued = pDiscontinued;
+		this.companyId = pCompanyId;
+	}
+	
+	public Computer(String pName, Timestamp pIntroduced, Timestamp pDiscontinued, Integer pCompanyId) {
+		this(0, pName, pIntroduced, pDiscontinued, pCompanyId);
 	}
 
 	public int getId() {

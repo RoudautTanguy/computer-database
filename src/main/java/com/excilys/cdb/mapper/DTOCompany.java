@@ -6,8 +6,8 @@ public class DTOCompany {
 	private String name;
 	
 	public DTOCompany(String pId, String pName){
-		setId(pId);
-		setName(pName);
+		this.id = pId;
+		this.name = pName;
 	}
 
 	public String getId() {

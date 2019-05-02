@@ -6,8 +6,8 @@ public class Company {
 	private String name;
 	
 	public Company(int pId, String pName) {
-		this.setId(pId);
-		this.setName(pName);
+		this.id = pId;
+		this.name = pName;
 	}
 
 	public int getId() {

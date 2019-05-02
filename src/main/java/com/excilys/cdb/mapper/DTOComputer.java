@@ -8,28 +8,20 @@ public class DTOComputer {
 	private String discontinued;
 	private String company;
 	
-	public DTOComputer(String pName){
-		setId(Integer.toString(0));
-		setName(pName);
-		setIntroduced("NULL");
-		setDiscontinued("NULL");
-		setCompany("NULL");
+	public DTOComputer(String pId, String pName, String pIntroduced, String pDiscontinued, String pCompany){
+		this.id = pId;
+		this.name = pName;
+		this.introduced = pIntroduced;
+		this.discontinued = pDiscontinued;
+		this.company = pCompany;
 	}
 	
 	public DTOComputer(String pName, String pIntroduced, String pDiscontinued, String pCompany){
-		setId(Integer.toString(0));
-		setName(pName);
-		setIntroduced(pIntroduced);
-		setDiscontinued(pDiscontinued);
-		setCompany(pCompany);
+		this(Integer.toString(0), pName, pIntroduced, pDiscontinued, pCompany);
 	}
 	
-	public DTOComputer(String pId, String pName, String pIntroduced, String pDiscontinued, String pCompany){
-		setId(pId);
-		setName(pName);
-		setIntroduced(pIntroduced);
-		setDiscontinued(pDiscontinued);
-		setCompany(pCompany);
+	public DTOComputer(String pName){
+		this(Integer.toString(0), pName, "NULL", "NULL", "NULL");
 	}
 
 	public String getId() {
