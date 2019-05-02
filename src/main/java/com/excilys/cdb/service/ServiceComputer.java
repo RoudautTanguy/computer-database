@@ -19,7 +19,8 @@ import com.excilys.cdb.validator.Validator;
 public class ServiceComputer {
 	
 	private static final int COMPUTERS_NUMBER_PER_PAGE = 50;
-
+	private Validator validator = Validator.getInstance();
+	
 	private static ServiceComputer instance;
 	
 	public static ServiceComputer getInstance() {
@@ -39,12 +40,13 @@ public class ServiceComputer {
 	 */
 	public boolean insert(DTOComputer dtoComputer) throws NotAValidComputerException {
 		Computer computer = MapperComputer.getInstance().DTOToModel(dtoComputer);
-		Validator validator = new Validator();
-		if(!validator.validateComputer(computer)) {
+		try{
+			validator.validateComputer(computer);
+			return DAOComputer.getInstance().insert(computer);
+		} catch(NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
 		}
-		return DAOComputer.getInstance().insert(computer);
 	}
 	
 	/**
@@ -65,12 +67,13 @@ public class ServiceComputer {
 	 */
 	public boolean update(int id, DTOComputer dtoComputer) throws NotAValidComputerException {
 		Computer computer = MapperComputer.getInstance().DTOToModel(dtoComputer);
-		Validator validator = new Validator();
-		if(!validator.validateComputer(computer)) {
+		try {
+			validator.validateComputer(computer);
+			return DAOComputer.getInstance().update(id, computer);
+		} catch (NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
 		}
-		return DAOComputer.getInstance().update(id, computer);
 	}
 	
 	public Page<DTOComputer> list(int index, int limit) throws PageNotFoundException{

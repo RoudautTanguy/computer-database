@@ -5,6 +5,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.model.Computer;
 
 
@@ -12,22 +13,30 @@ public class Validator {
 	
 	private static Logger logger = LoggerFactory.getLogger( Validator.class );
 
+	private static Validator instance;
 	
-	
-	public boolean validateComputer(Computer computer) {
-		if(computer.getName() == null || computer.getName() == "") {
-			logger.error("Computer name is null");
-			return false;
+	public static Validator getInstance() {
+		if(instance == null) {
+			instance = new Validator();
 		}
-		if(computer.getIntroduced() == null) {
-			return computer.getDiscontinued() == null;
-		} else if(computer.getDiscontinued() == null) { 
-			return true;
+		return instance;
+	}
+	
+	public void validateComputer(Computer computer) throws NotAValidComputerException{
+		if(computer.getName() == null || computer.getName() == "") {
+			String message = "Computer name is null";
+			logger.error(message);
+			throw new NotAValidComputerException(message);
+		}
+		if(computer.getIntroduced() == null && computer.getDiscontinued() != null) {
+			throw new NotAValidComputerException("Computer is not introduced but have a Discontinued date");
 		} else {
 			Date introduced;
 			introduced = computer.getIntroduced();
 			Date discontinued = computer.getDiscontinued();
-			return discontinued.after(introduced) && introduced.before(discontinued);
+			if(discontinued.after(introduced) && introduced.before(discontinued)) {
+				throw new NotAValidComputerException("Discontinued date is before Introduced date");
+			};
 		}
 	}
 }
