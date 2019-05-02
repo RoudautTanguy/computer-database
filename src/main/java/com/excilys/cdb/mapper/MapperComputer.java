@@ -87,7 +87,7 @@ public class MapperComputer {
 	}
 	
 	Optional<Timestamp> tryParse(String dateString){
-		List<String> formatStrings = Arrays.asList("yyyy-MM-dd","dd-MM-yyyy");
+		List<String> formatStrings = Arrays.asList("dd/MM/yyyy","dd-MM-yyyy","yyyy-MM-dd");
 	    for (String formatString : formatStrings) {
 	        try {
 	            return Optional.ofNullable(new Timestamp(new SimpleDateFormat(formatString).parse(dateString).getTime()));

@@ -82,7 +82,7 @@
                             <input type="checkbox" name="cb" class="cb" value="0">
                         </td>
                         <td>
-                            <a href="editComputer" onclick="">${computer.name}</a>
+                            <a href="editComputer" onclick=""><c:out value="${computer.name}" escapeXml="true"></c:out></a>
                         </td>
                         <td>${computer.introduced}</td>
                         <td>${computer.discontinued}</td>
