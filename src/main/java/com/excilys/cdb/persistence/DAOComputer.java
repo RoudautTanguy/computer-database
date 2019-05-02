@@ -28,6 +28,8 @@ public class DAOComputer extends DAO<Computer> {
 	public static final String UPDATE = "UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
 	public static final String SELECT_ALL = "SELECT * FROM computer;";
 	public static final String SELECT_ALL_PAGINATED = "SELECT * FROM computer LIMIT ?,?;";
+	public static final String SELECT_ALL_WITH_NAMES_PAGINATED = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
+			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id LIMIT ?,?;";
 	public static final String SELECT_BY_ID = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;";
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer;";
@@ -188,6 +190,49 @@ public class DAOComputer extends DAO<Computer> {
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 			    int idCompany = resultat.getInt("company_id");
 			    computers.add(new Computer(idComputer,nameComputer,introduced ,discontinued ,idCompany));
+			}
+		} catch (SQLException e) {
+			logger.trace("Can't connect. ",e);
+		}
+		return computers;
+	}
+	
+	public List<DTOComputer> listWithNames(int index, int limit) throws PageNotFoundException{
+		if(index < 0) {
+			logger.error("Trying to access a negative page");
+			throw new PageNotFoundException("This page doesn't exist"); 
+		} else if(limit < 0) {
+			logger.error("Trying to access a page with negative limit");
+			throw new PageNotFoundException("This page doesn't exist"); 
+		}
+		int offset = index * limit;
+		List<DTOComputer> computers = new ArrayList<DTOComputer>();
+		
+		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+			PreparedStatement statement = connection.prepareStatement(SELECT_ALL_WITH_NAMES_PAGINATED)){
+			statement.setInt(1, offset);
+			statement.setInt(2, limit);
+			ResultSet resultat = statement.executeQuery( );
+			if (!resultat.isBeforeFirst() ) {   
+				logger.error("Query have no result, trying to access a page that doesn't exist");
+			    throw new PageNotFoundException("This page doesn't exist"); 
+			} 
+			while ( resultat.next() ) {
+			    int idComputer = resultat.getInt( "id" );
+			    String nameComputer = resultat.getString( "name" );
+			    Timestamp introduced = resultat.getTimestamp( "introduced" );
+			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
+			    int companyId = resultat.getInt("company_id");
+			    String companyName = resultat.getString("company_name");
+			    DTOComputer computer = MapperComputer.getInstance().modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
+			    if(companyName != null) {
+			    	logger.info("Replacing company id with company name");
+			    	computer.setCompany(companyName);
+			    } else {
+			    	logger.info("Replacing company id with null company name");
+			    	computer.setCompany("NULL");
+			    }
+			    computers.add(computer);
 			}
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);

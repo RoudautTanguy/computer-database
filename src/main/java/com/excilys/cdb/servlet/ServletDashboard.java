@@ -60,7 +60,7 @@ public class ServletDashboard extends HttpServlet{
 		request.setAttribute("pagination", pagination);
 		
 		try {
-			Page<DTOComputer> computers = ServiceComputer.getInstance().list(page-1,size);
+			Page<DTOComputer> computers = ServiceComputer.getInstance().listWithNames(page-1,size);
 			request.setAttribute("computers", computers.getList());
 			int count = ServiceComputer.getInstance().count();
 			request.setAttribute("count", count);

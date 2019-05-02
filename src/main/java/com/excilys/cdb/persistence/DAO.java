@@ -33,7 +33,6 @@ public abstract class DAO<T> {
 				properties.load(input);
 				logger.info("Config file loaded ");
 			} else {
-				System.out.println("Error");
 				logger.error("Config file {} doesn't exist", configFileName);
 			}
 			

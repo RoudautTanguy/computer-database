@@ -102,9 +102,15 @@ public class ServiceComputer {
 		return list(0);
 	}
 	
-	
-	
-	
+	/**
+	 * List all the computers with pagination and names instead of id
+	 * @return the current page of computer
+	 * @throws PageNotFoundException 
+	 * @return page
+	 */
+	public Page<DTOComputer> listWithNames(int index, int limit) throws PageNotFoundException{
+		return new Page<DTOComputer>(DAOComputer.getInstance().listWithNames(index, limit), index, limit);
+	}
 	
 	/**
 	 * Find a computer by is id
