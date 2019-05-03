@@ -14,6 +14,7 @@ import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ServiceComputer;
+import com.excilys.cdb.service.ServicePagination;
 
 public class ServletDashboard extends HttpServlet{
 
@@ -23,57 +24,52 @@ public class ServletDashboard extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	public int size = 10;
 	public int currentPage = 1;
-	
+
 	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
-	
+	private ServicePagination servicePagination = ServicePagination.getInstance();
+
 	private static final Logger logger = LoggerFactory.getLogger(ServletDashboard.class);
-	
-	
+
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		int page = 1;
-		String pageParameter = request.getParameter("page");
+		setPageAttribute(request);
+		setSizeAttribute(request);
+		setLastPageAndPaginationAttribute(request);
+		setComputerCount(request);
 		try {
-			page = Integer.parseInt(pageParameter);
-		} catch (NumberFormatException e) {
-			logger.info("No parameter 'page'");
-		} finally {
-			currentPage = page;
-			request.setAttribute("currentPage", currentPage);
-		}
-		
-		String sizeParameter = request.getParameter("size");
-		try {
-			int oldSize = size;
-			size = Integer.parseInt(sizeParameter);
-			if(size != 10 && size != 50 && size !=100) {
-				size = oldSize;
-			} 
-		} catch (NumberFormatException e) {
-			logger.info("No parameter 'size'");
-		} finally {
-			request.setAttribute("size", size);
-		}
-		
-		int lastPage = serviceComputer.lastPage(size);
-		request.setAttribute("lastPage", lastPage);
-		
-		int pagination = Math.max(3, Math.min(lastPage -2, currentPage));
-		request.setAttribute("pagination", pagination);
-		
-		try {
-			Page<DTOComputer> computers = serviceComputer.listWithNames(page-1,size);
-			request.setAttribute("computers", computers.getList());
-			int count = serviceComputer.count();
-			request.setAttribute("count", count);
-			
+			setComputersAttribute(request, response);
 			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/dashboard.jsp" ).forward( request, response );
 		} catch (PageNotFoundException e) {
-			logger.info("Page {} not found", page);
+			logger.info("Page {} not found", currentPage);
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
-		
-		
-		
+	}
+
+	private void setPageAttribute(HttpServletRequest request) {
+		currentPage = servicePagination.getCurrentPage(request.getParameter("page"));
+		request.setAttribute("currentPage", currentPage);
+	}
+
+	private void setSizeAttribute(HttpServletRequest request) {
+		size = servicePagination.getSize(request.getParameter("size"), size);
+		request.setAttribute("size", size);
+	}
+
+	private void setLastPageAndPaginationAttribute(HttpServletRequest request) {
+		int lastPage = serviceComputer.lastPage(size);
+		request.setAttribute("lastPage", lastPage);
+
+		int pagination = servicePagination.getPagination(lastPage, currentPage);
+		request.setAttribute("pagination", pagination);
+	}
+
+	private void setComputersAttribute(HttpServletRequest request, HttpServletResponse response) throws IOException, PageNotFoundException{
+			Page<DTOComputer> computers = serviceComputer.listWithNames(currentPage-1,size);
+			request.setAttribute("computers", computers.getList());
+	}
+	
+	private void setComputerCount(HttpServletRequest request) {
+		int count = serviceComputer.count();
+		request.setAttribute("count", count);
 	}
 }
