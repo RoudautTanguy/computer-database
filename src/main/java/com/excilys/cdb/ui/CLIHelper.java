@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,11 +71,7 @@ public class CLIHelper {
 	 */
 	public static DTOComputer askComputer() throws WrongComputerArgumentException{
 		String line = in.nextLine();
-		String[] parsedLine = line.split(",");
-		for(int i=0;i<parsedLine.length;i++) {
-			String trim = parsedLine[i].trim();
-			parsedLine[i] = trim.equals("")?"NULL":trim;
-		}
+		String[] parsedLine = Stream.of(line.split(",")).map(x -> x.trim().equals("")?"NULL":x.trim()).toArray(String[]::new);
 		if(parsedLine[0].equals("NULL")) {
 			logger.error("Input : Empty computer");
 			throw new WrongComputerArgumentException("Name is mandatory !");

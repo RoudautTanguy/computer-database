@@ -1,12 +1,11 @@
 package com.excilys.cdb.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.MapperCompany;
-import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.persistence.DAOCompany;
 
@@ -33,12 +32,7 @@ public class ServiceCompany {
 	 * @return page
 	 */
 	public List<DTOCompany> list(){
-		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
-		List<Company> companies = daoCompany.list();
-		for(Company company:companies) {
-			dtoCompanies.add(mapperCompany.modelToDTO(company));
-		}
-		return dtoCompanies;
+		return daoCompany.list().stream().map(x -> mapperCompany.modelToDTO(x)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -58,12 +52,7 @@ public class ServiceCompany {
 	 * @throws PageNotFoundException
 	 */
 	public Page<DTOCompany> list(int index, int limit) throws PageNotFoundException{
-		List<DTOCompany> dtoCompanies = new ArrayList<DTOCompany>();
-		List<Company> companies = daoCompany.list(index, limit);
-		for(Company company:companies) {
-			dtoCompanies.add(mapperCompany.modelToDTO(company));
-		}
-		
+		List<DTOCompany> dtoCompanies = daoCompany.list(index, limit).stream().map(x -> mapperCompany.modelToDTO(x)).collect(Collectors.toList());		
 		return new Page<DTOCompany>(dtoCompanies, index, limit);
 	}
 	

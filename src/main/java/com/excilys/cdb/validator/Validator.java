@@ -44,7 +44,7 @@ public class Validator {
 	}
 	
 	private void validateDiscontinuedDateIsAfterIntroducedDate(Date introduced, Date discontinued) throws NotAValidComputerException {
-		if(discontinued.after(introduced) && introduced.before(discontinued)) {
+		if(introduced != null && discontinued != null && introduced.after(discontinued) && discontinued.before(introduced)) {
 			throw new NotAValidComputerException("Discontinued date is before Introduced date");
 		}
 	}

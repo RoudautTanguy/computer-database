@@ -30,13 +30,13 @@ public class ValidatorTest {
 		validator.validateComputer(new Computer(1, "Good Computer", null, null, 1));
 	}
 
-	@Test
+	@Test(expected = NotAValidComputerException.class)
 	public void dontValidateWrongComputerTest() throws NotAValidComputerException {
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
 		validator.validateComputer(new Computer(1, "Wrong Computer", null, discontinued, 1));
 	}
 
-	@Test
+	@Test(expected = NotAValidComputerException.class)
 	public void dontValidateComputerWithoutNameTest() throws NotAValidComputerException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		validator.validateComputer(new Computer(1, null, introduced, null, 1));

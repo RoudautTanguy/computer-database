@@ -1,7 +1,7 @@
 package com.excilys.cdb.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,11 +79,7 @@ public class ServiceComputer {
 	}
 	
 	public Page<DTOComputer> list(int index, int limit) throws PageNotFoundException{
-		List<DTOComputer> dtoComputers = new ArrayList<DTOComputer>();
-		List<Computer> computers = daoComputer.list(index, limit);
-		for(Computer computer:computers) {
-			dtoComputers.add(mapperComputer.modelToDTO(computer));
-		}
+		List<DTOComputer> dtoComputers = daoComputer.list(index, limit).stream().map(x -> mapperComputer.modelToDTO(x)).collect(Collectors.toList());	
 		return new Page<DTOComputer>(dtoComputers, index, limit);
 	}
 	
