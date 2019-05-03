@@ -126,7 +126,7 @@
               </li>
         	</ul>
 
-			<ul id="size" class="pagination pull-right">
+			<ul id="size" class="pagination pull-right" current-size="${size}">
 				<li><a href="?size=10">10</a></li>
 				<li><a href="?size=50">50</a></li>
 				<li><a href="?size=100">100</a></li>
@@ -140,7 +140,7 @@
 	<script type="text/javascript">
 	$(function() {
 		
-		var activePage = '${currentPage}';
+		var activePage = parseInt($("#Previous > a").attr("href").split("=")[1],10)+1;
 		$('.pagination li a:not(:has(> span))').each(function(){
 			if($(this).text() == activePage){
 				$(this).addClass("active");
@@ -151,14 +151,14 @@
 			$("#First,#Previous").each(function(){
 				$(this).addClass("disabled");
 			});
-		} else if(activePage == "${lastPage}"){
+		} else if(activePage == $("#Last > a").attr("href").split("=")[1]){
 			$("#Last,#Next").each(function(){
 				$(this).addClass("disabled");
 			});
 		}
 		
 		$("#size li a").each(function(){
-			if($(this).text() == "${size}"){
+			if($(this).text() == $("#size").attr("current-size")){
 				$(this).addClass("active");
 			}
 		});

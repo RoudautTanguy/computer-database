@@ -61,7 +61,6 @@ public class ServicePagination {
 	 * @return the medium page of the application pagination
 	 */
 	public int getPagination(int lastPage, int currentPage) {
-		Math.max(3, Math.min(lastPage -2, currentPage));
-		return 0;
+		return Math.max(3, Math.min(lastPage -2, currentPage));
 	}
 }
