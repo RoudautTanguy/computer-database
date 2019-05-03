@@ -47,7 +47,12 @@ public class MapperComputer {
 		if(computer.getCompanyId() != null) {
 			company = Integer.toString(computer.getCompanyId());
 		}
-		return new DTOComputer(id, name, introduced, discontinued, company);
+		return new DTOComputer.DTOComputerBuilder(name)
+							  .withId(id)
+							  .withIntroduced(introduced)
+							  .withDiscontinued(discontinued)
+							  .withCompany(company)
+							  .build();
 	}
 	
 	/**
@@ -58,32 +63,27 @@ public class MapperComputer {
 	public Computer DTOToModel(DTOComputer computer) {
 		int id = Integer.parseInt(computer.getId());
 		String name = computer.getName();
-		Timestamp introduced;
+		Computer newComputer = new Computer.ComputerBuilder(name).withId(id).build();
 		Optional<Timestamp> optionalIntroduced = tryParse(computer.getIntroduced());
-		Timestamp discontinued;
 		Optional<Timestamp> optionalDiscontinued = tryParse(computer.getDiscontinued());
-		Integer companyId;
 		
 		if(!optionalIntroduced.isEmpty()) {
-			introduced = optionalIntroduced.get();
+			newComputer.setIntroduced(optionalIntroduced.get());
 		} else {
 			logger.warn("Can't parse introduced date {}", computer.getIntroduced());
-			introduced = null;
 		}
 		if(!optionalDiscontinued.isEmpty()) {
-			discontinued = optionalDiscontinued.get();
+			newComputer.setDiscontinued(optionalDiscontinued.get());
 		} else {
 			logger.warn("Can't parse introduced date {}", computer.getDiscontinued());
-			discontinued = null;
 		}
 		
 		try {
-			companyId = Integer.parseInt(computer.getCompany());
+			newComputer.setCompanyId(Integer.parseInt(computer.getCompany()));
 		} catch(NumberFormatException e) {
 			logger.warn("Can't parse company id {}", computer.getCompany());
-			companyId = null;
 		}
-		return new Computer(id, name, introduced, discontinued, companyId);
+		return newComputer;
 	}
 	
 	Optional<Timestamp> tryParse(String dateString){

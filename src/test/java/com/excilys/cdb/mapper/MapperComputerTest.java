@@ -16,8 +16,8 @@ public class MapperComputerTest {
 
 	@Test
 	public void mapModelToDTOTest() {
-		Computer computer = new Computer(0,"AppleComputer",null,null,null);
-		DTOComputer dtoComputer = new DTOComputer("AppleComputer");
+		Computer computer = new Computer.ComputerBuilder("AppleComputer").build();
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer").build();
 		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.modelToDTO(computer));
 	}
 
@@ -27,15 +27,23 @@ public class MapperComputerTest {
 		LocalDate today = LocalDate.now();
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(today.atStartOfDay());
-		Computer computer = new Computer(0, "AppleComputer", introduced, discontinued, 1);
-		DTOComputer dtoComputer = new DTOComputer("AppleComputer", "10-10-2010", today.format(formatter), "1");
+		Computer computer = new Computer.ComputerBuilder("AppleComputer")
+										.withIntroduced(introduced)
+										.withDiscontinued(discontinued)
+										.withCompanyId(1)
+										.build();
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer")
+												 .withIntroduced("10-10-2010")
+												 .withDiscontinued(today.format(formatter))
+												 .withCompany("1")
+												 .build();
 		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.modelToDTO(computer));
 	}
 
 	@Test
 	public void mapDTOToModelTest() {
-		Computer computer = new Computer(0,"AppleComputer",null,null,null);
-		DTOComputer dtoComputer = new DTOComputer("AppleComputer");
+		Computer computer = new Computer.ComputerBuilder("AppleComputer").build();
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer").build();
 		assertEquals("Mapped Computer isn't equal to expected Computer",computer,mapper.DTOToModel(dtoComputer));
 	}
 
@@ -45,8 +53,16 @@ public class MapperComputerTest {
 		LocalDate today = LocalDate.now();
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(today.atStartOfDay());
-		Computer computer = new Computer(0, "AppleComputer", introduced, discontinued, 1);
-		DTOComputer dtoComputer = new DTOComputer("AppleComputer", "10-10-2010", today.format(formatter), "1");
+		Computer computer = new Computer.ComputerBuilder("AppleComputer")
+										.withIntroduced(introduced)
+										.withDiscontinued(discontinued)
+										.withCompanyId(1)
+										.build();
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer")
+				 .withIntroduced("10-10-2010")
+				 .withDiscontinued(today.format(formatter))
+				 .withCompany("1")
+				 .build();
 		assertEquals("DTOComputer isn't equal to expected Computer",computer,mapper.DTOToModel(dtoComputer));
 	}
 }

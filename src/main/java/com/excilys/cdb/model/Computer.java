@@ -9,17 +9,52 @@ public class Computer {
 	private Timestamp introduced;
 	private Timestamp discontinued;
 	private Integer companyId;
-	
-	public Computer(int pId, String pName, Timestamp pIntroduced, Timestamp pDiscontinued, Integer pCompanyId) {
-		this.companyId = pId;
-		this.name = pName;
-		this.introduced = pIntroduced;
-		this.discontinued = pDiscontinued;
-		this.companyId = pCompanyId;
+
+	public static class ComputerBuilder {
+		//required
+		private final String name;
+
+		//optional
+		private int id = 0;
+		private Timestamp introduced = null;
+		private Timestamp discontinued = null;
+		private Integer companyId = null;
+
+		public ComputerBuilder(String name) {
+			this.name = name;
+		}
+
+		public ComputerBuilder withId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public ComputerBuilder withIntroduced(Timestamp introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+
+		public ComputerBuilder withDiscontinued(Timestamp discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+
+		public ComputerBuilder withCompanyId(Integer companyId) {
+			this.companyId = companyId;
+			return this;
+		}
+
+		public Computer build() {
+			return new Computer(this);
+		}
 	}
-	
-	public Computer(String pName, Timestamp pIntroduced, Timestamp pDiscontinued, Integer pCompanyId) {
-		this(0, pName, pIntroduced, pDiscontinued, pCompanyId);
+
+	private Computer(ComputerBuilder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.introduced = builder.introduced;
+		this.discontinued = builder.discontinued;
+		this.companyId = builder.companyId;
 	}
 
 	public int getId() {
@@ -61,7 +96,7 @@ public class Computer {
 	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
 	}
-		
+
 	@Override
 	public String toString() {
 		return "Computer@" + this.id + ":" + this.name + 
@@ -115,7 +150,7 @@ public class Computer {
 			return false;
 		return true;
 	}
-	
-	
-	
+
+
+
 }

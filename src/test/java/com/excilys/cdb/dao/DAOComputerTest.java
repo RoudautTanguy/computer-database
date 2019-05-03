@@ -28,22 +28,32 @@ public class DAOComputerTest {
 	public void insertFullComputerTest() throws  NotAValidComputerException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		assertTrue("Can't insert Computer",dao.insert(new Computer(1,"AttariComputerTest",introduced,discontinued,Integer.valueOf(20))));
+		assertTrue("Can't insert Computer",dao.insert(new Computer.ComputerBuilder("AttariComputerTest")
+																  .withId(1)
+																  .withIntroduced(introduced)
+																  .withDiscontinued(discontinued)
+																  .withCompanyId(20)
+																  .build()));
 	}
 
 	@Test
 	public void insertComputerWithNameTest() throws NotAValidComputerException {
-		assertTrue("Can't insert Computer",dao.insert(new Computer(1,"ComputerTest",null,null,null)));
+		assertTrue("Can't insert Computer",dao.insert(new Computer.ComputerBuilder("AttariComputerTest")
+				  												  .withId(1)
+				  												  .build()));
 	}
 
 	@Test(expected = NotAValidComputerException.class)
 	public void insertNullComputerTest() throws NotAValidComputerException {
-		dao.insert(new Computer(1,null,null,null,null));
+		dao.insert(new Computer.ComputerBuilder(null).build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
 	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException {
-		dao.insert(new Computer(1,"WrongCompanyId",null,null,100));
+		dao.insert(new Computer.ComputerBuilder("WrongCompanyId")
+				  			   .withId(1)
+				  			   .withCompanyId(100)
+				  			   .build());
 	}
 
 	// Update
@@ -52,22 +62,33 @@ public class DAOComputerTest {
 	public void updateFullComputerTest() throws NotAValidComputerException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		assertTrue("Can't update Computer",dao.update(600, new Computer(600,"Laptop",introduced,discontinued,Integer.valueOf(36))));
+		assertTrue("Can't update Computer",dao.update(600, new Computer.ComputerBuilder("Laptop")
+																	   .withId(600)
+																	   .withIntroduced(introduced)
+																	   .withDiscontinued(discontinued)
+																	   .withCompanyId(Integer.valueOf(36))
+																	   .build()));
 	}
 
 	@Test
 	public void updateComputerWithNameTest() throws NotAValidComputerException {
-		assertTrue("Can't update Computer",dao.update(600, new Computer(600,"Laptop",null,null,null)));
+		assertTrue("Can't update Computer",dao.update(600, new Computer.ComputerBuilder("Laptop")
+				   													   .withId(600)
+				   													   .build()));
 	}
 
 	@Test(expected = NotAValidComputerException.class)
 	public void updateNullComputerTest() throws NotAValidComputerException {
-		dao.update(599,new Computer(1,null,null,null,null));
+		dao.update(599,new Computer.ComputerBuilder(null)
+				   				   .withId(1)
+				   				   .build());
 	}
 
 	@Test
 	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException {
-		assertFalse("Computer not in database is updated",dao.update(9999,new Computer(1,"Name",null,null,null)));
+		assertFalse("Computer not in database is updated",dao.update(9999,new Computer.ComputerBuilder("Name")
+				   																	  .withId(1)
+				   																	  .build()));
 	}
 
 	// Delete
@@ -75,6 +96,8 @@ public class DAOComputerTest {
 	@Test
 	public void getLastComputerAndDeleteComputerTest() {
 		int id = dao.getLastComputerId();
+		assertTrue("Can't delete Computer",dao.delete(id));
+		id = dao.getLastComputerId();
 		assertTrue("Can't delete Computer",dao.delete(id));
 	}
 
@@ -120,7 +143,11 @@ public class DAOComputerTest {
 	@Test
 	public void findComputerTest() throws ComputerNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2004,1,1).atStartOfDay());
-		DTOComputer dtoComputer = MapperComputer.getInstance().modelToDTO(new Computer(283,"Nintendo DS",introduced,null,24));
+		DTOComputer dtoComputer = MapperComputer.getInstance().modelToDTO(new Computer.ComputerBuilder("Nintendo DS")
+																					  .withId(283)
+																					  .withIntroduced(introduced)
+																					  .withCompanyId(24)
+																					  .build());
 		dtoComputer.setCompany("Nintendo");
 		assertEquals("The Computer is not the expected one",dao.find(283), dtoComputer);
 	}

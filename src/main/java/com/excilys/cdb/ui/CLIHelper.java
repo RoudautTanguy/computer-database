@@ -77,9 +77,13 @@ public class CLIHelper {
 			throw new WrongComputerArgumentException("Name is mandatory !");
 		}
 		if(parsedLine.length == 1) {
-			return new DTOComputer(parsedLine[0].trim());
+			return new DTOComputer.DTOComputerBuilder(parsedLine[0]).build();
 		} else if (parsedLine.length == 4) {
-			return new DTOComputer(parsedLine[0], parsedLine[1], parsedLine[2], parsedLine[3]);
+			return new DTOComputer.DTOComputerBuilder(parsedLine[0])
+					.withIntroduced(parsedLine[1])
+					.withDiscontinued(parsedLine[2])
+					.withCompany(parsedLine[3])
+					.build();
 		} else {
 			String message = "Wrong number of argument !";
 			logger.error(message + " Input : {}",line);

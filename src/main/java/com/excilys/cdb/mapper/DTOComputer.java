@@ -8,22 +8,53 @@ public class DTOComputer {
 	private String discontinued;
 	private String company;
 	
-	public DTOComputer(String pId, String pName, String pIntroduced, String pDiscontinued, String pCompany){
-		this.id = pId;
-		this.name = pName;
-		this.introduced = pIntroduced;
-		this.discontinued = pDiscontinued;
-		this.company = pCompany;
-	}
-	
-	public DTOComputer(String pName, String pIntroduced, String pDiscontinued, String pCompany){
-		this(Integer.toString(0), pName, pIntroduced, pDiscontinued, pCompany);
-	}
-	
-	public DTOComputer(String pName){
-		this(Integer.toString(0), pName, "NULL", "NULL", "NULL");
-	}
+	public static class DTOComputerBuilder {
+		//required
+		private final String name;
 
+		//optional
+		private String id = Integer.toString(0);
+		private String introduced = "NULL";
+		private String discontinued = "NULL";
+		private String company = "NULL";
+
+		public DTOComputerBuilder(String name) {
+			this.name = name;
+		}
+
+		public DTOComputerBuilder withId(String id) {
+			this.id = id;
+			return this;
+		}
+
+		public DTOComputerBuilder withIntroduced(String introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+
+		public DTOComputerBuilder withDiscontinued(String discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+
+		public DTOComputerBuilder withCompany(String company) {
+			this.company = company;
+			return this;
+		}
+
+		public DTOComputer build() {
+			return new DTOComputer(this);
+		}
+	}
+	
+	private DTOComputer(DTOComputerBuilder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.introduced = builder.introduced;
+		this.discontinued = builder.discontinued;
+		this.company = builder.company;
+	}
+	
 	public String getId() {
 		return id;
 	}

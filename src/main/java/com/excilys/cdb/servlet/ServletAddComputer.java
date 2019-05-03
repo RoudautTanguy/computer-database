@@ -32,11 +32,15 @@ public class ServletAddComputer extends HttpServlet{
 	
 	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("computerName");
+		String computerName = request.getParameter("computerName");
 		String introduced = request.getParameter("introduced");
 		String discontinued = request.getParameter("discontinued");
         String companyId = request.getParameter("companyId");
-        DTOComputer dtoComputer = new DTOComputer(username, introduced, discontinued, companyId);
+        DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(computerName)
+        										 .withIntroduced(introduced)
+        										 .withDiscontinued(discontinued)
+        										 .withCompany(companyId)
+        										 .build();
         try {
         	serviceComputer.insert(dtoComputer);
 			response.sendRedirect(request.getContextPath() + "/dashboard");

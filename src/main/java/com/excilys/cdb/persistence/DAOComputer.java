@@ -151,12 +151,17 @@ public class DAOComputer extends DAO<Computer> {
 			PreparedStatement statement = connection.prepareStatement(SELECT_ALL)){
 			ResultSet resultat = statement.executeQuery( );
 			while ( resultat.next() ) {
-			    int idComputer = resultat.getInt( "id" );
-			    String nameComputer = resultat.getString( "name" );
+			    int id = resultat.getInt( "id" );
+			    String name = resultat.getString( "name" );
 			    Timestamp introduced = resultat.getTimestamp( "introduced" );
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
-			    int idCompany = resultat.getInt("company_id");
-			    computers.add(new Computer(idComputer,nameComputer,introduced ,discontinued ,idCompany));
+			    int companyId = resultat.getInt("company_id");
+			    computers.add(new Computer.ComputerBuilder(name)
+			    						  .withId(id)
+			    						  .withIntroduced(introduced)
+			    						  .withDiscontinued(discontinued)
+			    						  .withCompanyId(companyId)
+			    						  .build());
 			}
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
@@ -186,12 +191,17 @@ public class DAOComputer extends DAO<Computer> {
 			    throw new PageNotFoundException("This page doesn't exist"); 
 			} 
 			while ( resultat.next() ) {
-			    int idComputer = resultat.getInt( "id" );
-			    String nameComputer = resultat.getString( "name" );
+			    int id = resultat.getInt( "id" );
+			    String name = resultat.getString( "name" );
 			    Timestamp introduced = resultat.getTimestamp( "introduced" );
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
-			    int idCompany = resultat.getInt("company_id");
-			    computers.add(new Computer(idComputer,nameComputer,introduced ,discontinued ,idCompany));
+			    int companyId = resultat.getInt("company_id");
+			    computers.add(new Computer.ComputerBuilder(name)
+						  				  .withId(id)
+						  				  .withIntroduced(introduced)
+						  				  .withDiscontinued(discontinued)
+						  				  .withCompanyId(companyId)
+						  				  .build());
 			}
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
@@ -220,13 +230,18 @@ public class DAOComputer extends DAO<Computer> {
 			    throw new PageNotFoundException("This page doesn't exist"); 
 			} 
 			while ( resultat.next() ) {
-			    int idComputer = resultat.getInt( "id" );
-			    String nameComputer = resultat.getString( "name" );
+			    int id = resultat.getInt( "id" );
+			    String name = resultat.getString( "name" );
 			    Timestamp introduced = resultat.getTimestamp( "introduced" );
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 			    int companyId = resultat.getInt("company_id");
 			    String companyName = resultat.getString("company_name");
-			    DTOComputer computer = mapperComputer.modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
+			    DTOComputer computer = mapperComputer.modelToDTO(new Computer.ComputerBuilder(name)
+						  													 .withId(id)
+						  													 .withIntroduced(introduced)
+						  													 .withDiscontinued(discontinued)
+						  													 .withCompanyId(companyId)
+						  													 .build());
 			    if(companyName != null) {
 			    	logger.info("Replacing company id with company name");
 			    	computer.setCompany(companyName);
@@ -248,32 +263,37 @@ public class DAOComputer extends DAO<Computer> {
 	 * @return the object
 	 * @throws ComputerNotFoundException
 	 */
-	public DTOComputer find(int id) throws ComputerNotFoundException{
+	public DTOComputer find(int idComputer) throws ComputerNotFoundException{
 		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
 			PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)){
-			statement.setString(1, Integer.toString(id));
+			statement.setString(1, Integer.toString(idComputer));
 			ResultSet resultat = statement.executeQuery();
 			if(resultat.next()) {
-				int idComputer = resultat.getInt( "id" );
-			    String nameComputer = resultat.getString( "name" );
+				int id = resultat.getInt( "id" );
+			    String name = resultat.getString( "name" );
 			    Timestamp introduced = resultat.getTimestamp( "introduced" );
 			    Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 			    int companyId = resultat.getInt("company_id");
 			    String companyName = resultat.getString("company_name");
-			    DTOComputer computer = mapperComputer.modelToDTO(new Computer(idComputer,nameComputer,introduced,discontinued,companyId));
+			    DTOComputer computer = mapperComputer.modelToDTO(new Computer.ComputerBuilder(name)
+							 .withId(id)
+							 .withIntroduced(introduced)
+							 .withDiscontinued(discontinued)
+							 .withCompanyId(companyId)
+							 .build());
 			    if(companyName != null) {
 			    	logger.info("Replacing company id with company name");
 			    	computer.setCompany(companyName);
 			    }
 				return computer;
 			} else {
-				String message = "Computer "+id+" is not found !";
+				String message = "Computer "+idComputer+" is not found !";
 				logger.warn(message);
 				throw new ComputerNotFoundException(message);
 			}
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
-			throw new ComputerNotFoundException("Computer "+id+" is not found !");
+			throw new ComputerNotFoundException("Computer "+idComputer+" is not found !");
 		}
 	}
 	
