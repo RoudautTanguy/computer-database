@@ -2,6 +2,7 @@ package com.excilys.cdb.controller;
 
 import java.util.Optional;
 
+import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -81,11 +82,16 @@ public class Controller {
 				Optional<DTOComputer> optionalComputer = cli.askComputerCreationInformation();
 				if(optionalComputer.isPresent()) {
 					dtoComputer = optionalComputer.get();
-					cli.printUpdatedMessage(serviceComputer.update(id, dtoComputer));
+					serviceComputer.update(id, dtoComputer);
+					cli.printUpdatedMessage(true);
 				}
 			} catch(IllegalArgumentException e) {
 				cli.printException(e);
 			} catch (NotAValidComputerException e) {
+				cli.printException(e);
+			} catch (ComputerNotFoundException e) {
+				cli.printException(e);
+			} catch (CantConnectException e) {
 				cli.printException(e);
 			}
 			break;

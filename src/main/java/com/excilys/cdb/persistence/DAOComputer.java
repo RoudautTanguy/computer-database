@@ -12,6 +12,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -104,7 +105,7 @@ public class DAOComputer extends DAO<Computer> {
 	}
 
 	@Override
-	public boolean update(int id, Computer computer) throws NotAValidComputerException{
+	public void update(int id, Computer computer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException{
 		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(UPDATE)){
 			if(computer.getName()==null) {
@@ -133,12 +134,11 @@ public class DAOComputer extends DAO<Computer> {
 		    int affectedRows = statement.executeUpdate();
 		    if(affectedRows == 0) {
 		    	logger.warn("0 computer updated");
-		    	return false;
+		    	throw new ComputerNotFoundException("The computer " + id +" doesn't exist");
 		    }
-		    return true;
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
-			return false;
+			throw new CantConnectException("Can't connect.");
 		}
 	}
 

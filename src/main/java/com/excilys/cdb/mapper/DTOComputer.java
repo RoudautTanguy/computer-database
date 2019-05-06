@@ -14,9 +14,9 @@ public class DTOComputer {
 
 		//optional
 		private String id = Integer.toString(0);
-		private String introduced = "NULL";
-		private String discontinued = "NULL";
-		private String company = "NULL";
+		private String introduced = "";
+		private String discontinued = "";
+		private String company = "";
 
 		public DTOComputerBuilder(String name) {
 			this.name = name;

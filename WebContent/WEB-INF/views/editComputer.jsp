@@ -29,28 +29,26 @@
 					<h1>Edit Computer</h1>
 
 					<form id="editComputer" action="editComputer" method="POST">
-						<input type="hidden" value="${id}" id="id" />
+						<input type="hidden" name="id" value="${id}" id="id" />
 						<fieldset>
 							<div class="form-group">
-								<label class="control-label" for="computerName">Computer
-									name</label> <input type="text" class="form-control" id="computerName"
-									placeholder="Computer name" value="${computer.name}">
+								<label class="control-label" for="computerName">Computer name</label> 
+								<input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" 
+									value="${computer.name}">
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="introduced">Introduced
-									date</label> <input type="text" class="form-control" id="introduced"
-									name="introduced" placeholder="Introduced date"
+								<label class="control-label" for="introduced">Introduced date</label> 
+								<input type="text" class="form-control" id="introduced" name="introduced" placeholder="Introduced date"
 									value="${computer.introduced}">
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="discontinued">Discontinued
-									date</label> <input type="text" class="form-control" id="discontinued"
-									name="discontinued" placeholder="Discontinued date"
+								<label class="control-label" for="discontinued">Discontinued date</label> 
+								<input type="text" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date"
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="companyId">Company</label> <select
-									class="form-control" id="companyId">
+								<label class="control-label" for="companyId">Company</label> 
+								<select class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${ companies }" var="company">
 										<c:if test="${company.name == computer.company}">
@@ -74,10 +72,7 @@
 		</div>
 	</section>
 </body>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/js/editComputer.js"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/editComputer.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-ui.min.js"></script>
 </html>

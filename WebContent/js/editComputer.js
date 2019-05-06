@@ -55,7 +55,7 @@ $(function() {
 			$('#discontinued').parent().addClass("has-error");
 		}
 		
-		if((!introduced && discontinued) || ($("#introduced").datepicker('getDate') >= $("#discontinued").datepicker('getDate'))){
+		if((!introduced && !!discontinued) || (!!discontinued && $("#introduced").datepicker('getDate') >= $("#discontinued").datepicker('getDate'))){
 			e.preventDefault();
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">\
 					Please make sure that discontinued is after introduced\

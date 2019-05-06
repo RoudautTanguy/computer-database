@@ -42,8 +42,8 @@ public class DAOCompany extends DAO<Company> {
 	}
 
 	@Override
-	public boolean update(int id, Company obj) {
-		return false;
+	public void update(int id, Company obj) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

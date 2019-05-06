@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -66,12 +67,14 @@ public class ServiceComputer {
 	 * @param computer the new computer
 	 * @return if the computer is updated or not
 	 * @throws NotAValidComputerException 
+	 * @throws ComputerNotFoundException 
+	 * @throws CantConnectException 
 	 */
-	public boolean update(int id, DTOComputer dtoComputer) throws NotAValidComputerException {
+	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
 		Computer computer = mapperComputer.DTOToModel(dtoComputer);
 		try {
 			validator.validateComputer(computer);
-			return daoComputer.update(id, computer);
+			daoComputer.update(id, computer);
 		} catch (NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");

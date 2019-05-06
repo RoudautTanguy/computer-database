@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
+import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -59,36 +60,36 @@ public class DAOComputerTest {
 	// Update
 
 	@Test
-	public void updateFullComputerTest() throws NotAValidComputerException {
+	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		assertTrue("Can't update Computer",dao.update(600, new Computer.ComputerBuilder("Laptop")
-																	   .withId(600)
-																	   .withIntroduced(introduced)
-																	   .withDiscontinued(discontinued)
-																	   .withCompanyId(Integer.valueOf(36))
-																	   .build()));
+		dao.update(600, new Computer.ComputerBuilder("Laptop")
+									.withId(600)
+									.withIntroduced(introduced)
+									.withDiscontinued(discontinued)
+									.withCompanyId(Integer.valueOf(36))
+									.build());
 	}
 
 	@Test
-	public void updateComputerWithNameTest() throws NotAValidComputerException {
-		assertTrue("Can't update Computer",dao.update(600, new Computer.ComputerBuilder("Laptop")
-				   													   .withId(600)
-				   													   .build()));
+	public void updateComputerWithNameTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
+		dao.update(600, new Computer.ComputerBuilder("Laptop")
+				   					.withId(600)
+									.build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void updateNullComputerTest() throws NotAValidComputerException {
+	public void updateNullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
 		dao.update(599,new Computer.ComputerBuilder(null)
 				   				   .withId(1)
 				   				   .build());
 	}
 
-	@Test
-	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException {
-		assertFalse("Computer not in database is updated",dao.update(9999,new Computer.ComputerBuilder("Name")
-				   																	  .withId(1)
-				   																	  .build()));
+	@Test(expected = ComputerNotFoundException.class)
+	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
+		dao.update(9999,new Computer.ComputerBuilder("Name")
+				   					.withId(1)
+				   					.build());
 	}
 
 	// Delete

@@ -18,9 +18,9 @@ public class DAOCompanyTest {
 		assertFalse("Company shouldn't be inserted", dao.insert(new Company(1,"Test")));
 	}
 
-	@Test
+	@Test(expected = UnsupportedOperationException.class)
 	public void cantUpdateCompanyTest() {
-		assertFalse("Company shouldn't be updated", dao.update(1, new Company(1,"Test")));
+		dao.update(1, new Company(1,"Test"));
 	}
 
 	@Test

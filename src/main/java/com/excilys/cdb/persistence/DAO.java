@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.CompanyNotFoundException;
+import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.zaxxer.hikari.HikariConfig;
@@ -41,8 +43,10 @@ public abstract class DAO<T> {
 	 * @param obj
 	 * @return boolean
 	 * @throws NotAValidComputerException 
+	 * @throws ComputerNotFoundException 
+	 * @throws CantConnectException 
 	 */
-	public abstract boolean update(int id, T obj) throws NotAValidComputerException;
+	public abstract void update(int id, T obj) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException;
 
 	/**
 	 * List objects
