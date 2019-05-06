@@ -96,7 +96,6 @@ public class DAOCompany extends DAO<Company> {
 		return companies;
 	}
 	
-	@Override
 	public int count() {
 		int count = 0;
 		try(Connection connection = this.getConnection();

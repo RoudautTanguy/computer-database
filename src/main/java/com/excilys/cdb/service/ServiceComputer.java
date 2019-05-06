@@ -115,6 +115,20 @@ public class ServiceComputer {
 	 * @throws PageNotFoundException 
 	 * @return page
 	 */
+	public Page<DTOComputer> search(int index, int limit, String search) throws PageNotFoundException{
+		if(search == null || search.equals("")) {
+			return listWithNames(index, limit);
+		} else {
+			return new Page<DTOComputer>(daoComputer.search(index, limit, search), index, limit);
+		}
+	}
+	
+	/**
+	 * List all the computers with pagination and names instead of id
+	 * @return the current page of computer
+	 * @throws PageNotFoundException 
+	 * @return page
+	 */
 	public Page<DTOComputer> listWithNames(int index, int limit) throws PageNotFoundException{
 		return new Page<DTOComputer>(daoComputer.listWithNames(index, limit), index, limit);
 	}
@@ -129,16 +143,16 @@ public class ServiceComputer {
 		return daoComputer.find(id);
 	}
 	
-	public int count() {
-		return daoComputer.count();
+	public int count(String search) {
+		return daoComputer.count(search);
 	}
 	
 	public int lastPage() {
-		return lastPage(COMPUTERS_NUMBER_PER_PAGE);
+		return lastPage(COMPUTERS_NUMBER_PER_PAGE,"");
 	}
 	
-	public int lastPage(int limit) {
-		int count = count();
+	public int lastPage(int limit, String search) {
+		int count = count(search);
 		return (count%limit==0)?count/limit:count/limit+1;
 	}
 }

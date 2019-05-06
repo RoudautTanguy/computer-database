@@ -65,11 +65,5 @@ public abstract class DAO<T> {
 	 * @throws PageNotFoundException 
 	 */
 	public abstract List<T> list(int limit, int index) throws PageNotFoundException;
-	
-	/**
-	 * Count the number of <T> in the base
-	 * @return
-	 */
-	public abstract int count();
 
 }

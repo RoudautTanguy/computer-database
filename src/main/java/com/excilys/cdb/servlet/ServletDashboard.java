@@ -34,13 +34,14 @@ public class ServletDashboard extends HttpServlet{
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String search = request.getParameter("search")==null?"":request.getParameter("search");
 		setPageAttribute(request);
 		setSizeAttribute(request);
-		int lastPage = setLastPage(request);
+		int lastPage = setLastPage(request, search);
 		setPaginationAttribute(request, lastPage);
-		setComputerCount(request);
+		setComputerCount(request, search);
 		try {
-			setComputersAttribute(request, response);
+			setComputersAttribute(request, response, search);
 			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/dashboard.jsp" ).forward( request, response );
 		} catch (PageNotFoundException e) {
 			logger.info("Page {} not found", currentPage);
@@ -60,7 +61,7 @@ public class ServletDashboard extends HttpServlet{
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			}
 		}
-		int lastPage = setLastPage(request);
+		int lastPage = setLastPage(request,"");
 		response.sendRedirect(request.getContextPath() + "/dashboard?page="+lastPage);
 	}
 
@@ -74,8 +75,8 @@ public class ServletDashboard extends HttpServlet{
 		request.setAttribute("size", size);
 	}
 
-	private int setLastPage(HttpServletRequest request) {
-		int lastPage = serviceComputer.lastPage(size);
+	private int setLastPage(HttpServletRequest request, String search) {
+		int lastPage = serviceComputer.lastPage(size,search);
 		request.setAttribute("lastPage", lastPage);
 		return lastPage;
 	}
@@ -85,13 +86,13 @@ public class ServletDashboard extends HttpServlet{
 		request.setAttribute("pagination", pagination);
 	}
 
-	private void setComputersAttribute(HttpServletRequest request, HttpServletResponse response) throws IOException, PageNotFoundException{
-			Page<DTOComputer> computers = serviceComputer.listWithNames(currentPage-1,size);
+	private void setComputersAttribute(HttpServletRequest request, HttpServletResponse response, String search) throws IOException, PageNotFoundException{
+			Page<DTOComputer> computers = serviceComputer.search(currentPage-1, size, search);
 			request.setAttribute("computers", computers.getList());
 	}
 	
-	private void setComputerCount(HttpServletRequest request) {
-		int count = serviceComputer.count();
+	private void setComputerCount(HttpServletRequest request, String search) {
+		int count = serviceComputer.count(search);
 		request.setAttribute("count", count);
 	}
 }

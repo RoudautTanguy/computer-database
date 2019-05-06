@@ -115,7 +115,7 @@ public class DAOComputerTest {
 
 	@Test
 	public void listComputerTest() {
-		assertEquals("The list of computer should have the same length of computer present in database",dao.list().size(), dao.count());
+		assertEquals("The list of computer should have the same length of computer present in database",dao.list().size(), dao.count(""));
 	}
 
 	@Test
@@ -161,7 +161,12 @@ public class DAOComputerTest {
 
 	@Test 
 	public void countComputersTest() {
-		assertTrue("Some computers should be found in database", dao.count()>0);
+		assertTrue("Some computers should be found in database", dao.count("")>0);
+	}
+	
+	@Test 
+	public void countAppleComputersTest() {
+		assertTrue("Some computers should be found in database", dao.count("Apple")==13);
 	}
 
 
