@@ -35,15 +35,15 @@ public class MapperComputer {
 	public DTOComputer modelToDTO(Computer computer) {
 		String id = Integer.toString(computer.getId());
 		String name = computer.getName();
-		String introduced = "NULL";
+		String introduced = "";
 		if(computer.getIntroduced() != null) {
 			introduced = dateFormat.format(computer.getIntroduced());
 		}
-		String discontinued = "NULL";
+		String discontinued = "";
 		if(computer.getDiscontinued() != null) {
 			discontinued = dateFormat.format(computer.getDiscontinued());;
 		}
-		String company = "NULL";
+		String company = "";
 		if(computer.getCompanyId() != null) {
 			company = Integer.toString(computer.getCompanyId());
 		}
