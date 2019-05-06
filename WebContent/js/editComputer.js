@@ -24,6 +24,7 @@ $(function() {
 	
 	$("#editComputer").on("submit",function(e){
 		$(".alert").remove();
+		$(".has-error").removeClass("has-error");
 		
 		var name = $("#computerName").val();
 		if(name.trim().length === 0){
@@ -34,27 +35,27 @@ $(function() {
 			$('#computerName').parent().addClass("has-error");
 			
 		}
-		var regex = new RegExp("\d{2}-\d{2}-\d{4}$");
-		var introduced = $("#introduced").datepicker('getDate');
-		if(introduced != null && !regex.test(introduced)){
+		var regex = new RegExp("\\d{2}-\\d{2}-\\d{4}$");
+		var introduced = $("#introduced").val();
+		if(introduced && !regex.test(introduced)){
 			e.preventDefault();
+			console.log(introduced);
 			$('#introduced').after('<div class="alert alert-danger" role="alert">\
 					Please enter a valid date\
 					</div>');
 			$('#introduced').parent().addClass("has-error");
 		}
-		
-		if(discontinued != null && !regex.test(discontinued)){
+		var discontinued = $("#discontinued").val();
+		if(discontinued && !regex.test(discontinued)){
 			e.preventDefault();
+			alert(discontinued);
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">\
 					Please enter a valid date\
 					</div>');
 			$('#discontinued').parent().addClass("has-error");
 		}
 		
-		var discontinued = $("#discontinued").datepicker('getDate');
-		alert(discontinued);
-		if(discontinued != null && introduced >= discontinued){
+		if((!introduced && discontinued) || ($("#introduced").datepicker('getDate') >= $("#discontinued").datepicker('getDate'))){
 			e.preventDefault();
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">\
 					Please make sure that discontinued is after introduced\
