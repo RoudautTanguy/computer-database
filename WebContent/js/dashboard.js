@@ -34,7 +34,7 @@ $(function() {
             return this.value;
         }).get().join();
         
-        $(this).attr('value',str);
+        $("input[name="+formFieldName+"]").attr('value',str);
         
         return this;
     };

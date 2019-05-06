@@ -37,8 +37,8 @@ public class DAOCompany extends DAO<Company> {
 	}
 
 	@Override
-	public boolean delete(int index) {
-		return false;
+	public void delete(int index) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

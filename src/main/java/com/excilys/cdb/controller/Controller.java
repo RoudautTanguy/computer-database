@@ -70,7 +70,7 @@ public class Controller {
 					computer = optionalComputer.get();
 					cli.printCreatedMessage(serviceComputer.insert(computer));
 				}
-			} catch (NotAValidComputerException e) {
+			} catch (NotAValidComputerException | CantConnectException e) {
 				cli.printException(e);
 			}
 			break;
@@ -98,7 +98,13 @@ public class Controller {
 			
 		case DELETE_COMPUTER:
 			int deleteId = cli.askInteger("Please enter the Id of the Computer you want to Delete.");
-			cli.printDeletedMessage(serviceComputer.delete(deleteId), deleteId);
+			try {
+				serviceComputer.delete(deleteId);
+				cli.printDeletedMessage(true, deleteId);
+			} catch (CantConnectException | ComputerNotFoundException e) {
+				cli.printDeletedMessage(false, deleteId);
+			}
+			
 			break;
 		}
 		cli.startChoice();

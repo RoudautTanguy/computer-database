@@ -1,7 +1,6 @@
 package com.excilys.cdb.dao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
@@ -26,7 +25,7 @@ public class DAOComputerTest {
 	// Insert 
 
 	@Test
-	public void insertFullComputerTest() throws  NotAValidComputerException {
+	public void insertFullComputerTest() throws  NotAValidComputerException, CantConnectException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
 		assertTrue("Can't insert Computer",dao.insert(new Computer.ComputerBuilder("AttariComputerTest")
@@ -38,19 +37,19 @@ public class DAOComputerTest {
 	}
 
 	@Test
-	public void insertComputerWithNameTest() throws NotAValidComputerException {
+	public void insertComputerWithNameTest() throws NotAValidComputerException, CantConnectException {
 		assertTrue("Can't insert Computer",dao.insert(new Computer.ComputerBuilder("AttariComputerTest")
 				  												  .withId(1)
 				  												  .build()));
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void insertNullComputerTest() throws NotAValidComputerException {
+	public void insertNullComputerTest() throws NotAValidComputerException, CantConnectException {
 		dao.insert(new Computer.ComputerBuilder(null).build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException {
+	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException, CantConnectException {
 		dao.insert(new Computer.ComputerBuilder("WrongCompanyId")
 				  			   .withId(1)
 				  			   .withCompanyId(100)
@@ -95,21 +94,21 @@ public class DAOComputerTest {
 	// Delete
 
 	@Test
-	public void getLastComputerAndDeleteComputerTest() {
+	public void getLastComputerAndDeleteComputerTest() throws CantConnectException, ComputerNotFoundException {
 		int id = dao.getLastComputerId();
-		assertTrue("Can't delete Computer",dao.delete(id));
+		dao.delete(id);
 		id = dao.getLastComputerId();
-		assertTrue("Can't delete Computer",dao.delete(id));
+		dao.delete(id);
 	}
 
-	@Test
-	public void deleteComputerWithNegativeIdTest() {
-		assertFalse("Computer with negative index is deleted",dao.delete(-1));
+	@Test(expected = ComputerNotFoundException.class)
+	public void deleteComputerWithNegativeIdTest() throws CantConnectException, ComputerNotFoundException {
+		dao.delete(-1);
 	}
 
-	@Test
-	public void deleteComputerNotInDatabaseTest() {
-		assertFalse("Computer not in database is deleted",dao.delete(9999));
+	@Test(expected = ComputerNotFoundException.class)
+	public void deleteComputerNotInDatabaseTest() throws CantConnectException, ComputerNotFoundException {
+		dao.delete(9999);
 	}
 
 	// List

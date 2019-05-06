@@ -48,7 +48,7 @@ public class DAOComputer extends DAO<Computer> {
 		return instance;
 	}
 	@Override
-	public boolean insert(Computer computer) throws NotAValidComputerException {
+	public boolean insert(Computer computer) throws NotAValidComputerException, CantConnectException {
 		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(INSERT)){
 			if(computer.getName()==null) {
@@ -79,13 +79,12 @@ public class DAOComputer extends DAO<Computer> {
 			logger.error("Trying to insert a computer with an inexisting computer id");
 			throw new NotAValidComputerException("The company "+computer.getCompanyId() + " doesn't exist !");
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
-			return false;
+			throw new CantConnectException("Can't connect.");
 		} 
 	}
 	
 	@Override
-	public boolean delete(int id){
+	public void delete(int id) throws CantConnectException, ComputerNotFoundException{
 		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(DELETE)){
 			statement.setInt(1, id);
@@ -94,13 +93,12 @@ public class DAOComputer extends DAO<Computer> {
 		    int affectedRows = statement.executeUpdate();
 		    if(affectedRows == 0) {
 		    	logger.warn("0 computer deleted");
-		    	return false;
+		    	throw new ComputerNotFoundException("The computer " + id +" doesn't exist");
 		    }
 		    logger.info("Computer {} deleted", id);
-		    return true;
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
-			return false;
+			throw new CantConnectException("Can't connect.");
 		}
 	}
 
@@ -124,7 +122,7 @@ public class DAOComputer extends DAO<Computer> {
 		    } else {
 		    	statement.setTimestamp(3, computer.getDiscontinued());	    	
 		    }
-		    if(computer.getCompanyId()==null) {
+		    if(computer.getCompanyId()==null || computer.getCompanyId() == 0) {
 		    	statement.setNull(4, java.sql.Types.INTEGER);
 		    } else {
 			    statement.setInt(4, computer.getCompanyId());		    	
@@ -246,7 +244,7 @@ public class DAOComputer extends DAO<Computer> {
 			    	computer.setCompany(companyName);
 			    } else {
 			    	logger.info("Replacing company id with null company name");
-			    	computer.setCompany("NULL");
+			    	computer.setCompany("");
 			    }
 			    computers.add(computer);
 			}

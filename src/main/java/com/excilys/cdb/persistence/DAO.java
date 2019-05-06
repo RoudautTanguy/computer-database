@@ -28,15 +28,18 @@ public abstract class DAO<T> {
 	 * @return boolean 
 	 * @throws CompanyNotFoundException 
 	 * @throws NotAValidComputerException 
+	 * @throws CantConnectException 
 	 */
-	public abstract boolean insert(T obj) throws NotAValidComputerException;
+	public abstract boolean insert(T obj) throws NotAValidComputerException, CantConnectException;
 
 	/**
 	 * Delete object
 	 * @param index of object to delete
 	 * @return boolean 
+	 * @throws CantConnectException 
+	 * @throws ComputerNotFoundException 
 	 */
-	public abstract boolean delete(int index);
+	public abstract void delete(int index) throws CantConnectException, ComputerNotFoundException;
 
 	/**
 	 * Update object

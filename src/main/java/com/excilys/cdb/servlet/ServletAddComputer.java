@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
@@ -44,7 +45,7 @@ public class ServletAddComputer extends HttpServlet{
         try {
         	serviceComputer.insert(dtoComputer);
 			response.sendRedirect(request.getContextPath() + "/dashboard");
-		} catch (NotAValidComputerException e) {
+		} catch (NotAValidComputerException | CantConnectException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}

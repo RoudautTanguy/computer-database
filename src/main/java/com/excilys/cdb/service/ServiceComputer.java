@@ -40,8 +40,9 @@ public class ServiceComputer {
 	 * @param computer
 	 * @return if the computer is inserted or not
 	 * @throws NotAValidComputerException 
+	 * @throws CantConnectException 
 	 */
-	public boolean insert(DTOComputer dtoComputer) throws NotAValidComputerException {
+	public boolean insert(DTOComputer dtoComputer) throws NotAValidComputerException, CantConnectException {
 		Computer computer = mapperComputer.DTOToModel(dtoComputer);
 		try{
 			validator.validateComputer(computer);
@@ -56,9 +57,11 @@ public class ServiceComputer {
 	 * Delete a computer by is id
 	 * @param id of the computer
 	 * @return if the computer is deleted or not
+	 * @throws ComputerNotFoundException 
+	 * @throws CantConnectException 
 	 */
-	public boolean delete(int id){
-		return daoComputer.delete(id);
+	public void delete(int id) throws CantConnectException, ComputerNotFoundException{
+		daoComputer.delete(id);
 	}
 	
 	/**

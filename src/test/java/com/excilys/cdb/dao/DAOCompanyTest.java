@@ -23,9 +23,9 @@ public class DAOCompanyTest {
 		dao.update(1, new Company(1,"Test"));
 	}
 
-	@Test
+	@Test(expected = UnsupportedOperationException.class)
 	public void cantDeleteCompanyTest() {
-		assertFalse("Company shouldn't be deleted", dao.delete(1));
+		dao.delete(1);
 	}
 
 	@Test 
