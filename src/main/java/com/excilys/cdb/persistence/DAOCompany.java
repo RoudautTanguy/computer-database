@@ -1,7 +1,6 @@
 package com.excilys.cdb.persistence;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,7 +50,7 @@ public class DAOCompany extends DAO<Company> {
 	public List<Company> list() {
 		List<Company> companies = new ArrayList<Company>();
 		
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SELECT_ALL)){
 			
 			ResultSet resultat = statement.executeQuery( SELECT_ALL );
@@ -75,7 +74,7 @@ public class DAOCompany extends DAO<Company> {
 		List<Company> companies = new ArrayList<Company>();
 		int offset = index * limit;
 		
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PAGINATED)){
 			statement.setInt(1, offset);
 			statement.setInt(2, limit);
@@ -100,7 +99,7 @@ public class DAOCompany extends DAO<Company> {
 	@Override
 	public int count() {
 		int count = 0;
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT)){
 			ResultSet resultat = statement.executeQuery();
 			

@@ -1,7 +1,6 @@
 package com.excilys.cdb.persistence;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,7 +48,7 @@ public class DAOComputer extends DAO<Computer> {
 	}
 	@Override
 	public boolean insert(Computer computer) throws NotAValidComputerException {
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(INSERT)){
 			if(computer.getName()==null) {
 				String message = "Name is mandatory to insert a new Computer";
@@ -86,7 +85,7 @@ public class DAOComputer extends DAO<Computer> {
 	
 	@Override
 	public boolean delete(int id){
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(DELETE)){
 			statement.setInt(1, id);
 
@@ -106,7 +105,7 @@ public class DAOComputer extends DAO<Computer> {
 
 	@Override
 	public boolean update(int id, Computer computer) throws NotAValidComputerException{
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(UPDATE)){
 			if(computer.getName()==null) {
 				String message = "Name is mandatory to insert a new Computer";
@@ -147,7 +146,7 @@ public class DAOComputer extends DAO<Computer> {
 	public List<Computer> list() {
 		List<Computer> computers = new ArrayList<Computer>();
 		
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SELECT_ALL)){
 			ResultSet resultat = statement.executeQuery( );
 			while ( resultat.next() ) {
@@ -181,7 +180,7 @@ public class DAOComputer extends DAO<Computer> {
 		int offset = index * limit;
 		List<Computer> computers = new ArrayList<Computer>();
 		
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PAGINATED)){
 			statement.setInt(1, offset);
 			statement.setInt(2, limit);
@@ -220,7 +219,7 @@ public class DAOComputer extends DAO<Computer> {
 		int offset = index * limit;
 		List<DTOComputer> computers = new ArrayList<DTOComputer>();
 		
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SELECT_ALL_WITH_NAMES_PAGINATED)){
 			statement.setInt(1, offset);
 			statement.setInt(2, limit);
@@ -264,7 +263,7 @@ public class DAOComputer extends DAO<Computer> {
 	 * @throws ComputerNotFoundException
 	 */
 	public DTOComputer find(int idComputer) throws ComputerNotFoundException{
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)){
 			statement.setString(1, Integer.toString(idComputer));
 			ResultSet resultat = statement.executeQuery();
@@ -299,7 +298,7 @@ public class DAOComputer extends DAO<Computer> {
 	
 	public int count() {
 		int count = 0;
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT)){
 			ResultSet resultat = statement.executeQuery();
 			
@@ -314,7 +313,7 @@ public class DAOComputer extends DAO<Computer> {
 	
 	public int getLastComputerId() {
 		int lastId = 0;
-		try(Connection connection = DriverManager.getConnection(getUrl(),getUser(),getPassword());
+		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(LAST_COMPUTER_ID)){
 			ResultSet resultat = statement.executeQuery();
 			

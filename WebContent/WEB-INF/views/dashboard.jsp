@@ -137,34 +137,6 @@
 	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
-	<script type="text/javascript">
-	$(function() {
-		
-		var activePage = parseInt($("#Previous > a").attr("href").split("=")[1],10)+1;
-		$('.pagination li a:not(:has(> span))').each(function(){
-			if($(this).text() == activePage){
-				$(this).addClass("active");
-			}
-		});
-		
-		if(activePage == 1){
-			$("#First,#Previous").each(function(){
-				$(this).addClass("disabled");
-			});
-		} else if(activePage == $("#Last > a").attr("href").split("=")[1]){
-			$("#Last,#Next").each(function(){
-				$(this).addClass("disabled");
-			});
-		}
-		
-		$("#size li a").each(function(){
-			if($(this).text() == $("#size").attr("current-size")){
-				$(this).addClass("active");
-			}
-		});
-	
-	});
-	</script>
 
 </body>
 </html>
