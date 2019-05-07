@@ -44,3 +44,7 @@ input[type='checkbox'] {
 .alert {
   margin-top: 5px;
 }
+
+.fa.fa-sort-asc,.fa.fa-sort-desc, .fa.fa-sort {
+	cursor: pointer;
+}

@@ -128,11 +128,80 @@ $(function() {
 			$(this).attr("href",$(this).attr("href")+"&search="+search);
 		});
 	}
-
 });
 
-function addParameterToURL(param){
-    _url = location.href;
-    _url += (_url.split('?')[1] ? '&':'?') + param;
-    return _url;
-}
+//Order By
+$(function() {
+	$(".fa-sort, .fa-sort-asc, fa-sort-desc").each(function(index){
+		var orderBy = index*2+1;
+		$(this).parent().attr("href","?orderBy="+orderBy);
+	});
+	var orderBy = parseInt($("#orderBy").text(),10);
+	switch(orderBy){
+	case 1:
+		var icon = $(".fa-sort").eq(0);
+		icon.parent().attr("href","?orderBy="+2);
+		icon.addClass("fa-sort-desc");
+		icon.removeClass("fa-sort");
+		break;
+	case 2:
+		var icon = $(".fa-sort").eq(0);
+		icon.parent().attr("href","?orderBy="+0);
+		icon.addClass("fa-sort-asc");
+		icon.removeClass("fa-sort");
+		break;
+	case 3:
+		var icon = $(".fa-sort").eq(1);
+		icon.parent().attr("href","?orderBy="+4);
+		icon.addClass("fa-sort-desc");
+		icon.removeClass("fa-sort");
+		break;
+	case 4:
+		var icon = $(".fa-sort").eq(1);
+		icon.parent().attr("href","?orderBy="+0);
+		icon.addClass("fa-sort-asc");
+		icon.removeClass("fa-sort");
+		break;
+	case 5:
+		var icon = $(".fa-sort").eq(2);
+		icon.parent().attr("href","?orderBy="+6);
+		icon.addClass("fa-sort-desc");
+		icon.removeClass("fa-sort");
+		break;
+	case 6:
+		var icon = $(".fa-sort").eq(2);
+		icon.parent().attr("href","?orderBy="+0);
+		icon.addClass("fa-sort-asc");
+		icon.removeClass("fa-sort");
+		break;
+	case 7:
+		var icon = $(".fa-sort").eq(3);
+		icon.parent().attr("href","?orderBy="+8);
+		icon.addClass("fa-sort-desc");
+		icon.removeClass("fa-sort");
+		break;
+	case 8:
+		var icon = $(".fa-sort").eq(3);
+		icon.parent().attr("href","?orderBy="+0);
+		icon.addClass("fa-sort-asc");
+		icon.removeClass("fa-sort");
+		break;
+	default:
+		
+		
+	}
+	$(".container").on("click",".fa-sort",function(){
+		$(this).removeClass("fa-sort");
+		$(this).addClass("fa-sort-desc");
+	});
+	
+	$(".container").on("click",".fa-sort-desc",function(){
+		$(this).removeClass("fa-sort-desc");
+		$(this).addClass("fa-sort-asc");
+	});
+	
+	$(".container").on("click",".fa-sort-asc",function(){
+		$(this).removeClass("fa-sort-asc");
+		$(this).addClass("fa-sort");
+	});
+});

@@ -15,6 +15,7 @@ import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
+import com.excilys.cdb.persistence.OrderByEnum;
 import com.excilys.cdb.service.ServiceComputer;
 import com.excilys.cdb.service.ServicePagination;
 
@@ -26,6 +27,7 @@ public class ServletDashboard extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	public int size = 10;
 	public int currentPage = 1;
+	private OrderByEnum orderBy = OrderByEnum.DEFAULT;
 
 	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
 	private ServicePagination servicePagination = ServicePagination.getInstance();
@@ -35,13 +37,14 @@ public class ServletDashboard extends HttpServlet{
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String search = request.getParameter("search")==null?"":request.getParameter("search");
+		setOrderByAttribute(request);
 		setPageAttribute(request);
 		setSizeAttribute(request);
 		int lastPage = setLastPage(request, search);
 		setPaginationAttribute(request, lastPage);
 		setComputerCount(request, search);
 		try {
-			setComputersAttribute(request, response, search);
+			setComputersAttribute(request, response, search, orderBy);
 			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/dashboard.jsp" ).forward( request, response );
 		} catch (PageNotFoundException e) {
 			logger.info("Page {} not found", currentPage);
@@ -86,13 +89,27 @@ public class ServletDashboard extends HttpServlet{
 		request.setAttribute("pagination", pagination);
 	}
 
-	private void setComputersAttribute(HttpServletRequest request, HttpServletResponse response, String search) throws IOException, PageNotFoundException{
-			Page<DTOComputer> computers = serviceComputer.search(currentPage-1, size, search);
+	private void setComputersAttribute(HttpServletRequest request, HttpServletResponse response, String search, OrderByEnum orderBy) throws IOException, PageNotFoundException{
+			Page<DTOComputer> computers = serviceComputer.search(currentPage-1, size, search, orderBy);
 			request.setAttribute("computers", computers.getList());
 	}
 	
 	private void setComputerCount(HttpServletRequest request, String search) {
 		int count = serviceComputer.count(search);
 		request.setAttribute("count", count);
+	}
+	
+	private void setOrderByAttribute(HttpServletRequest request) {
+		String requestParam = request.getParameter("orderBy");
+		try{
+			int indexOrderBy = Integer.parseInt(requestParam);
+			if(indexOrderBy>=0 && indexOrderBy<OrderByEnum.values().length) {
+				orderBy = OrderByEnum.values()[indexOrderBy];
+			}
+		} catch(NumberFormatException e) {
+			logger.warn("Cant parse {} to integer", requestParam);
+		} finally {
+			request.setAttribute("orderBy", orderBy.ordinal());
+		}
 	}
 }

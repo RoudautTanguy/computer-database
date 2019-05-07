@@ -31,10 +31,10 @@ public class DAOComputer extends DAO<Computer> {
 	public static final String SELECT_ALL_WITH_NAMES_PAGINATED = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id LIMIT ?,?;";
 	public static final String SEARCH_WITH_NAMES_PAGINATED = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
-			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.name LIKE ? LIMIT ?,?;";
+			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE ( computer.name LIKE ? OR company.name LIKE ? ) %s LIMIT ?,?;";
 	public static final String SELECT_BY_ID = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;";
-	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer WHERE computer.name LIKE ?;";
+	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE ( computer.name LIKE ? OR company.name LIKE ? );";
 	public static final String LAST_COMPUTER_ID = "SELECT MAX(id) AS id FROM computer;";
 
 	private MapperComputer mapperComputer = MapperComputer.getInstance();
@@ -244,18 +244,19 @@ public class DAOComputer extends DAO<Computer> {
 		return computers;
 	}
 
-	public List<DTOComputer> search(int index, int limit, String search) throws PageNotFoundException{
+	public List<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
 		checkIndexAndLimit(index, limit);
 		int offset = index * limit;
 		List<DTOComputer> computers = new ArrayList<DTOComputer>();
-
+		String query = String.format(SEARCH_WITH_NAMES_PAGINATED,orderBy.getQuery());
 		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(SEARCH_WITH_NAMES_PAGINATED)){
+				PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, "%" + search + "%");
-			statement.setInt(2, offset);
-			statement.setInt(3, limit);
+			statement.setString(2, "%" + search + "%");
+			statement.setInt(3, offset);
+			statement.setInt(4, limit);
 			ResultSet resultat = statement.executeQuery( );
-			if (!resultat.isBeforeFirst() ) {   
+			if (!resultat.isBeforeFirst() ) {  
 				logger.error("Query have no result, trying to access a page that doesn't exist");
 				throw new PageNotFoundException("This page doesn't exist"); 
 			} 
@@ -332,6 +333,7 @@ public class DAOComputer extends DAO<Computer> {
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT)){
 			statement.setString(1, "%"+search+"%" );
+			statement.setString(2, "%"+search+"%" );
 			ResultSet resultat = statement.executeQuery();
 
 			if(resultat.next()) {

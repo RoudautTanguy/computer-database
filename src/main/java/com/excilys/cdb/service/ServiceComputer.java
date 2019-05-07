@@ -15,6 +15,7 @@ import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.persistence.DAOComputer;
+import com.excilys.cdb.persistence.OrderByEnum;
 import com.excilys.cdb.validator.Validator;
 
 public class ServiceComputer {
@@ -115,12 +116,9 @@ public class ServiceComputer {
 	 * @throws PageNotFoundException 
 	 * @return page
 	 */
-	public Page<DTOComputer> search(int index, int limit, String search) throws PageNotFoundException{
-		if(search == null || search.equals("")) {
-			return listWithNames(index, limit);
-		} else {
-			return new Page<DTOComputer>(daoComputer.search(index, limit, search), index, limit);
-		}
+	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
+		search = search == null?"":search;
+		return new Page<DTOComputer>(daoComputer.search(index, limit, search, orderBy), index, limit);
 	}
 	
 	/**

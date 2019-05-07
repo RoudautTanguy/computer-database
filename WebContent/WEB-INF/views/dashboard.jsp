@@ -41,6 +41,7 @@
         </form>
 
         <div class="container" style="margin-top: 10px;">
+        	<div id="orderBy" class="hidden"><c:out value="${orderBy}">0</c:out></div>
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
@@ -56,18 +57,18 @@
                             </span>
                         </th>
                         <th>
-                            Computer name
+                            Computer name <a><i class="fa fa-sort"></i></a>
                         </th>
                         <th>
-                            Introduced date
+                            Introduced date <a><i class="fa fa-sort"></i></a>
                         </th>
                         <!-- Table header for Discontinued Date -->
                         <th>
-                            Discontinued date
+                            Discontinued date <a><i class="fa fa-sort"></i></a>
                         </th>
                         <!-- Table header for Company -->
                         <th>
-                            Company
+                            Company <a><i class="fa fa-sort"></i></a>
                         </th>
 
                     </tr>
