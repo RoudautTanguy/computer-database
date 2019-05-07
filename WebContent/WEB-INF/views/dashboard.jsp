@@ -97,7 +97,7 @@
 
     <footer class="navbar-fixed-bottom">
         <div class="container text-center">
-            <ul class="pagination">
+            <ul id="pagination" class="pagination">
               <li id="First">
                   <a href="?page=1" aria-label="First">
                     <span aria-hidden="true">&laquo;</span>

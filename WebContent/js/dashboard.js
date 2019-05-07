@@ -99,8 +99,8 @@ $(function() {
 	
 	var activePage = parseInt($("#Previous > a").attr("href").split("=")[1],10)+1;
 	var lastPage = $("#Last > a").attr("href").split("=")[1];
-	$(".pagination li a:not(:has(> span)):gt("+(lastPage-1)+")").addClass("hidden");
-	$('.pagination li a:not(:has(> span))').each(function(){
+	$("#pagination li a:not(:has(> span)):gt("+(lastPage-1)+")").addClass("hidden");
+	$('#pagination li a:not(:has(> span))').each(function(){
 		if($(this).text() == activePage){
 			$(this).addClass("active");
 		}
