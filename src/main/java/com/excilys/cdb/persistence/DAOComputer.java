@@ -19,8 +19,10 @@ import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
-public class DAOComputer extends DAO<Computer> {
+public class DAOComputer{
 
 	public static final  String INSERT = "INSERT into computer (name, introduced, discontinued, company_id)"
 			+ " values (?, ?, ?, ?)";
@@ -36,6 +38,13 @@ public class DAOComputer extends DAO<Computer> {
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = ? ;";
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE ( computer.name LIKE ? OR company.name LIKE ? );";
 	public static final String LAST_COMPUTER_ID = "SELECT MAX(id) AS id FROM computer;";
+	
+	private HikariConfig config = new HikariConfig("/config.properties");
+    private HikariDataSource ds = new HikariDataSource( config );
+
+	public Connection getConnection() throws SQLException {
+		return ds.getConnection();
+	}
 
 	private MapperComputer mapperComputer = MapperComputer.getInstance();
 
@@ -49,7 +58,6 @@ public class DAOComputer extends DAO<Computer> {
 		}
 		return instance;
 	}
-	@Override
 	public boolean insert(Computer computer) throws NotAValidComputerException, CantConnectException {
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(INSERT)){
@@ -85,7 +93,6 @@ public class DAOComputer extends DAO<Computer> {
 		} 
 	}
 
-	@Override
 	public void delete(int id) throws CantConnectException, ComputerNotFoundException{
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(DELETE)){
@@ -104,7 +111,6 @@ public class DAOComputer extends DAO<Computer> {
 		}
 	}
 
-	@Override
 	public void update(int id, Computer computer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException{
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(UPDATE)){
@@ -142,7 +148,6 @@ public class DAOComputer extends DAO<Computer> {
 		}
 	}
 
-	@Override
 	public List<Computer> list() {
 		List<Computer> computers = new ArrayList<Computer>();
 
@@ -168,7 +173,6 @@ public class DAOComputer extends DAO<Computer> {
 		return computers;
 	}
 
-	@Override
 	public List<Computer> list(int index, int limit) throws PageNotFoundException{
 		checkIndexAndLimit(index, limit);
 		int offset = index * limit;
