@@ -17,6 +17,8 @@
 		<javax-servlet-api-version>4.0.1</javax-servlet-api-version>
 		<jstl-version>1.2</jstl-version>
 		<HikariCP-version>3.3.1</HikariCP-version>
+		<selenium-java-version>3.141.59</selenium-java-version>
+		<webdrivermanager-version>3.4.0</webdrivermanager-version>
 
 		<!-- Plugins -->
 		<maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
@@ -44,6 +46,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit-version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -60,6 +63,18 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>${HikariCP-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium-java-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>${webdrivermanager-version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

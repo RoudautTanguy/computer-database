@@ -21,6 +21,7 @@ $(function() {
 	
 	$("#addComputer").on("submit",function(e){
 		$(".alert").remove();
+		$(".has-error").removeClass("has-error");
 		
 		var name = $("#computerName").val();
 		if(name.trim().length === 0){
@@ -44,14 +45,13 @@ $(function() {
 		var discontinued = $("#discontinued").val();
 		if(discontinued && !regex.test(discontinued)){
 			e.preventDefault();
-			alert(discontinued);
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">\
 					Please enter a valid date\
 					</div>');
 			$('#discontinued').parent().addClass("has-error");
 		}
 		
-		if((!introduced && discontinued) || ($("#introduced").datepicker('getDate') >= $("#discontinued").datepicker('getDate'))){
+		if((!introduced && !!discontinued) || (!!introduced && !!discontinued && $("#introduced").datepicker('getDate') >= $("#discontinued").datepicker('getDate'))){
 			e.preventDefault();
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">\
 					Please make sure that discontinued is after introduced\
