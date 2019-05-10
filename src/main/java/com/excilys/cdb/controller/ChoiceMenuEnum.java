@@ -11,14 +11,10 @@ public enum ChoiceMenuEnum {
 	private String menuMessage;
 	
 	ChoiceMenuEnum(String pMenuMessage) {
-		this.setMenuMessage(pMenuMessage);
+		this.menuMessage = pMenuMessage;
 	}
 
 	public String getMenuMessage() {
 		return menuMessage;
-	}
-
-	public void setMenuMessage(String menuMessage) {
-		this.menuMessage = menuMessage;
 	}
 }

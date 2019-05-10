@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.mapper.DTOCompany;
@@ -25,15 +28,24 @@ public class ServletAddComputer extends HttpServlet{
 	private ServiceCompany serviceCompany = ServiceCompany.getInstance();
 	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
 	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private static final Logger logger = LoggerFactory.getLogger(ServletAddComputer.class);
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		List<DTOCompany> companies = serviceCompany.list();
 		request.setAttribute("companies", companies);
-		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/addComputer.jsp" ).forward( request, response );
+		try {
+			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/addComputer.jsp" ).forward( request, response );
+		} catch (ServletException e) {
+			logger.error("Target resource throws an exception",e);
+		} catch (IOException e) {
+			logger.error("Input or output exception occurs",e);
+		}
 	}
 	
 	@Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 		String computerName = request.getParameter("computerName");
+		computerName = computerName.replaceAll("[\n|\r|\t]", "_");
 		String introduced = request.getParameter("introduced");
 		String discontinued = request.getParameter("discontinued");
         String companyId = request.getParameter("companyId");
@@ -45,9 +57,22 @@ public class ServletAddComputer extends HttpServlet{
         try {
         	serviceComputer.insert(dtoComputer);
 			response.sendRedirect(request.getContextPath() + "/dashboard");
-		} catch (NotAValidComputerException | CantConnectException e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (NotAValidComputerException e) {
+			logger.warn("This computer is not valid", e);
+			try {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			} catch (IOException e1) {
+				logger.error("Input or output exception occurs",e1);
+			}
+		} catch (CantConnectException e) {
+			logger.error("Can't connect to the DB", e);
+			try {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			} catch (IOException e1) {
+				logger.error("Input or output exception occurs",e1);
+			}
+		} catch (IOException e) {
+			logger.error("Input or output exception occurs",e);
 		}
 	}
 

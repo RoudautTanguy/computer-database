@@ -56,7 +56,7 @@ public class DAOCompany {
 				statement.execute();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("SQL Exception",e);
 			throw e;
 		}
 	}
@@ -83,6 +83,7 @@ public class DAOCompany {
 			}
 
 		} catch (SQLException e) {
+			logger.error("Can't connect",e);
 			throw new CantConnectException("Can't connect.");
 		}
 	}
@@ -91,9 +92,8 @@ public class DAOCompany {
 		List<Company> companies = new ArrayList<Company>();
 
 		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(SELECT_ALL)){
-
-			ResultSet resultat = statement.executeQuery( SELECT_ALL );
+				PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
+				ResultSet resultat = statement.executeQuery();){
 			while ( resultat.next() ) {
 				int idComputer = resultat.getInt( "id" );
 				String nameComputer = resultat.getString( "name" );
@@ -102,7 +102,7 @@ public class DAOCompany {
 
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
-		}
+		} 
 		return companies;
 	}
 
@@ -112,12 +112,12 @@ public class DAOCompany {
 		}
 		List<Company> companies = new ArrayList<Company>();
 		int offset = index * limit;
-
+		ResultSet resultat = null;
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PAGINATED)){
 			statement.setInt(1, offset);
 			statement.setInt(2, limit);
-			ResultSet resultat = statement.executeQuery( );
+			resultat = statement.executeQuery( );
 			if (!resultat.isBeforeFirst()) {   
 				String message = "This page doesn't exist";
 				logger.error(message);
@@ -131,6 +131,12 @@ public class DAOCompany {
 
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
+		} finally {
+			try {
+				resultat.close();
+			} catch (SQLException e) {
+				logger.error("Can't close ResultSet");
+			}
 		}
 		return companies;
 	}
@@ -138,8 +144,8 @@ public class DAOCompany {
 	public int count() {
 		int count = 0;
 		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(COUNT)){
-			ResultSet resultat = statement.executeQuery();
+				PreparedStatement statement = connection.prepareStatement(COUNT);
+				ResultSet resultat = statement.executeQuery();){
 
 			if(resultat.next()) {
 				count =  resultat.getInt("count");
@@ -153,8 +159,8 @@ public class DAOCompany {
 	public int getLastCompanyId() {
 		int lastId = 0;
 		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(LAST_COMPANY_ID)){
-			ResultSet resultat = statement.executeQuery();
+				PreparedStatement statement = connection.prepareStatement(LAST_COMPANY_ID);
+				ResultSet resultat = statement.executeQuery();){
 
 			if(resultat.next()) {
 				lastId =  resultat.getInt("id");

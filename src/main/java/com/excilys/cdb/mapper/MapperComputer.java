@@ -70,18 +70,21 @@ public class MapperComputer {
 		if(!optionalIntroduced.isEmpty()) {
 			newComputer.setIntroduced(optionalIntroduced.get());
 		} else {
-			logger.warn("Can't parse introduced date {}", computer.getIntroduced());
+			String introduced = computer.getIntroduced().replaceAll("[\n|\r|\t]", "_");
+			logger.warn("Can't parse introduced date {}", introduced);
 		}
 		if(!optionalDiscontinued.isEmpty()) {
 			newComputer.setDiscontinued(optionalDiscontinued.get());
 		} else {
-			logger.warn("Can't parse introduced date {}", computer.getDiscontinued());
+			String discontinued = computer.getDiscontinued().replaceAll("[\n|\r|\t]", "_");
+			logger.warn("Can't parse introduced date {}", discontinued);
 		}
 		
 		try {
 			newComputer.setCompanyId(Integer.parseInt(computer.getCompany()));
 		} catch(NumberFormatException e) {
-			logger.warn("Can't parse company id {}", computer.getCompany());
+			String company = computer.getCompany().replaceAll("[\n|\r|\t]", "_");
+			logger.warn("Can't parse company id {}", company);
 		}
 		return newComputer;
 	}

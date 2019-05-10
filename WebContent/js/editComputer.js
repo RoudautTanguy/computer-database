@@ -39,7 +39,6 @@ $(function() {
 		var introduced = $("#introduced").val();
 		if(introduced && !regex.test(introduced)){
 			e.preventDefault();
-			console.log(introduced);
 			$('#introduced').after('<div class="alert alert-danger" role="alert">\
 					Please enter a valid date\
 					</div>');
@@ -48,7 +47,6 @@ $(function() {
 		var discontinued = $("#discontinued").val();
 		if(discontinued && !regex.test(discontinued)){
 			e.preventDefault();
-			alert(discontinued);
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">\
 					Please enter a valid date\
 					</div>');

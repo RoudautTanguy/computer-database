@@ -16,6 +16,7 @@ import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.DAOComputer;
+import com.excilys.cdb.persistence.OrderByEnum;
 
 public class DAOComputerTest {
 
@@ -111,31 +112,21 @@ public class DAOComputerTest {
 		dao.delete(9999);
 	}
 
-	// List
-
-	@Test
-	public void listComputerTest() {
-		assertEquals("The list of computer should have the same length of computer present in database",dao.list().size(), dao.count(""));
-	}
-
-	@Test
-	public void listWithPaginationTest() throws PageNotFoundException {
-		assertEquals("The list should have the same length as the limit of pagination", 50, dao.list(0, 50).size());
-	}
+	// Search
 
 	@Test(expected = PageNotFoundException.class)
 	public void listWithNegativeIndexTest() throws PageNotFoundException {
-		dao.list(-1, 50);
+		dao.search(-1, 50, "", OrderByEnum.DEFAULT);
 	}
 
 	@Test(expected = PageNotFoundException.class)
 	public void listWithNegativeLimitTest() throws PageNotFoundException {
-		dao.list(50, -1);
+		dao.search(50, -1, "", OrderByEnum.DEFAULT);
 	}
 
 	@Test(expected = PageNotFoundException.class)
 	public void listWithNoResultTest() throws PageNotFoundException {
-		dao.list(50, 50);
+		dao.search(50, 50, "", OrderByEnum.DEFAULT);
 	}
 
 	// Find

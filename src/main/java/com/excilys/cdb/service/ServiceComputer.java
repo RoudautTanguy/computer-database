@@ -1,8 +1,5 @@
 package com.excilys.cdb.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,31 +82,6 @@ public class ServiceComputer {
 		}
 	}
 	
-	public Page<DTOComputer> list(int index, int limit) throws PageNotFoundException{
-		List<DTOComputer> dtoComputers = daoComputer.list(index, limit).stream().map(x -> mapperComputer.modelToDTO(x)).collect(Collectors.toList());	
-		return new Page<DTOComputer>(dtoComputers, index, limit);
-	}
-	
-	/**
-	 * List all the computers with pagination the index of the page
-	 * @param index
-	 * @throws PageNotFoundException
-	 * @return page
-	 */
-	public Page<DTOComputer> list(int index) throws PageNotFoundException{
-		return list(index, COMPUTERS_NUMBER_PER_PAGE);
-	}
-	
-	/**
-	 * List all the computers with pagination
-	 * @return the current page of computer
-	 * @throws PageNotFoundException 
-	 * @return page
-	 */
-	public Page<DTOComputer> list() throws PageNotFoundException{
-		return list(0);
-	}
-	
 	/**
 	 * List all the computers with pagination and names instead of id
 	 * @return the current page of computer
@@ -127,8 +99,9 @@ public class ServiceComputer {
 	 * @throws PageNotFoundException 
 	 * @return page
 	 */
-	public Page<DTOComputer> listWithNames(int index, int limit) throws PageNotFoundException{
-		return new Page<DTOComputer>(daoComputer.listWithNames(index, limit), index, limit);
+	public Page<DTOComputer> search(String search) throws PageNotFoundException{
+		search = search == null?"":search;
+		return new Page<DTOComputer>(daoComputer.search(0, COMPUTERS_NUMBER_PER_PAGE, search, OrderByEnum.DEFAULT), 0, COMPUTERS_NUMBER_PER_PAGE);
 	}
 	
 	/**

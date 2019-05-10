@@ -28,10 +28,6 @@ public class DAOComputer{
 			+ " values (?, ?, ?, ?)";
 	public static final String DELETE = "DELETE FROM computer where id = ?";
 	public static final String UPDATE = "UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
-	public static final String SELECT_ALL = "SELECT * FROM computer;";
-	public static final String SELECT_ALL_PAGINATED = "SELECT * FROM computer LIMIT ?,?;";
-	public static final String SELECT_ALL_WITH_NAMES_PAGINATED = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
-			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id LIMIT ?,?;";
 	public static final String SEARCH_WITH_NAMES_PAGINATED = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE ( computer.name LIKE ? OR company.name LIKE ? ) %s LIMIT ?,?;";
 	public static final String SELECT_BY_ID = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "
@@ -148,118 +144,19 @@ public class DAOComputer{
 		}
 	}
 
-	public List<Computer> list() {
-		List<Computer> computers = new ArrayList<Computer>();
-
-		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(SELECT_ALL)){
-			ResultSet resultat = statement.executeQuery( );
-			while ( resultat.next() ) {
-				int id = resultat.getInt( "id" );
-				String name = resultat.getString( "name" );
-				Timestamp introduced = resultat.getTimestamp( "introduced" );
-				Timestamp discontinued = resultat.getTimestamp( "discontinued" );
-				int companyId = resultat.getInt("company_id");
-				computers.add(new Computer.ComputerBuilder(name)
-						.withId(id)
-						.withIntroduced(introduced)
-						.withDiscontinued(discontinued)
-						.withCompanyId(companyId)
-						.build());
-			}
-		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
-		}
-		return computers;
-	}
-
-	public List<Computer> list(int index, int limit) throws PageNotFoundException{
-		checkIndexAndLimit(index, limit);
-		int offset = index * limit;
-		List<Computer> computers = new ArrayList<Computer>();
-
-		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PAGINATED)){
-			statement.setInt(1, offset);
-			statement.setInt(2, limit);
-			ResultSet resultat = statement.executeQuery( );
-			if (!resultat.isBeforeFirst() ) {   
-				logger.error("Query have no result, trying to access a page that doesn't exist");
-				throw new PageNotFoundException("This page doesn't exist"); 
-			} 
-			while ( resultat.next() ) {
-				int id = resultat.getInt( "id" );
-				String name = resultat.getString( "name" );
-				Timestamp introduced = resultat.getTimestamp( "introduced" );
-				Timestamp discontinued = resultat.getTimestamp( "discontinued" );
-				int companyId = resultat.getInt("company_id");
-				computers.add(new Computer.ComputerBuilder(name)
-						.withId(id)
-						.withIntroduced(introduced)
-						.withDiscontinued(discontinued)
-						.withCompanyId(companyId)
-						.build());
-			}
-		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
-		}
-		return computers;
-	}
-
-	public List<DTOComputer> listWithNames(int index, int limit) throws PageNotFoundException{
-		checkIndexAndLimit(index, limit);
-		int offset = index * limit;
-		List<DTOComputer> computers = new ArrayList<DTOComputer>();
-
-		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(SELECT_ALL_WITH_NAMES_PAGINATED)){
-			statement.setInt(1, offset);
-			statement.setInt(2, limit);
-			ResultSet resultat = statement.executeQuery( );
-			if (!resultat.isBeforeFirst() ) {   
-				logger.error("Query have no result, trying to access a page that doesn't exist");
-				throw new PageNotFoundException("This page doesn't exist"); 
-			} 
-			while ( resultat.next() ) {
-				int id = resultat.getInt( "id" );
-				String name = resultat.getString( "name" );
-				Timestamp introduced = resultat.getTimestamp( "introduced" );
-				Timestamp discontinued = resultat.getTimestamp( "discontinued" );
-				int companyId = resultat.getInt("company_id");
-				String companyName = resultat.getString("company_name");
-				DTOComputer computer = mapperComputer.modelToDTO(new Computer.ComputerBuilder(name)
-						.withId(id)
-						.withIntroduced(introduced)
-						.withDiscontinued(discontinued)
-						.withCompanyId(companyId)
-						.build());
-				if(companyName != null) {
-					logger.info("Replacing company id with company name");
-					computer.setCompany(companyName);
-				} else {
-					logger.info("Replacing company id with null company name");
-					computer.setCompany("");
-				}
-				computers.add(computer);
-			}
-		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
-		}
-		return computers;
-	}
-
 	public List<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
 		checkIndexAndLimit(index, limit);
 		int offset = index * limit;
 		List<DTOComputer> computers = new ArrayList<DTOComputer>();
 		String query = String.format(SEARCH_WITH_NAMES_PAGINATED,orderBy.getQuery());
+		ResultSet resultat = null;
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, "%" + search + "%");
 			statement.setString(2, "%" + search + "%");
 			statement.setInt(3, offset);
 			statement.setInt(4, limit);
-			ResultSet resultat = statement.executeQuery( );
+			resultat = statement.executeQuery( );
 			if (!resultat.isBeforeFirst() ) {  
 				logger.error("Query have no result, trying to access a page that doesn't exist");
 				throw new PageNotFoundException("This page doesn't exist"); 
@@ -288,6 +185,12 @@ public class DAOComputer{
 			}
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
+		} finally {
+			try {
+				resultat.close();
+			} catch (SQLException e) {
+				logger.error("Can't close ResultSet");
+			}
 		}
 		return computers;
 	}
@@ -299,10 +202,11 @@ public class DAOComputer{
 	 * @throws ComputerNotFoundException
 	 */
 	public DTOComputer find(int idComputer) throws ComputerNotFoundException{
+		ResultSet resultat = null;
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)){
 			statement.setString(1, Integer.toString(idComputer));
-			ResultSet resultat = statement.executeQuery();
+			resultat = statement.executeQuery();
 			if(resultat.next()) {
 				int id = resultat.getInt( "id" );
 				String name = resultat.getString( "name" );
@@ -329,22 +233,35 @@ public class DAOComputer{
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
 			throw new ComputerNotFoundException("Computer "+idComputer+" is not found !");
+		} finally {
+			try {
+				resultat.close();
+			} catch (SQLException e) {
+				logger.error("Can't close ResultSet");
+			}
 		}
 	}
 
 	public int count(String search) {
 		int count = 0;
+		ResultSet resultat = null;
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT)){
 			statement.setString(1, "%"+search+"%" );
 			statement.setString(2, "%"+search+"%" );
-			ResultSet resultat = statement.executeQuery();
+			resultat = statement.executeQuery();
 
 			if(resultat.next()) {
 				count =  resultat.getInt("count");
 			}
 		} catch (SQLException e) {
 			logger.trace("Can't connect. ",e);
+		} finally {
+			try {
+				resultat.close();
+			} catch (SQLException e) {
+				logger.error("Can't close ResultSet");
+			}
 		}
 		return count;
 	}
@@ -352,8 +269,8 @@ public class DAOComputer{
 	public int getLastComputerId() {
 		int lastId = 0;
 		try(Connection connection = this.getConnection();
-				PreparedStatement statement = connection.prepareStatement(LAST_COMPUTER_ID)){
-			ResultSet resultat = statement.executeQuery();
+				PreparedStatement statement = connection.prepareStatement(LAST_COMPUTER_ID);
+				ResultSet resultat = statement.executeQuery();){
 
 			if(resultat.next()) {
 				lastId =  resultat.getInt("id");
