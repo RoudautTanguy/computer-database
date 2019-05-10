@@ -46,12 +46,17 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit-version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax-servlet-api-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -68,13 +73,11 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium-java-version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
 			<artifactId>webdrivermanager</artifactId>
 			<version>${webdrivermanager-version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -82,6 +85,7 @@
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin-version}</version>
 				<configuration>
