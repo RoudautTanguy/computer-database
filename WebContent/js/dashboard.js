@@ -95,10 +95,11 @@ $(document).keydown(function(e) {
 $(function() {
 	let url = new URL(window.location.href);
 	let searchParams = new URLSearchParams(url.search);
+	var size = searchParams.get('size');
 	var search = searchParams.get('search');
 	
 	var activePage = parseInt($("#Previous > a").attr("href").split("=")[1],10)+1;
-	var lastPage = $("#Last > a").attr("href").split("=")[1];
+	var lastPage = $("#Last > a").attr("href").split("=")[1].split("&")[0];
 	$("#pagination li a:not(:has(> span)):gt("+(lastPage-1)+")").addClass("hidden");
 	$('#pagination li a:not(:has(> span))').each(function(){
 		if($(this).text() == activePage){
@@ -110,7 +111,8 @@ $(function() {
 		$("#First,#Previous").each(function(){
 			$(this).addClass("disabled");
 		});
-	} else if(activePage == lastPage){
+	} 
+	if(activePage == lastPage){
 		$("#Last,#Next").each(function(){
 			$(this).addClass("disabled");
 		});
@@ -122,6 +124,12 @@ $(function() {
 		}
 	});
 	
+	//Keep the size param
+	if(size){
+		$(".pagination li a").each(function(){
+			$(this).attr("href",$(this).attr("href")+"&size="+size);
+		});
+	}
 	//Keep the search param
 	if(search){
 		$(".pagination li a").each(function(){

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -27,10 +28,6 @@ public class ServletDashboard extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
 	private static final String IO_EXCEPTION_MESSAGE = "Input or output exception occurs";
-	
-	public int size = 10;
-	public int currentPage = 1;
-	private OrderByEnum orderBy = OrderByEnum.DEFAULT;
 
 	private static ServiceComputer serviceComputer = ServiceComputer.getInstance();
 	private static ServicePagination servicePagination = ServicePagination.getInstance();
@@ -40,14 +37,16 @@ public class ServletDashboard extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		String search = request.getParameter("search")==null?"":request.getParameter("search");
-		setOrderByAttribute(request);
-		setPageAttribute(request);
-		setSizeAttribute(request);
-		int lastPage = setLastPage(request, search);
-		setPaginationAttribute(request, lastPage);
+		
+		OrderByEnum orderBy = setOrderByAttribute(request);
+		int currentPage = setPageAttribute(request);
+		int size = setSizeAttribute(request);
+		int lastPage = setLastPage(request, size, search);
+		setPaginationAttribute(request, currentPage, lastPage);
 		setComputerCount(request, search);
 		try {
-			setComputersAttribute(request, search, orderBy);
+			Page<DTOComputer> page = new Page<>(null,currentPage-1,size,search);
+			setComputersAttribute(request, page, orderBy);
 			forward("/WEB-INF/views/dashboard.jsp",request, response);
 		} catch (PageNotFoundException e) {
 			logger.info("Page {} not found", currentPage);
@@ -78,10 +77,11 @@ public class ServletDashboard extends HttpServlet{
 					logger.error(IO_EXCEPTION_MESSAGE,e1);
 				}
 			} catch (CantConnectException e) {
-				logger.error("Can't connect",e);
+				logger.error(Constant.CANT_CONNECT,e);
 			}
 		}
-		int lastPage = setLastPage(request,"");
+		int size = setSizeAttribute(request);
+		int lastPage = setLastPage(request,size,"");
 		try {
 			response.sendRedirect(request.getContextPath() + "/dashboard?page="+lastPage);
 		} catch (IOException e) {
@@ -89,29 +89,31 @@ public class ServletDashboard extends HttpServlet{
 		}
 	}
 
-	private void setPageAttribute(HttpServletRequest request) {
-		currentPage = servicePagination.getCurrentPage(request.getParameter("page"));
+	private int setPageAttribute(HttpServletRequest request) {
+		int currentPage = servicePagination.getCurrentPage(request.getParameter("page"));
 		request.setAttribute("currentPage", currentPage);
+		return currentPage;
 	}
 
-	private void setSizeAttribute(HttpServletRequest request) {
-		size = servicePagination.getSize(request.getParameter("size"), size);
+	private int setSizeAttribute(HttpServletRequest request) {
+		int size = servicePagination.getSize(request.getParameter("size"));
 		request.setAttribute("size", size);
+		return size;
 	}
 
-	private int setLastPage(HttpServletRequest request, String search) {
+	private int setLastPage(HttpServletRequest request, int size, String search) {
 		int lastPage = serviceComputer.lastPage(size,search);
 		request.setAttribute("lastPage", lastPage);
 		return lastPage;
 	}
 	
-	private void setPaginationAttribute(HttpServletRequest request, int lastPage) {
+	private void setPaginationAttribute(HttpServletRequest request, int currentPage, int lastPage) {
 		int pagination = servicePagination.getPagination(lastPage, currentPage);
 		request.setAttribute("pagination", pagination);
 	}
 
-	private void setComputersAttribute(HttpServletRequest request, String search, OrderByEnum orderBy) throws PageNotFoundException{
-			Page<DTOComputer> computers = serviceComputer.search(currentPage-1, size, search, orderBy);
+	private void setComputersAttribute(HttpServletRequest request, Page<DTOComputer> page, OrderByEnum orderBy) throws PageNotFoundException{
+			Page<DTOComputer> computers = serviceComputer.search(page.getIndex(), page.getLimit(), page.getSearch(), orderBy);
 			request.setAttribute("computers", computers.getList());
 	}
 	
@@ -120,7 +122,8 @@ public class ServletDashboard extends HttpServlet{
 		request.setAttribute("count", count);
 	}
 	
-	private void setOrderByAttribute(HttpServletRequest request) {
+	private OrderByEnum setOrderByAttribute(HttpServletRequest request) {
+		OrderByEnum orderBy = OrderByEnum.DEFAULT;
 		String requestParam = request.getParameter("orderBy");
 		try{
 			int indexOrderBy = Integer.parseInt(requestParam);
@@ -132,6 +135,7 @@ public class ServletDashboard extends HttpServlet{
 		} finally {
 			request.setAttribute("orderBy", orderBy.ordinal());
 		}
+		return orderBy;
 	}
 	
 	private void forward(String url, HttpServletRequest request, HttpServletResponse response) {

@@ -90,7 +90,7 @@ public class ServiceComputer {
 	 */
 	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
 		search = search == null?"":search;
-		return new Page<>(daoComputer.search(index, limit, search, orderBy), index, limit);
+		return new Page<>(daoComputer.search(index, limit, search, orderBy), index, limit, "");
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class ServiceComputer {
 	 */
 	public Page<DTOComputer> search(String search) throws PageNotFoundException{
 		search = search == null?"":search;
-		return new Page<>(daoComputer.search(0, COMPUTERS_NUMBER_PER_PAGE, search, OrderByEnum.DEFAULT), 0, COMPUTERS_NUMBER_PER_PAGE);
+		return new Page<>(daoComputer.search(0, COMPUTERS_NUMBER_PER_PAGE, search, OrderByEnum.DEFAULT), 0, COMPUTERS_NUMBER_PER_PAGE, "");
 	}
 	
 	/**

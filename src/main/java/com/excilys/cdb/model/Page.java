@@ -7,16 +7,18 @@ public class Page<T> {
 	List<T> list;
 	int limit = 0;
 	int index = 0;
+	String search = "";
 	
 	public Page(List<T> pList, int pLimit) {
 		this.list = pList;
 		this.limit = pLimit;
 	}
 	
-	public Page(List<T> pList, int pIndex, int pLimit ) {
+	public Page(List<T> pList, int pIndex, int pLimit ,String search) {
 		this.list = pList;
 		this.limit = pLimit;
 		this.index = pIndex;
+		this.search = search;
 	}
 	
 	/**
@@ -37,6 +39,14 @@ public class Page<T> {
 	
 	public void setIndex(int pIndex) {
 		this.index = pIndex;
+	}
+	
+	public int getLimit() {
+		return limit;
+	}
+	
+	public String getSearch() {
+		return search;
 	}
 	
 	public int decrementIndex() {

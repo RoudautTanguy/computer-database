@@ -53,7 +53,7 @@ public class ServiceCompany {
 	 */
 	public Page<DTOCompany> list(int index, int limit) throws PageNotFoundException{
 		List<DTOCompany> dtoCompanies = daoCompany.list(index, limit).stream().map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());		
-		return new Page<>(dtoCompanies, index, limit);
+		return new Page<>(dtoCompanies, index, limit, "");
 	}
 	
 	/**

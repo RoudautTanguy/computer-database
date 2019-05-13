@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 public class ServicePagination {
 	
+	private static final int DEFAULT_SIZE = 10;
+	
 	private static ServicePagination instance;
 	
 	/**
@@ -41,12 +43,12 @@ public class ServicePagination {
 	 * @param size actual size
 	 * @return the new size of the page
 	 */
-	public int getSize(String sizeParameter, int size) {
+	public int getSize(String sizeParameter) {
+		int size = DEFAULT_SIZE;
 		try {
-			int oldSize = size;
 			size = Integer.parseInt(sizeParameter);
 			if(size != 10 && size != 50 && size !=100) {
-				size = oldSize;
+				size = DEFAULT_SIZE;
 			} 
 		} catch (NumberFormatException e) {
 			logger.info("No parameter 'size'");

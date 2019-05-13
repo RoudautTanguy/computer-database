@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.model.Computer;
 
 public class MapperComputer {
@@ -70,13 +71,13 @@ public class MapperComputer {
 		if(optionalIntroduced.isPresent()) {
 			newComputer.setIntroduced(optionalIntroduced.get());
 		} else {
-			String introduced = computer.getIntroduced();
+			String introduced = computer.getIntroduced().replaceAll(Constant.SANITIZER_REPLACER, "_");
 			logger.warn("Can't parse introduced date {}", introduced);
 		}
 		if(optionalDiscontinued.isPresent()) {
 			newComputer.setDiscontinued(optionalDiscontinued.get());
 		} else {
-			String discontinued = computer.getDiscontinued();
+			String discontinued = computer.getDiscontinued().replaceAll(Constant.SANITIZER_REPLACER, "_");
 			logger.warn("Can't parse introduced date {}", discontinued);
 		}
 		
