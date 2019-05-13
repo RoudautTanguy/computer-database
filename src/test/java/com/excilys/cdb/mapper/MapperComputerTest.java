@@ -13,11 +13,12 @@ import com.excilys.cdb.model.Computer;
 public class MapperComputerTest {
 
 	MapperComputer mapper = MapperComputer.getInstance();
+	private static final String APPLE_COMPUTER = "AppleComputer";
 
 	@Test
 	public void mapModelToDTOTest() {
-		Computer computer = new Computer.ComputerBuilder("AppleComputer").build();
-		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer").build();
+		Computer computer = new Computer.ComputerBuilder(APPLE_COMPUTER).build();
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(APPLE_COMPUTER).build();
 		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.mapModelToDTO(computer));
 	}
 
@@ -27,12 +28,12 @@ public class MapperComputerTest {
 		LocalDate today = LocalDate.now();
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(today.atStartOfDay());
-		Computer computer = new Computer.ComputerBuilder("AppleComputer")
+		Computer computer = new Computer.ComputerBuilder(APPLE_COMPUTER)
 										.withIntroduced(introduced)
 										.withDiscontinued(discontinued)
 										.withCompanyId(1)
 										.build();
-		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer")
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(APPLE_COMPUTER)
 												 .withIntroduced("10-10-2010")
 												 .withDiscontinued(today.format(formatter))
 												 .withCompany("1")
@@ -42,8 +43,8 @@ public class MapperComputerTest {
 
 	@Test
 	public void mapDTOToModelTest() {
-		Computer computer = new Computer.ComputerBuilder("AppleComputer").build();
-		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer").build();
+		Computer computer = new Computer.ComputerBuilder(APPLE_COMPUTER).build();
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(APPLE_COMPUTER).build();
 		assertEquals("Mapped Computer isn't equal to expected Computer",computer,mapper.mapDTOToModel(dtoComputer));
 	}
 
@@ -53,12 +54,12 @@ public class MapperComputerTest {
 		LocalDate today = LocalDate.now();
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(today.atStartOfDay());
-		Computer computer = new Computer.ComputerBuilder("AppleComputer")
+		Computer computer = new Computer.ComputerBuilder(APPLE_COMPUTER)
 										.withIntroduced(introduced)
 										.withDiscontinued(discontinued)
 										.withCompanyId(1)
 										.build();
-		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer")
+		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(APPLE_COMPUTER)
 				 .withIntroduced("10-10-2010")
 				 .withDiscontinued(today.format(formatter))
 				 .withCompany("1")

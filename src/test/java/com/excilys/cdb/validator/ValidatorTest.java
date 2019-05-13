@@ -10,13 +10,14 @@ import com.excilys.cdb.model.Computer;
 
 public class ValidatorTest {
 
+	private static final String GOOD_COMPUTER = "Good Computer";
 	Validator validator = Validator.getInstance();
 
 	@Test
 	public void validateGoodComputerTest() throws NotAValidComputerException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		validator.validateComputer(new Computer.ComputerBuilder("Good Computer")
+		validator.validateComputer(new Computer.ComputerBuilder(GOOD_COMPUTER)
 											   .withId(1)
 											   .withIntroduced(introduced)
 											   .withDiscontinued(discontinued)
@@ -27,7 +28,7 @@ public class ValidatorTest {
 	@Test
 	public void validateGoodComputerWithoutDiscontinuedTest() throws NotAValidComputerException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
-		validator.validateComputer(new Computer.ComputerBuilder("Good Computer")
+		validator.validateComputer(new Computer.ComputerBuilder(GOOD_COMPUTER)
 				   .withId(1)
 				   .withIntroduced(introduced)
 				   .withCompanyId(1)
@@ -36,7 +37,7 @@ public class ValidatorTest {
 
 	@Test
 	public void validateGoodComputerWithoutDatesTest() throws NotAValidComputerException {
-		validator.validateComputer(new Computer.ComputerBuilder("Good Computer")
+		validator.validateComputer(new Computer.ComputerBuilder(GOOD_COMPUTER)
 				   .withId(1)
 				   .withCompanyId(1)
 				   .build());

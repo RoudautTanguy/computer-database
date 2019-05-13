@@ -3,8 +3,6 @@ package com.excilys.cdb.dao;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
-
 import org.junit.Test;
 
 import com.excilys.cdb.exception.CantConnectException;
@@ -29,7 +27,7 @@ public class DAOCompanyTest {
 	
 	//Insert & Delete
 	@Test
-	public void InsertAndDeleteCompany() throws NotAValidCompanyException, SQLException, NotAValidComputerException, CantConnectException, CompanyNotFoundException {
+	public void insertAndDeleteCompany() throws NotAValidCompanyException, NotAValidComputerException, CantConnectException, CompanyNotFoundException {
 		int count = dao.countCompanies();
 		dao.insertCompany("TestCompany");
 		assertTrue("Company is not inserted",dao.countCompanies()>count);

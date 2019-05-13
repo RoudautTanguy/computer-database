@@ -18,12 +18,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import com.excilys.cdb.constant.Constant;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class ListWebUITest {
 
 	private WebDriver driver;
-	private final String PROJECT_URL = "http://localhost:8080/computer-database/";
+	private static final String PROJECT_URL = "http://localhost:8080/computer-database/";
+	private static final String NUMBER_COMPUTER_CSS = "b.number";
+	private static final String RESULTS_ID = "results";
 
 	@BeforeClass
 	public static void setupClass() {
@@ -58,21 +62,21 @@ public class ListWebUITest {
 	@Test
 	public void numberComputerTest() {
 		driver.get(PROJECT_URL);
-		String number = driver.findElement(By.cssSelector("b.number")).getText();
+		String number = driver.findElement(By.cssSelector(NUMBER_COMPUTER_CSS)).getText();
 		assertTrue("Display number of computer is 0 and shouldn't be", Integer.parseInt(number)>0);
 	}
 
 	@Test
 	public void numberComputerTestWithSearch() {
 		driver.get(PROJECT_URL+"?search=Apple");
-		String number = driver.findElement(By.cssSelector("b.number")).getText();
+		String number = driver.findElement(By.cssSelector(NUMBER_COMPUTER_CSS)).getText();
 		assertTrue("Display number of computer is 0 with Apple search and shouldn't be", Integer.parseInt(number)>0);
 	}
 
 	@Test(expected=NoSuchElementException.class)
 	public void numberComputerDontExistOnWrongSearch() {
 		driver.get(PROJECT_URL+"?search=zzz");
-		driver.findElement(By.cssSelector("b.number"));
+		driver.findElement(By.cssSelector(NUMBER_COMPUTER_CSS));
 	}
 	
 	//Pagination
@@ -120,21 +124,21 @@ public class ListWebUITest {
 	@Test
 	public void correctNumberInListTest() {
 		driver.get(PROJECT_URL+"?size=10");
-		WebElement pagination = driver.findElement(By.id("results"));
-		assertEquals("Number of element in list isn't correct.",10,pagination.findElements(By.tagName("tr")).size());
+		WebElement pagination = driver.findElement(By.id(RESULTS_ID));
+		assertEquals(Constant.NUMBER_OF_ELEMENT_NOT_CORRECT,10,pagination.findElements(By.tagName("tr")).size());
 	}
 	
 	@Test
 	public void correctNumberInListSize50Test() {
 		driver.get(PROJECT_URL+"?size=50");
-		WebElement pagination = driver.findElement(By.id("results"));
-		assertEquals("Number of element in list isn't correct.",50,pagination.findElements(By.tagName("tr")).size());
+		WebElement pagination = driver.findElement(By.id(RESULTS_ID));
+		assertEquals(Constant.NUMBER_OF_ELEMENT_NOT_CORRECT,50,pagination.findElements(By.tagName("tr")).size());
 	}
 	
 	@Test
 	public void correctNumberInListSize100Test() {
 		driver.get(PROJECT_URL+"?size=100");
-		WebElement pagination = driver.findElement(By.id("results"));
-		assertEquals("Number of element in list isn't correct.",100,pagination.findElements(By.tagName("tr")).size());
+		WebElement pagination = driver.findElement(By.id(RESULTS_ID));
+		assertEquals(Constant.NUMBER_OF_ELEMENT_NOT_CORRECT,100,pagination.findElements(By.tagName("tr")).size());
 	}
 }

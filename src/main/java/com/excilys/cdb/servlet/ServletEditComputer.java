@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
@@ -62,8 +63,8 @@ public class ServletEditComputer extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 		String id = request.getParameter("id");
 		String computerName = request.getParameter("computerName");
-		String introduced = request.getParameter("introduced");
-		String discontinued = request.getParameter("discontinued");
+		String introduced = request.getParameter("introduced").replaceAll(Constant.SANITIZER_REPLACER, "_");
+		String discontinued = request.getParameter("discontinued").replaceAll(Constant.SANITIZER_REPLACER, "_");
 		String companyId = request.getParameter("companyId");
 		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(computerName)
 				.withIntroduced(introduced)
