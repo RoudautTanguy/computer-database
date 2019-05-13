@@ -30,7 +30,7 @@ public class Validator {
 	}
 
 	private void validateNameIsPresent(String name) throws NotAValidComputerException {
-		if(name == null || name == "") {
+		if(name == null || name.equals("")) {
 			String message = "Computer name is null";
 			logger.error(message);
 			throw new NotAValidComputerException(message);

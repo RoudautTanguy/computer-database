@@ -29,7 +29,7 @@ public class DAOComputerTest {
 	public void insertFullComputerTest() throws  NotAValidComputerException, CantConnectException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		assertTrue("Can't insert Computer",dao.insert(new Computer.ComputerBuilder("AttariComputerTest")
+		assertTrue("Can't insert Computer",dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
 																  .withId(1)
 																  .withIntroduced(introduced)
 																  .withDiscontinued(discontinued)
@@ -39,19 +39,19 @@ public class DAOComputerTest {
 
 	@Test
 	public void insertComputerWithNameTest() throws NotAValidComputerException, CantConnectException {
-		assertTrue("Can't insert Computer",dao.insert(new Computer.ComputerBuilder("AttariComputerTest")
+		assertTrue("Can't insert Computer",dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
 				  												  .withId(1)
 				  												  .build()));
 	}
 
 	@Test(expected = NotAValidComputerException.class)
 	public void insertNullComputerTest() throws NotAValidComputerException, CantConnectException {
-		dao.insert(new Computer.ComputerBuilder(null).build());
+		dao.insertComputer(new Computer.ComputerBuilder(null).build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
 	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException, CantConnectException {
-		dao.insert(new Computer.ComputerBuilder("WrongCompanyId")
+		dao.insertComputer(new Computer.ComputerBuilder("WrongCompanyId")
 				  			   .withId(1)
 				  			   .withCompanyId(100)
 				  			   .build());
@@ -63,7 +63,7 @@ public class DAOComputerTest {
 	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		dao.update(600, new Computer.ComputerBuilder("Laptop")
+		dao.updateComputer(600, new Computer.ComputerBuilder("Laptop")
 									.withId(600)
 									.withIntroduced(introduced)
 									.withDiscontinued(discontinued)
@@ -73,21 +73,21 @@ public class DAOComputerTest {
 
 	@Test
 	public void updateComputerWithNameTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
-		dao.update(600, new Computer.ComputerBuilder("Laptop")
+		dao.updateComputer(600, new Computer.ComputerBuilder("Laptop")
 				   					.withId(600)
 									.build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
 	public void updateNullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
-		dao.update(599,new Computer.ComputerBuilder(null)
+		dao.updateComputer(599,new Computer.ComputerBuilder(null)
 				   				   .withId(1)
 				   				   .build());
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
 	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
-		dao.update(9999,new Computer.ComputerBuilder("Name")
+		dao.updateComputer(9999,new Computer.ComputerBuilder("Name")
 				   					.withId(1)
 				   					.build());
 	}
@@ -97,19 +97,19 @@ public class DAOComputerTest {
 	@Test
 	public void getLastComputerAndDeleteComputerTest() throws CantConnectException, ComputerNotFoundException {
 		int id = dao.getLastComputerId();
-		dao.delete(id);
+		dao.deleteComputer(id);
 		id = dao.getLastComputerId();
-		dao.delete(id);
+		dao.deleteComputer(id);
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
 	public void deleteComputerWithNegativeIdTest() throws CantConnectException, ComputerNotFoundException {
-		dao.delete(-1);
+		dao.deleteComputer(-1);
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
 	public void deleteComputerNotInDatabaseTest() throws CantConnectException, ComputerNotFoundException {
-		dao.delete(9999);
+		dao.deleteComputer(9999);
 	}
 
 	// Search
@@ -134,7 +134,7 @@ public class DAOComputerTest {
 	@Test
 	public void findComputerTest() throws ComputerNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2004,1,1).atStartOfDay());
-		DTOComputer dtoComputer = MapperComputer.getInstance().modelToDTO(new Computer.ComputerBuilder("Nintendo DS")
+		DTOComputer dtoComputer = MapperComputer.getInstance().mapModelToDTO(new Computer.ComputerBuilder("Nintendo DS")
 																					  .withId(283)
 																					  .withIntroduced(introduced)
 																					  .withCompanyId(24)
@@ -152,12 +152,12 @@ public class DAOComputerTest {
 
 	@Test 
 	public void countComputersTest() {
-		assertTrue("Some computers should be found in database", dao.count("")>0);
+		assertTrue("Some computers should be found in database", dao.countComputers("")>0);
 	}
 	
 	@Test 
 	public void countAppleComputersTest() {
-		assertTrue("Some computers should be found in database", dao.count("Apple")>0);
+		assertTrue("Some computers should be found in database", dao.countComputers("Apple")>0);
 	}
 
 

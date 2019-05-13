@@ -25,16 +25,19 @@ public class ServletDashboard extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static final String IO_EXCEPTION_MESSAGE = "Input or output exception occurs";
+	
 	public int size = 10;
 	public int currentPage = 1;
 	private OrderByEnum orderBy = OrderByEnum.DEFAULT;
 
-	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
-	private ServicePagination servicePagination = ServicePagination.getInstance();
+	private static ServiceComputer serviceComputer = ServiceComputer.getInstance();
+	private static ServicePagination servicePagination = ServicePagination.getInstance();
 
 	private static final Logger logger = LoggerFactory.getLogger(ServletDashboard.class);
 
-
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		String search = request.getParameter("search")==null?"":request.getParameter("search");
 		setOrderByAttribute(request);
@@ -44,21 +47,14 @@ public class ServletDashboard extends HttpServlet{
 		setPaginationAttribute(request, lastPage);
 		setComputerCount(request, search);
 		try {
-			try {
-				setComputersAttribute(request, response, search, orderBy);
-				this.getServletContext().getRequestDispatcher( "/WEB-INF/views/dashboard.jsp" ).forward( request, response );
-			} catch (ServletException e) {
-				logger.error("Target resource throws an exception",e);
-			} catch (IOException e) {
-				logger.error("Input or output exception occurs",e);
-			}
-			
+			setComputersAttribute(request, search, orderBy);
+			forward("/WEB-INF/views/dashboard.jsp",request, response);
 		} catch (PageNotFoundException e) {
 			logger.info("Page {} not found", currentPage);
 			try {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			} catch (IOException e1) {
-				logger.error("Input or output exception occurs",e1);
+				logger.error(IO_EXCEPTION_MESSAGE,e1);
 			}
 		}
 	}
@@ -73,13 +69,13 @@ public class ServletDashboard extends HttpServlet{
 				try {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				} catch (IOException e1) {
-					logger.error("Input or output exception occurs",e1);
+					logger.error(IO_EXCEPTION_MESSAGE,e1);
 				}
 			} catch (ComputerNotFoundException e) {
 				try {
 					response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				} catch (IOException e1) {
-					logger.error("Input or output exception occurs",e1);
+					logger.error(IO_EXCEPTION_MESSAGE,e1);
 				}
 			} catch (CantConnectException e) {
 				logger.error("Can't connect",e);
@@ -89,7 +85,7 @@ public class ServletDashboard extends HttpServlet{
 		try {
 			response.sendRedirect(request.getContextPath() + "/dashboard?page="+lastPage);
 		} catch (IOException e) {
-			logger.error("Input or output exception occurs",e);
+			logger.error(IO_EXCEPTION_MESSAGE,e);
 		}
 	}
 
@@ -114,7 +110,7 @@ public class ServletDashboard extends HttpServlet{
 		request.setAttribute("pagination", pagination);
 	}
 
-	private void setComputersAttribute(HttpServletRequest request, HttpServletResponse response, String search, OrderByEnum orderBy) throws IOException, PageNotFoundException{
+	private void setComputersAttribute(HttpServletRequest request, String search, OrderByEnum orderBy) throws PageNotFoundException{
 			Page<DTOComputer> computers = serviceComputer.search(currentPage-1, size, search, orderBy);
 			request.setAttribute("computers", computers.getList());
 	}
@@ -135,6 +131,16 @@ public class ServletDashboard extends HttpServlet{
 			logger.warn("Cant parse {} to integer", requestParam);
 		} finally {
 			request.setAttribute("orderBy", orderBy.ordinal());
+		}
+	}
+	
+	private void forward(String url, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			this.getServletContext().getRequestDispatcher( url ).forward( request, response );
+		} catch (ServletException e) {
+			logger.error("Target resource throws an exception",e);
+		} catch (IOException e) {
+			logger.error(IO_EXCEPTION_MESSAGE,e);
 		}
 	}
 }

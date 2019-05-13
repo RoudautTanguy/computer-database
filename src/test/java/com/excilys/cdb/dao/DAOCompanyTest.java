@@ -24,32 +24,32 @@ public class DAOCompanyTest {
 
 	@Test(expected = CompanyNotFoundException.class)
 	public void cantDeleteCompanyWithNegativeIdTest() throws CantConnectException, CompanyNotFoundException {
-		dao.delete(-1);
+		dao.deleteCompany(-1);
 	}
 	
 	//Insert & Delete
 	@Test
 	public void InsertAndDeleteCompany() throws NotAValidCompanyException, SQLException, NotAValidComputerException, CantConnectException, CompanyNotFoundException {
-		int count = dao.count();
-		dao.insert("TestCompany");
-		assertTrue("Company is not inserted",dao.count()>count);
+		int count = dao.countCompanies();
+		dao.insertCompany("TestCompany");
+		assertTrue("Company is not inserted",dao.countCompanies()>count);
 		int insertedId = dao.getLastCompanyId();
 		
 		DAOComputer daoComputer = DAOComputer.getInstance();
-		int countComputer = daoComputer.count("");
-		daoComputer.insert(new Computer.ComputerBuilder("ComputerWillBeDeleted").withCompanyId(insertedId).build());
-		assertTrue("Computer is not inserted",daoComputer.count("")>countComputer);
+		int countComputer = daoComputer.countComputers("");
+		daoComputer.insertComputer(new Computer.ComputerBuilder("ComputerWillBeDeleted").withCompanyId(insertedId).build());
+		assertTrue("Computer is not inserted",daoComputer.countComputers("")>countComputer);
 		
-		dao.delete(insertedId);
-		assertTrue("Company is not deleted",dao.count()==count);
-		assertTrue("Computer is not deleted",daoComputer.count("")==countComputer);
+		dao.deleteCompany(insertedId);
+		assertTrue("Company is not deleted",dao.countCompanies()==count);
+		assertTrue("Computer is not deleted",daoComputer.countComputers("")==countComputer);
 	}
 
 	//Count
 	
 	@Test 
 	public void countCompaniesTest() {
-		assertTrue("0 companies found", dao.count()>0);
+		assertTrue("0 companies found", dao.countCompanies()>0);
 	}
 
 	//List

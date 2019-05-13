@@ -24,6 +24,7 @@
                     <h1>Add Computer</h1>
                     <form id="addComputer" action="addComputer" method="POST">
                         <fieldset>
+                        	<legend>Computer</legend>
                             <div id="name-group" class="form-group">
                                 <label class="control-label" for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">

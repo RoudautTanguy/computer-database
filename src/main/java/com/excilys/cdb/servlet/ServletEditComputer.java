@@ -25,12 +25,15 @@ public class ServletEditComputer extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static final String IO_EXCEPTION_MESSAGE = "Input or output exception occurs";
 
-	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
-	private ServiceCompany serviceCompany = ServiceCompany.getInstance();
+	private static ServiceComputer serviceComputer = ServiceComputer.getInstance();
+	private static ServiceCompany serviceCompany = ServiceCompany.getInstance();
 
 	private static final Logger logger = LoggerFactory.getLogger(ServletEditComputer.class);
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		int id = -1;
 		try{
@@ -42,22 +45,16 @@ public class ServletEditComputer extends HttpServlet{
 			List<DTOCompany> companies = serviceCompany.list();
 			request.setAttribute("companies", companies);
 			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/editComputer.jsp" ).forward( request, response );
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException | ComputerNotFoundException e) {
 			try {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			} catch (IOException e1) {
-				logger.error("Input or output exception occurs",e1);
-			}
-		} catch (ComputerNotFoundException e) {
-			try {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
-			} catch (IOException e1) {
-				logger.error("Input or output exception occurs",e1);
+				logger.error(IO_EXCEPTION_MESSAGE,e1);
 			}
 		} catch (ServletException e) {
 			logger.error("Target resource throws an exception",e);
 		} catch (IOException e) {
-			logger.error("Input or output exception occurs",e);
+			logger.error(IO_EXCEPTION_MESSAGE,e);
 		}
 	}
 
@@ -81,17 +78,17 @@ public class ServletEditComputer extends HttpServlet{
 			try {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			} catch (IOException e1) {
-				logger.error("Input or output exception occurs",e1);
+				logger.error(IO_EXCEPTION_MESSAGE,e1);
 			}
 		} catch(NumberFormatException e) {
 
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			} catch (IOException e1) {
-				logger.error("Input or output exception occurs",e1);
+				logger.error(IO_EXCEPTION_MESSAGE,e1);
 			}
 		} catch (IOException e) {
-			logger.error("Input or output exception occurs",e);
+			logger.error(IO_EXCEPTION_MESSAGE,e);
 		} catch (ComputerNotFoundException e) {
 			logger.warn("Computer not found",e);
 		} catch (CantConnectException e) {

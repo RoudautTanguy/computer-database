@@ -52,23 +52,23 @@
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
                                  -  <a href="#" id="deleteSelected" onclick="$.fn.deleteSelected();">
-                                        <i class="fa fa-trash-o fa-lg"></i>
+                                        <em class="fa fa-trash-o fa-lg"></em>
                                     </a>
                             </span>
                         </th>
                         <th>
-                            Computer name <a><i class="fa fa-sort"></i></a>
+                            Computer name <a><em class="fa fa-sort"></em></a>
                         </th>
                         <th>
-                            Introduced date <a><i class="fa fa-sort"></i></a>
+                            Introduced date <a><em class="fa fa-sort"></em></a>
                         </th>
                         <!-- Table header for Discontinued Date -->
                         <th>
-                            Discontinued date <a><i class="fa fa-sort"></i></a>
+                            Discontinued date <a><em class="fa fa-sort"></em></a>
                         </th>
                         <!-- Table header for Company -->
                         <th>
-                            Company <a><i class="fa fa-sort"></i></a>
+                            Company <a><em class="fa fa-sort"></em></a>
                         </th>
 
                     </tr>

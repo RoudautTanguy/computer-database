@@ -18,7 +18,7 @@
 	<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
-				Error <b>403</b>: Access denied!
+				Error <strong>403</strong>: Access denied!
 				<br/>
 				<!-- stacktrace -->
 			</div>

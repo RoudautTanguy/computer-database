@@ -18,7 +18,7 @@ public class MapperComputerTest {
 	public void mapModelToDTOTest() {
 		Computer computer = new Computer.ComputerBuilder("AppleComputer").build();
 		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer").build();
-		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.modelToDTO(computer));
+		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.mapModelToDTO(computer));
 	}
 
 	@Test
@@ -37,14 +37,14 @@ public class MapperComputerTest {
 												 .withDiscontinued(today.format(formatter))
 												 .withCompany("1")
 												 .build();
-		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.modelToDTO(computer));
+		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.mapModelToDTO(computer));
 	}
 
 	@Test
 	public void mapDTOToModelTest() {
 		Computer computer = new Computer.ComputerBuilder("AppleComputer").build();
 		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder("AppleComputer").build();
-		assertEquals("Mapped Computer isn't equal to expected Computer",computer,mapper.DTOToModel(dtoComputer));
+		assertEquals("Mapped Computer isn't equal to expected Computer",computer,mapper.mapDTOToModel(dtoComputer));
 	}
 
 	@Test
@@ -63,6 +63,6 @@ public class MapperComputerTest {
 				 .withDiscontinued(today.format(formatter))
 				 .withCompany("1")
 				 .build();
-		assertEquals("DTOComputer isn't equal to expected Computer",computer,mapper.DTOToModel(dtoComputer));
+		assertEquals("DTOComputer isn't equal to expected Computer",computer,mapper.mapDTOToModel(dtoComputer));
 	}
 }

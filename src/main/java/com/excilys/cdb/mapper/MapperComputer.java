@@ -14,7 +14,7 @@ import com.excilys.cdb.model.Computer;
 
 public class MapperComputer {
 
-	static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	
 	private static final Logger logger = LoggerFactory.getLogger(MapperComputer.class);
 	
@@ -32,7 +32,7 @@ public class MapperComputer {
 	 * @param computer
 	 * @return the corresponding DTO
 	 */
-	public DTOComputer modelToDTO(Computer computer) {
+	public DTOComputer mapModelToDTO(Computer computer) {
 		String id = Integer.toString(computer.getId());
 		String name = computer.getName();
 		String introduced = "";
@@ -41,7 +41,7 @@ public class MapperComputer {
 		}
 		String discontinued = "";
 		if(computer.getDiscontinued() != null) {
-			discontinued = dateFormat.format(computer.getDiscontinued());;
+			discontinued = dateFormat.format(computer.getDiscontinued());
 		}
 		String company = "";
 		if(computer.getCompanyId() != null) {
@@ -60,30 +60,30 @@ public class MapperComputer {
 	 * @param computer
 	 * @return the corresponding model
 	 */
-	public Computer DTOToModel(DTOComputer computer) {
+	public Computer mapDTOToModel(DTOComputer computer) {
 		int id = Integer.parseInt(computer.getId());
 		String name = computer.getName();
 		Computer newComputer = new Computer.ComputerBuilder(name).withId(id).build();
 		Optional<Timestamp> optionalIntroduced = tryParse(computer.getIntroduced());
 		Optional<Timestamp> optionalDiscontinued = tryParse(computer.getDiscontinued());
 		
-		if(!optionalIntroduced.isEmpty()) {
+		if(optionalIntroduced.isPresent()) {
 			newComputer.setIntroduced(optionalIntroduced.get());
 		} else {
-			String introduced = computer.getIntroduced().replaceAll("[\n|\r|\t]", "_");
+			String introduced = computer.getIntroduced();
 			logger.warn("Can't parse introduced date {}", introduced);
 		}
-		if(!optionalDiscontinued.isEmpty()) {
+		if(optionalDiscontinued.isPresent()) {
 			newComputer.setDiscontinued(optionalDiscontinued.get());
 		} else {
-			String discontinued = computer.getDiscontinued().replaceAll("[\n|\r|\t]", "_");
+			String discontinued = computer.getDiscontinued();
 			logger.warn("Can't parse introduced date {}", discontinued);
 		}
 		
 		try {
 			newComputer.setCompanyId(Integer.parseInt(computer.getCompany()));
 		} catch(NumberFormatException e) {
-			String company = computer.getCompany().replaceAll("[\n|\r|\t]", "_");
+			String company = computer.getCompany();
 			logger.warn("Can't parse company id {}", company);
 		}
 		return newComputer;
@@ -94,7 +94,9 @@ public class MapperComputer {
 	    for (String formatString : formatStrings) {
 	        try {
 	            return Optional.ofNullable(new Timestamp(new SimpleDateFormat(formatString).parse(dateString).getTime()));
-	        } catch (ParseException e) {}
+	        } catch (ParseException e) {
+	        	logger.info("Can't parse the date with {}",formatString);
+	        }
 	    }
 	    return Optional.empty();
 	}

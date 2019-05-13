@@ -31,6 +31,7 @@
 					<form id="editComputer" action="editComputer" method="POST">
 						<input type="hidden" name="id" value="${id}" id="id" />
 						<fieldset>
+							<legend>Computer</legend>
 							<div class="form-group">
 								<label class="control-label" for="computerName">Computer name</label> 
 								<input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" 

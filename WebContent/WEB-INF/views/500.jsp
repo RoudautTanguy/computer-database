@@ -18,7 +18,7 @@
 	<section id="main">
 		<div class="container">	
 			<div class="alert alert-danger">
-				Error <b>500</b>: An error has occured!
+				Error <strong>500</strong>: An error has occured!
 				<br/>
 				<!-- stacktrace -->
 			</div>

@@ -18,7 +18,7 @@
     <section id="main">
         <div class="container">
             <div class="alert alert-danger">
-                Error <b>404</b>: Page not found. Too bad bitch!
+                Error <strong>404</strong>: Page not found. Too bad bitch!
                 <br/>
                 <!-- stacktrace -->
             </div>

@@ -10,6 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidCompanyException;
@@ -20,12 +21,12 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOCompany {
 	
-	public final static String INSERT = "INSERT into company (name) values (?)";
-	public final static String SELECT_ALL = "SELECT * FROM company;";
-	public final static String SELECT_ALL_PAGINATED = "SELECT * FROM company LIMIT ?,?;";
-	public final static String COUNT = "SELECT COUNT(*) AS count FROM company;";
-	public final static String DELETE = "DELETE FROM company WHERE company.id = ?";
-	public final static String DELETE_COMPUTERS_BY_COMPANY_ID = "DELETE FROM computer WHERE computer.company_id = ?";
+	public static final String INSERT = "INSERT into company (name) values (?)";
+	public static final String SELECT_ALL = "SELECT * FROM company;";
+	public static final String SELECT_ALL_PAGINATED = "SELECT * FROM company LIMIT ?,?;";
+	public static final String COUNT = "SELECT COUNT(*) AS count FROM company;";
+	public static final String DELETE = "DELETE FROM company WHERE company.id = ?";
+	public static final String DELETE_COMPUTERS_BY_COMPANY_ID = "DELETE FROM computer WHERE computer.company_id = ?";
 	public static final String LAST_COMPANY_ID = "SELECT MAX(id) AS id FROM company;";
 	
 	private HikariConfig config = new HikariConfig("/config.properties");
@@ -46,22 +47,21 @@ public class DAOCompany {
 		return instance;
 	}
 
-	public void insert(String name) throws NotAValidCompanyException, SQLException {
+	public void insertCompany(String name) throws NotAValidCompanyException {
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(INSERT)){
 			if(name == null || name.equals("")) {
-				throw new NotAValidCompanyException("The name is Mandatory.");
+				throw new NotAValidCompanyException(Constant.NAME_IS_MANDATORY);
 			} else {
 				statement.setString(1, name);
 				statement.execute();
 			}
 		} catch (SQLException e) {
 			logger.error("SQL Exception",e);
-			throw e;
 		}
 	}
 
-	public void delete(int id) throws CantConnectException, CompanyNotFoundException {
+	public void deleteCompany(int id) throws CantConnectException, CompanyNotFoundException {
 		try(Connection connection = this.getConnection();
 				PreparedStatement deleteComputersStatement = connection.prepareStatement(DELETE_COMPUTERS_BY_COMPANY_ID);
 				PreparedStatement deleteCompanyStatement = connection.prepareStatement(DELETE)){
@@ -83,13 +83,13 @@ public class DAOCompany {
 			}
 
 		} catch (SQLException e) {
-			logger.error("Can't connect",e);
-			throw new CantConnectException("Can't connect.");
+			logger.error(Constant.CANT_CONNECT,e);
+			throw new CantConnectException(Constant.CANT_CONNECT);
 		}
 	}
 
 	public List<Company> list() {
-		List<Company> companies = new ArrayList<Company>();
+		List<Company> companies = new ArrayList<>();
 
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
@@ -101,16 +101,16 @@ public class DAOCompany {
 			}
 
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 		} 
 		return companies;
 	}
 
 	public List<Company> list(int index, int limit) throws PageNotFoundException{
 		if(index < 0 || limit < 0) {
-			throw new PageNotFoundException("This page doesn't exist"); 
+			throw new PageNotFoundException(Constant.PAGE_DOESNT_EXIST); 
 		}
-		List<Company> companies = new ArrayList<Company>();
+		List<Company> companies = new ArrayList<>();
 		int offset = index * limit;
 		ResultSet resultat = null;
 		try(Connection connection = this.getConnection();
@@ -119,9 +119,8 @@ public class DAOCompany {
 			statement.setInt(2, limit);
 			resultat = statement.executeQuery( );
 			if (!resultat.isBeforeFirst()) {   
-				String message = "This page doesn't exist";
-				logger.error(message);
-				throw new PageNotFoundException(message); 
+				logger.error(Constant.PAGE_DOESNT_EXIST);
+				throw new PageNotFoundException(Constant.PAGE_DOESNT_EXIST); 
 			} 
 			while ( resultat.next() ) {
 				int idComputer = resultat.getInt( "id" );
@@ -130,18 +129,20 @@ public class DAOCompany {
 			}
 
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 		} finally {
-			try {
-				resultat.close();
-			} catch (SQLException e) {
-				logger.error("Can't close ResultSet");
+			if(resultat != null) {
+				try {
+					resultat.close();
+				} catch (SQLException e) {
+					logger.error(Constant.CANT_CLOSE_RESULT_SET);
+				}
 			}
 		}
 		return companies;
 	}
 
-	public int count() {
+	public int countCompanies() {
 		int count = 0;
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT);
@@ -151,7 +152,7 @@ public class DAOCompany {
 				count =  resultat.getInt("count");
 			}
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 		}
 		return count;
 	}
@@ -166,7 +167,7 @@ public class DAOCompany {
 				lastId =  resultat.getInt("id");
 			}
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 		}
 		return lastId;
 	}

@@ -4,7 +4,7 @@ public class DTOCompany {
 
 	private String id;
 	private String name;
-	
+
 	public DTOCompany(String pId, String pName){
 		this.id = pId;
 		this.name = pName;
@@ -25,7 +25,7 @@ public class DTOCompany {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "DTOCompany@" + this.id + ":" + this.name;
@@ -52,14 +52,16 @@ public class DTOCompany {
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
-			return false;
+		} else if (!name.equals(other.name)) {
+			return false;	
+		}
 		return true;
 	}
-	
+
 }

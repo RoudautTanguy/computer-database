@@ -80,9 +80,11 @@ public class Controller {
 				} else {
 					logger.warn("Computer is not present");
 				}
-			} catch (NotAValidComputerException | CantConnectException e) {
+			} catch (NotAValidComputerException e) {
 				cli.printException(e);
-				logger.warn("Computer {} Not valid");
+				logger.warn("Computer not valid");
+			} catch (CantConnectException e) {
+				logger.warn("Can't connect");
 			}
 			break;
 			
@@ -96,15 +98,9 @@ public class Controller {
 					serviceComputer.update(id, dtoComputer);
 					cli.printUpdatedMessage(true);
 				}
-			} catch(IllegalArgumentException e) {
+			} catch(IllegalArgumentException | NotAValidComputerException | ComputerNotFoundException | CantConnectException e) {
 				cli.printException(e);
-			} catch (NotAValidComputerException e) {
-				cli.printException(e);
-			} catch (ComputerNotFoundException e) {
-				cli.printException(e);
-			} catch (CantConnectException e) {
-				cli.printException(e);
-			}
+			} 
 			break;
 			
 		case DELETE_COMPUTER:

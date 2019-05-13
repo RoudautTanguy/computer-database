@@ -41,10 +41,10 @@ public class ServiceComputer {
 	 * @throws CantConnectException 
 	 */
 	public boolean insert(DTOComputer dtoComputer) throws NotAValidComputerException, CantConnectException {
-		Computer computer = mapperComputer.DTOToModel(dtoComputer);
+		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		try{
 			validator.validateComputer(computer);
-			return daoComputer.insert(computer);
+			return daoComputer.insertComputer(computer);
 		} catch(NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
@@ -59,7 +59,7 @@ public class ServiceComputer {
 	 * @throws CantConnectException 
 	 */
 	public void delete(int id) throws CantConnectException, ComputerNotFoundException{
-		daoComputer.delete(id);
+		daoComputer.deleteComputer(id);
 	}
 	
 	/**
@@ -72,10 +72,10 @@ public class ServiceComputer {
 	 * @throws CantConnectException 
 	 */
 	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
-		Computer computer = mapperComputer.DTOToModel(dtoComputer);
+		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		try {
 			validator.validateComputer(computer);
-			daoComputer.update(id, computer);
+			daoComputer.updateComputer(id, computer);
 		} catch (NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
@@ -90,7 +90,7 @@ public class ServiceComputer {
 	 */
 	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
 		search = search == null?"":search;
-		return new Page<DTOComputer>(daoComputer.search(index, limit, search, orderBy), index, limit);
+		return new Page<>(daoComputer.search(index, limit, search, orderBy), index, limit);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class ServiceComputer {
 	 */
 	public Page<DTOComputer> search(String search) throws PageNotFoundException{
 		search = search == null?"":search;
-		return new Page<DTOComputer>(daoComputer.search(0, COMPUTERS_NUMBER_PER_PAGE, search, OrderByEnum.DEFAULT), 0, COMPUTERS_NUMBER_PER_PAGE);
+		return new Page<>(daoComputer.search(0, COMPUTERS_NUMBER_PER_PAGE, search, OrderByEnum.DEFAULT), 0, COMPUTERS_NUMBER_PER_PAGE);
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public class ServiceComputer {
 	}
 	
 	public int count(String search) {
-		return daoComputer.count(search);
+		return daoComputer.countComputers(search);
 	}
 	
 	public int lastPage() {

@@ -127,28 +127,33 @@ public class DTOComputer {
 		if (company == null) {
 			if (other.company != null)
 				return false;
-		} else if (!company.equals(other.company))
+		} else if (!company.equals(other.company)) {
 			return false;
+		}
 		if (discontinued == null) {
 			if (other.discontinued != null)
 				return false;
-		} else if (!discontinued.equals(other.discontinued))
+		} else if (!discontinued.equals(other.discontinued)) {
 			return false;
+		}
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		if (introduced == null) {
 			if (other.introduced != null)
 				return false;
-		} else if (!introduced.equals(other.introduced))
+		} else if (!introduced.equals(other.introduced)) {
 			return false;
+		}
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 	

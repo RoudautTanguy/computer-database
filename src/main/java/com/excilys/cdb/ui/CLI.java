@@ -104,7 +104,7 @@ public class CLI {
 	 * @param computer
 	 */
 	public void showComputerDetails(DTOComputer computer) {
-		List<DTOComputer> computers = new ArrayList<DTOComputer>(Arrays.asList(computer));
+		List<DTOComputer> computers = new ArrayList<>(Arrays.asList(computer));
 		String[] headers = {"ID", "Computer Name", "Introduced", "Discontinued", "Company Name"};
 		CLIHelper.listComputersHelper(headers, computers);
 	}

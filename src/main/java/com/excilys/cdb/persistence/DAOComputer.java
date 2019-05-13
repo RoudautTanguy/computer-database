@@ -12,6 +12,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
@@ -54,7 +55,7 @@ public class DAOComputer{
 		}
 		return instance;
 	}
-	public boolean insert(Computer computer) throws NotAValidComputerException, CantConnectException {
+	public boolean insertComputer(Computer computer) throws NotAValidComputerException, CantConnectException {
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(INSERT)){
 			if(computer.getName()==null) {
@@ -85,11 +86,11 @@ public class DAOComputer{
 			logger.error("Trying to insert a computer with an inexisting computer id");
 			throw new NotAValidComputerException("The company "+computer.getCompanyId() + " doesn't exist !");
 		} catch (SQLException e) {
-			throw new CantConnectException("Can't connect.");
+			throw new CantConnectException(Constant.CANT_CONNECT);
 		} 
 	}
 
-	public void delete(int id) throws CantConnectException, ComputerNotFoundException{
+	public void deleteComputer(int id) throws CantConnectException, ComputerNotFoundException{
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(DELETE)){
 			statement.setInt(1, id);
@@ -102,12 +103,12 @@ public class DAOComputer{
 			}
 			logger.info("Computer {} deleted", id);
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 			throw new CantConnectException("Can't connect.");
 		}
 	}
 
-	public void update(int id, Computer computer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException{
+	public void updateComputer(int id, Computer computer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException{
 		try(Connection connection = this.getConnection();
 				PreparedStatement statement = connection.prepareStatement(UPDATE)){
 			if(computer.getName()==null) {
@@ -139,7 +140,7 @@ public class DAOComputer{
 				throw new ComputerNotFoundException("The computer " + id +" doesn't exist");
 			}
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 			throw new CantConnectException("Can't connect.");
 		}
 	}
@@ -147,7 +148,7 @@ public class DAOComputer{
 	public List<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
 		checkIndexAndLimit(index, limit);
 		int offset = index * limit;
-		List<DTOComputer> computers = new ArrayList<DTOComputer>();
+		List<DTOComputer> computers = new ArrayList<>();
 		String query = String.format(SEARCH_WITH_NAMES_PAGINATED,orderBy.getQuery());
 		ResultSet resultat = null;
 		try(Connection connection = this.getConnection();
@@ -159,7 +160,7 @@ public class DAOComputer{
 			resultat = statement.executeQuery( );
 			if (!resultat.isBeforeFirst() ) {  
 				logger.error("Query have no result, trying to access a page that doesn't exist");
-				throw new PageNotFoundException("This page doesn't exist"); 
+				throw new PageNotFoundException(Constant.PAGE_DOESNT_EXIST); 
 			} 
 			while ( resultat.next() ) {
 				int id = resultat.getInt( "id" );
@@ -168,7 +169,7 @@ public class DAOComputer{
 				Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 				int companyId = resultat.getInt("company_id");
 				String companyName = resultat.getString("company_name");
-				DTOComputer computer = mapperComputer.modelToDTO(new Computer.ComputerBuilder(name)
+				DTOComputer computer = mapperComputer.mapModelToDTO(new Computer.ComputerBuilder(name)
 						.withId(id)
 						.withIntroduced(introduced)
 						.withDiscontinued(discontinued)
@@ -184,12 +185,14 @@ public class DAOComputer{
 				computers.add(computer);
 			}
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 		} finally {
-			try {
-				resultat.close();
-			} catch (SQLException e) {
-				logger.error("Can't close ResultSet");
+			if(resultat != null) {
+				try {
+					resultat.close();
+				} catch (SQLException e) {
+					logger.error(Constant.CANT_CLOSE_RESULT_SET);
+				}
 			}
 		}
 		return computers;
@@ -214,7 +217,7 @@ public class DAOComputer{
 				Timestamp discontinued = resultat.getTimestamp( "discontinued" );
 				int companyId = resultat.getInt("company_id");
 				String companyName = resultat.getString("company_name");
-				DTOComputer computer = mapperComputer.modelToDTO(new Computer.ComputerBuilder(name)
+				DTOComputer computer = mapperComputer.mapModelToDTO(new Computer.ComputerBuilder(name)
 						.withId(id)
 						.withIntroduced(introduced)
 						.withDiscontinued(discontinued)
@@ -231,18 +234,21 @@ public class DAOComputer{
 				throw new ComputerNotFoundException(message);
 			}
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 			throw new ComputerNotFoundException("Computer "+idComputer+" is not found !");
 		} finally {
-			try {
-				resultat.close();
-			} catch (SQLException e) {
-				logger.error("Can't close ResultSet");
+			if(resultat != null) {
+				try {
+					resultat.close();
+				} catch (SQLException e) {
+					logger.error("Can't close ResultSet");
+				}
 			}
+			
 		}
 	}
 
-	public int count(String search) {
+	public int countComputers(String search) {
 		int count = 0;
 		ResultSet resultat = null;
 		try(Connection connection = this.getConnection();
@@ -255,12 +261,14 @@ public class DAOComputer{
 				count =  resultat.getInt("count");
 			}
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 		} finally {
-			try {
-				resultat.close();
-			} catch (SQLException e) {
-				logger.error("Can't close ResultSet");
+			if(resultat != null) {
+				try {
+					resultat.close();
+				} catch (SQLException e) {
+					logger.error("Can't close ResultSet");
+				}
 			}
 		}
 		return count;
@@ -276,7 +284,7 @@ public class DAOComputer{
 				lastId =  resultat.getInt("id");
 			}
 		} catch (SQLException e) {
-			logger.trace("Can't connect. ",e);
+			logger.trace(Constant.CANT_CONNECT,e);
 		}
 		return lastId;
 	}

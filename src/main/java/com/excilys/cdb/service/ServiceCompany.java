@@ -32,7 +32,7 @@ public class ServiceCompany {
 	 * @return page
 	 */
 	public List<DTOCompany> list(){
-		return daoCompany.list().stream().map(x -> mapperCompany.modelToDTO(x)).collect(Collectors.toList());
+		return daoCompany.list().stream().map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -52,8 +52,8 @@ public class ServiceCompany {
 	 * @throws PageNotFoundException
 	 */
 	public Page<DTOCompany> list(int index, int limit) throws PageNotFoundException{
-		List<DTOCompany> dtoCompanies = daoCompany.list(index, limit).stream().map(x -> mapperCompany.modelToDTO(x)).collect(Collectors.toList());		
-		return new Page<DTOCompany>(dtoCompanies, index, limit);
+		List<DTOCompany> dtoCompanies = daoCompany.list(index, limit).stream().map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());		
+		return new Page<>(dtoCompanies, index, limit);
 	}
 	
 	/**
@@ -61,6 +61,6 @@ public class ServiceCompany {
 	 * @return page
 	 */
 	public int getLastPage() {
-		return daoCompany.count()/COMPANIES_NUMBER_PER_PAGE;
+		return daoCompany.countCompanies()/COMPANIES_NUMBER_PER_PAGE;
 	}
 }

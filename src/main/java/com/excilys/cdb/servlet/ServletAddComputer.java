@@ -25,11 +25,14 @@ public class ServletAddComputer extends HttpServlet{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private ServiceCompany serviceCompany = ServiceCompany.getInstance();
-	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
+	private static final String IO_EXCEPTION_MESSAGE = "Input or output exception occurs";
+	
+	private static ServiceCompany serviceCompany = ServiceCompany.getInstance();
+	private static ServiceComputer serviceComputer = ServiceComputer.getInstance();
 	
 	private static final Logger logger = LoggerFactory.getLogger(ServletAddComputer.class);
 	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		List<DTOCompany> companies = serviceCompany.list();
 		request.setAttribute("companies", companies);
@@ -38,7 +41,7 @@ public class ServletAddComputer extends HttpServlet{
 		} catch (ServletException e) {
 			logger.error("Target resource throws an exception",e);
 		} catch (IOException e) {
-			logger.error("Input or output exception occurs",e);
+			logger.error(IO_EXCEPTION_MESSAGE,e);
 		}
 	}
 	
@@ -62,17 +65,17 @@ public class ServletAddComputer extends HttpServlet{
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			} catch (IOException e1) {
-				logger.error("Input or output exception occurs",e1);
+				logger.error(IO_EXCEPTION_MESSAGE,e1);
 			}
 		} catch (CantConnectException e) {
 			logger.error("Can't connect to the DB", e);
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			} catch (IOException e1) {
-				logger.error("Input or output exception occurs",e1);
+				logger.error(IO_EXCEPTION_MESSAGE,e1);
 			}
 		} catch (IOException e) {
-			logger.error("Input or output exception occurs",e);
+			logger.error(IO_EXCEPTION_MESSAGE,e);
 		}
 	}
 
