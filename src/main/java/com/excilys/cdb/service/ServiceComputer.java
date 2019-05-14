@@ -2,6 +2,8 @@ package com.excilys.cdb.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
@@ -15,21 +17,16 @@ import com.excilys.cdb.persistence.DAOComputer;
 import com.excilys.cdb.persistence.OrderByEnum;
 import com.excilys.cdb.validator.Validator;
 
+@Service
 public class ServiceComputer {
 	
 	private static final int COMPUTERS_NUMBER_PER_PAGE = 50;
-	private Validator validator = Validator.getInstance();
-	private MapperComputer mapperComputer = MapperComputer.getInstance();
-	private DAOComputer daoComputer = DAOComputer.getInstance();
-	
-	private static ServiceComputer instance;
-	
-	public static ServiceComputer getInstance() {
-		if(instance == null) {
-			instance = new ServiceComputer();
-		}
-		return instance;
-	}
+	@Autowired
+	private Validator validator;
+	@Autowired
+	private MapperComputer mapperComputer;
+	@Autowired
+	private DAOComputer daoComputer;
 	
 	private static Logger logger = LoggerFactory.getLogger( ServiceComputer.class );
 	

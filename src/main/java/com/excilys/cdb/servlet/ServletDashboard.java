@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.main.AppConfig;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.persistence.OrderByEnum;
@@ -29,8 +32,15 @@ public class ServletDashboard extends HttpServlet{
 	
 	private static final String IO_EXCEPTION_MESSAGE = "Input or output exception occurs";
 
-	private static ServiceComputer serviceComputer = ServiceComputer.getInstance();
-	private static ServicePagination servicePagination = ServicePagination.getInstance();
+	private final ServiceComputer serviceComputer;
+	private final ServicePagination servicePagination;
+	
+	public ServletDashboard() {
+		try (ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class)) {
+			serviceComputer = context.getBean(ServiceComputer.class);
+			servicePagination = context.getBean(ServicePagination.class);
+		}
+	}
 
 	private static final Logger logger = LoggerFactory.getLogger(ServletDashboard.class);
 

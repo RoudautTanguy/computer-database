@@ -7,20 +7,30 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.main.AppConfig;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.DAOComputer;
 import com.excilys.cdb.persistence.OrderByEnum;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { AppConfig.class})
 public class DAOComputerTest {
 
-	DAOComputer dao = DAOComputer.getInstance();
+	@Autowired
+	DAOComputer dao;
+	@Autowired
+	MapperComputer mapperComputer;
 	int inserted = 0;
 
 	// Insert 
@@ -134,7 +144,7 @@ public class DAOComputerTest {
 	@Test
 	public void findComputerTest() throws ComputerNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2004,1,1).atStartOfDay());
-		DTOComputer dtoComputer = MapperComputer.getInstance().mapModelToDTO(new Computer.ComputerBuilder("Nintendo DS")
+		DTOComputer dtoComputer = mapperComputer.mapModelToDTO(new Computer.ComputerBuilder("Nintendo DS")
 																					  .withId(283)
 																					  .withIntroduced(introduced)
 																					  .withCompanyId(24)

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
@@ -19,6 +20,7 @@ import com.excilys.cdb.model.Company;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Repository
 public class DAOCompany {
 	
 	public static final String INSERT = "INSERT into company (name) values (?)";
@@ -37,15 +39,6 @@ public class DAOCompany {
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(DAOCompany.class);
-	
-	private static DAOCompany instance;
-
-	public static DAOCompany getInstance() {
-		if(instance == null) {
-			instance = new DAOCompany();
-		}
-		return instance;
-	}
 
 	public void insertCompany(String name) throws NotAValidCompanyException {
 		try(Connection connection = this.getConnection();

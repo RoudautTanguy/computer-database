@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
@@ -23,6 +25,7 @@ import com.excilys.cdb.model.Computer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Repository
 public class DAOComputer{
 
 	public static final  String INSERT = "INSERT into computer (name, introduced, discontinued, company_id)"
@@ -39,24 +42,13 @@ public class DAOComputer{
 	private HikariConfig config = new HikariConfig("/config.properties");
     private HikariDataSource ds = new HikariDataSource( config );
 
-	public Connection getConnection() throws SQLException {
-		return ds.getConnection();
-	}
-
-	private MapperComputer mapperComputer = MapperComputer.getInstance();
+    @Autowired
+	private MapperComputer mapperComputer;
 
 	private static final Logger logger = LoggerFactory.getLogger(DAOComputer.class);
 
-	private static DAOComputer instance;
-
-	public static DAOComputer getInstance() {
-		if(instance == null) {
-			instance = new DAOComputer();
-		}
-		return instance;
-	}
 	public boolean insertComputer(Computer computer) throws NotAValidComputerException, CantConnectException {
-		try(Connection connection = this.getConnection();
+		try(Connection connection = this.ds.getConnection();
 				PreparedStatement statement = connection.prepareStatement(INSERT)){
 			if(computer.getName()==null) {
 				String message = "Name is mandatory to insert a new Computer";
@@ -91,7 +83,7 @@ public class DAOComputer{
 	}
 
 	public void deleteComputer(int id) throws CantConnectException, ComputerNotFoundException{
-		try(Connection connection = this.getConnection();
+		try(Connection connection = this.ds.getConnection();
 				PreparedStatement statement = connection.prepareStatement(DELETE)){
 			statement.setInt(1, id);
 
@@ -109,7 +101,7 @@ public class DAOComputer{
 	}
 
 	public void updateComputer(int id, Computer computer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException{
-		try(Connection connection = this.getConnection();
+		try(Connection connection = this.ds.getConnection();
 				PreparedStatement statement = connection.prepareStatement(UPDATE)){
 			if(computer.getName()==null) {
 				String message = "Name is mandatory to insert a new Computer";
@@ -151,7 +143,7 @@ public class DAOComputer{
 		List<DTOComputer> computers = new ArrayList<>();
 		String query = String.format(SEARCH_WITH_NAMES_PAGINATED,orderBy.getQuery());
 		ResultSet resultat = null;
-		try(Connection connection = this.getConnection();
+		try(Connection connection = this.ds.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, "%" + search + "%");
 			statement.setString(2, "%" + search + "%");
@@ -206,7 +198,7 @@ public class DAOComputer{
 	 */
 	public DTOComputer find(int idComputer) throws ComputerNotFoundException{
 		ResultSet resultat = null;
-		try(Connection connection = this.getConnection();
+		try(Connection connection = this.ds.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)){
 			statement.setString(1, Integer.toString(idComputer));
 			resultat = statement.executeQuery();
@@ -251,7 +243,7 @@ public class DAOComputer{
 	public int countComputers(String search) {
 		int count = 0;
 		ResultSet resultat = null;
-		try(Connection connection = this.getConnection();
+		try(Connection connection = this.ds.getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT)){
 			statement.setString(1, "%"+search+"%" );
 			statement.setString(2, "%"+search+"%" );
@@ -276,7 +268,7 @@ public class DAOComputer{
 
 	public int getLastComputerId() {
 		int lastId = 0;
-		try(Connection connection = this.getConnection();
+		try(Connection connection = this.ds.getConnection();
 				PreparedStatement statement = connection.prepareStatement(LAST_COMPUTER_ID);
 				ResultSet resultat = statement.executeQuery();){
 

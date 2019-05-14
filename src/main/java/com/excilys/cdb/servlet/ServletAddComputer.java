@@ -10,9 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.NotAValidComputerException;
+import com.excilys.cdb.main.AppConfig;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.service.ServiceCompany;
@@ -24,13 +27,19 @@ public class ServletAddComputer extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(ServletAddComputer.class);
 	
 	private static final String IO_EXCEPTION_MESSAGE = "Input or output exception occurs";
 	
-	private static ServiceCompany serviceCompany = ServiceCompany.getInstance();
-	private static ServiceComputer serviceComputer = ServiceComputer.getInstance();
+	private final ServiceCompany serviceCompany;
+	private final ServiceComputer serviceComputer;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ServletAddComputer.class);
+	public ServletAddComputer() {
+		try (ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class)) {
+			serviceCompany = context.getBean(ServiceCompany.class);
+			serviceComputer = context.getBean(ServiceComputer.class);
+		}
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {

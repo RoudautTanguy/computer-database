@@ -10,11 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
+import com.excilys.cdb.main.AppConfig;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.service.ServiceCompany;
@@ -26,14 +29,20 @@ public class ServletEditComputer extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(ServletEditComputer.class);
 	
 	private static final String IO_EXCEPTION_MESSAGE = "Input or output exception occurs";
 
-	private static ServiceComputer serviceComputer = ServiceComputer.getInstance();
-	private static ServiceCompany serviceCompany = ServiceCompany.getInstance();
+	private final ServiceComputer serviceComputer;
+	private final ServiceCompany serviceCompany;
 
-	private static final Logger logger = LoggerFactory.getLogger(ServletEditComputer.class);
-
+	public ServletEditComputer() {
+		try (ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class)) {
+			serviceComputer = context.getBean(ServiceComputer.class);
+			serviceCompany = context.getBean(ServiceCompany.class);
+		}
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		int id = -1;

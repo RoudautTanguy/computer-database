@@ -5,23 +5,15 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.model.Computer;
 
-
+@Component
 public class Validator {
 
 	private static Logger logger = LoggerFactory.getLogger( Validator.class );
-
-	private static Validator instance;
-
-	public static Validator getInstance() {
-		if(instance == null) {
-			instance = new Validator();
-		}
-		return instance;
-	}
 
 	public void validateComputer(Computer computer) throws NotAValidComputerException{
 		validateNameIsPresent(computer.getName());

@@ -1,17 +1,11 @@
 package com.excilys.cdb.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.model.Company;
 
+@Component
 public class MapperCompany {
-
-	private static MapperCompany instance;
-	
-	public static MapperCompany getInstance() {
-		if(instance == null) {
-			instance = new MapperCompany();
-		}
-		return instance;
-	}
 	
 	/**
 	 * Map a model Company to his DTO

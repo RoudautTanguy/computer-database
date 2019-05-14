@@ -2,23 +2,12 @@ package com.excilys.cdb.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ServicePagination {
 	
 	private static final int DEFAULT_SIZE = 10;
-	
-	private static ServicePagination instance;
-	
-	/**
-	 * Get instance of ServicePagination
-	 * @return instance
-	 */
-	public static ServicePagination getInstance() {
-		if(instance == null) {
-			instance = new ServicePagination();
-		}
-		return instance;
-	}
 	
 	private static final Logger logger = LoggerFactory.getLogger(ServicePagination.class);
 

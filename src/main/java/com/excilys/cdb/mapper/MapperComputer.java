@@ -9,24 +9,17 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.model.Computer;
 
+@Component
 public class MapperComputer {
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	
 	private static final Logger logger = LoggerFactory.getLogger(MapperComputer.class);
-	
-	private static MapperComputer instance;
-	
-	public static MapperComputer getInstance() {
-		if(instance == null) {
-			instance = new MapperComputer();
-		}
-		return instance;
-	}
 	
 	/**
 	 * Map a model Computer to his DTO

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
@@ -19,23 +20,12 @@ import com.excilys.cdb.ui.CLI;
 
 public class Controller {
 	
-	private ServiceCompany serviceCompany = ServiceCompany.getInstance();
-	private ServiceComputer serviceComputer = ServiceComputer.getInstance();
+	@Autowired
+	private ServiceCompany serviceCompany;
+	@Autowired
+	private ServiceComputer serviceComputer;
 	
 	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
-	
-	private static Controller instance;
-	
-	/**
-	 * Get the instance of Controller
-	 * @return the instance of Controller
-	 */
-	public static Controller getInstance() {
-		if(instance == null) {
-			instance =  new Controller();
-		}
-		return instance;
-	}
 	
 	/**
 	 * Send the choice of the user to the dedicated service
