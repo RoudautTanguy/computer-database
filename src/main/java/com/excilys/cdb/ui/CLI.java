@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.cdb.controller.ChoiceMenuEnum;
 import com.excilys.cdb.controller.Controller;
 import com.excilys.cdb.controller.PageMenuEnum;
@@ -18,7 +20,8 @@ import com.excilys.cdb.model.Page;
 
 public class CLI {
 
-	private Controller controller = new Controller();
+	@Autowired
+	private Controller controller;
 
 	/**
 	 * Welcome the user to use the CLI
