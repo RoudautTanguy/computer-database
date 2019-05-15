@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.constant.Constant;
@@ -38,13 +37,15 @@ public class DAOComputer{
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE ( computer.name LIKE ? OR company.name LIKE ? );";
 	public static final String LAST_COMPUTER_ID = "SELECT MAX(id) AS id FROM computer;";
 	
-	@Autowired
 	private HikariConnectionProvider hikariConnectionProvider;
-
-    @Autowired
 	private MapperComputer mapperComputer;
 
 	private static final Logger logger = LoggerFactory.getLogger(DAOComputer.class);
+	
+	public DAOComputer(HikariConnectionProvider hikariConnectionProvider, MapperComputer mapperComputer) {
+		this.hikariConnectionProvider = hikariConnectionProvider;
+		this.mapperComputer = mapperComputer;
+	}
 
 	public boolean insertComputer(Computer computer) throws NotAValidComputerException, CantConnectException {
 		try(Connection connection = hikariConnectionProvider.getDs().getConnection();

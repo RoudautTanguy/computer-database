@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.excilys.cdb.controller.ChoiceMenuEnum;
 import com.excilys.cdb.controller.Controller;
@@ -14,14 +15,20 @@ import com.excilys.cdb.controller.PageMenuEnum;
 import com.excilys.cdb.exception.NotAChoiceException;
 import com.excilys.cdb.exception.NotAnIntegerException;
 import com.excilys.cdb.exception.WrongComputerArgumentException;
+import com.excilys.cdb.main.AppConfig;
 import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 
 public class CLI {
 
-	@Autowired
 	private Controller controller;
+	
+	public CLI() {
+		try(ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class)){
+			controller = context.getBean(Controller.class);
+		}
+	}
 
 	/**
 	 * Welcome the user to use the CLI

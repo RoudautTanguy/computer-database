@@ -3,7 +3,6 @@ package com.excilys.cdb.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -17,10 +16,13 @@ public class ServiceCompany {
 
 	private static final int COMPANIES_NUMBER_PER_PAGE = 20;
 	
-	@Autowired
 	private DAOCompany daoCompany;
-	@Autowired
 	private MapperCompany mapperCompany;
+	
+	public ServiceCompany(DAOCompany daoCompany, MapperCompany mapperCompany) {
+		this.daoCompany = daoCompany;
+		this.mapperCompany = mapperCompany;
+	}
 	
 	/**
 	 * List companies with pagination

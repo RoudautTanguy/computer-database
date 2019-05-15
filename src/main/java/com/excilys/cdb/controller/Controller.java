@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.exception.CantConnectException;
@@ -22,10 +21,13 @@ import com.excilys.cdb.ui.CLI;
 @Component
 public class Controller {
 	
-	@Autowired
 	private ServiceCompany serviceCompany;
-	@Autowired
 	private ServiceComputer serviceComputer;
+	
+	public Controller(ServiceCompany serviceCompany, ServiceComputer serviceComputer) {
+		this.serviceCompany = serviceCompany;
+		this.serviceComputer = serviceComputer;
+	}
 	
 	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 	

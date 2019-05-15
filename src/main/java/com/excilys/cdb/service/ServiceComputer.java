@@ -2,7 +2,6 @@ package com.excilys.cdb.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.exception.CantConnectException;
@@ -21,14 +20,17 @@ import com.excilys.cdb.validator.Validator;
 public class ServiceComputer {
 	
 	private static final int COMPUTERS_NUMBER_PER_PAGE = 50;
-	@Autowired
 	private Validator validator;
-	@Autowired
 	private MapperComputer mapperComputer;
-	@Autowired
 	private DAOComputer daoComputer;
 	
 	private static Logger logger = LoggerFactory.getLogger( ServiceComputer.class );
+	
+	public ServiceComputer(Validator validator, MapperComputer mapperComputer, DAOComputer daoComputer) {
+		this.daoComputer = daoComputer;
+		this.mapperComputer = mapperComputer;
+		this.validator = validator;
+	}
 	
 	/**
 	 * Insert a new computer

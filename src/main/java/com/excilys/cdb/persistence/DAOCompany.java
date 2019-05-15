@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.constant.Constant;
@@ -31,10 +30,13 @@ public class DAOCompany {
 	public static final String DELETE_COMPUTERS_BY_COMPANY_ID = "DELETE FROM computer WHERE computer.company_id = ?";
 	public static final String LAST_COMPANY_ID = "SELECT MAX(id) AS id FROM company;";
 	
-	@Autowired
 	private HikariConnectionProvider hikariConnectionProvider;
 
 	private static final Logger logger = LoggerFactory.getLogger(DAOCompany.class);
+	
+	public DAOCompany(HikariConnectionProvider hikariConnectionProvider) {
+		this.hikariConnectionProvider = hikariConnectionProvider;
+	}
 
 	public void insertCompany(String name) throws NotAValidCompanyException {
 		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
