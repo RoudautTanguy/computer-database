@@ -18,9 +18,6 @@ $(function() {
 			}
 		});  
 	});
-	if($("select#companyId > .active").val()){
-		$("select#companyId").val($("select#companyId > .active").val());
-	}
 
 	$("#editComputer").on("submit",function(e){
 		$(".alert").remove();
@@ -63,9 +60,3 @@ $(function() {
 	});
 
 });
-
-function SelectElement(id, valueToSelect)
-{    
-	var element = document.getElementById(id);
-	element.value = valueToSelect;
-}

@@ -52,12 +52,8 @@
 								<select class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${ companies }" var="company">
-										<c:if test="${company.name == computer.company}">
-											<option class="active" value="${ company.id }">${ company.name }</option>
-										</c:if>
-										<c:if test="${company.name != computer.company}">
-											<option value="${ company.id }">${ company.name }</option>
-										</c:if>
+										<option value="${ company.id }" <c:if test='${ company.name == computer.company }'> selected </c:if>>${ company.name }</option>
+										
 
 									</c:forEach>
 								</select>
