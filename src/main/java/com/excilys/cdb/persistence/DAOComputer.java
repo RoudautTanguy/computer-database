@@ -19,11 +19,10 @@ import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.main.HikariConnectionProvider;
 import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 @Repository
 public class DAOComputer{
@@ -39,8 +38,8 @@ public class DAOComputer{
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE ( computer.name LIKE ? OR company.name LIKE ? );";
 	public static final String LAST_COMPUTER_ID = "SELECT MAX(id) AS id FROM computer;";
 	
-	private HikariConfig config = new HikariConfig("/config.properties");
-    private HikariDataSource ds = new HikariDataSource( config );
+	@Autowired
+	private HikariConnectionProvider hikariConnectionProvider;
 
     @Autowired
 	private MapperComputer mapperComputer;
@@ -48,7 +47,7 @@ public class DAOComputer{
 	private static final Logger logger = LoggerFactory.getLogger(DAOComputer.class);
 
 	public boolean insertComputer(Computer computer) throws NotAValidComputerException, CantConnectException {
-		try(Connection connection = this.ds.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(INSERT)){
 			if(computer.getName()==null) {
 				String message = "Name is mandatory to insert a new Computer";
@@ -83,7 +82,7 @@ public class DAOComputer{
 	}
 
 	public void deleteComputer(int id) throws CantConnectException, ComputerNotFoundException{
-		try(Connection connection = this.ds.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(DELETE)){
 			statement.setInt(1, id);
 
@@ -101,7 +100,7 @@ public class DAOComputer{
 	}
 
 	public void updateComputer(int id, Computer computer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException{
-		try(Connection connection = this.ds.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(UPDATE)){
 			if(computer.getName()==null) {
 				String message = "Name is mandatory to insert a new Computer";
@@ -143,7 +142,7 @@ public class DAOComputer{
 		List<DTOComputer> computers = new ArrayList<>();
 		String query = String.format(SEARCH_WITH_NAMES_PAGINATED,orderBy.getQuery());
 		ResultSet resultat = null;
-		try(Connection connection = this.ds.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, "%" + search + "%");
 			statement.setString(2, "%" + search + "%");
@@ -198,7 +197,7 @@ public class DAOComputer{
 	 */
 	public DTOComputer find(int idComputer) throws ComputerNotFoundException{
 		ResultSet resultat = null;
-		try(Connection connection = this.ds.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)){
 			statement.setString(1, Integer.toString(idComputer));
 			resultat = statement.executeQuery();
@@ -243,7 +242,7 @@ public class DAOComputer{
 	public int countComputers(String search) {
 		int count = 0;
 		ResultSet resultat = null;
-		try(Connection connection = this.ds.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT)){
 			statement.setString(1, "%"+search+"%" );
 			statement.setString(2, "%"+search+"%" );
@@ -268,7 +267,7 @@ public class DAOComputer{
 
 	public int getLastComputerId() {
 		int lastId = 0;
-		try(Connection connection = this.ds.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(LAST_COMPUTER_ID);
 				ResultSet resultat = statement.executeQuery();){
 

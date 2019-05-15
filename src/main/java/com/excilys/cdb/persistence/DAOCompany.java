@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.constant.Constant;
@@ -16,9 +17,8 @@ import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidCompanyException;
 import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.main.HikariConnectionProvider;
 import com.excilys.cdb.model.Company;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 @Repository
 public class DAOCompany {
@@ -31,17 +31,13 @@ public class DAOCompany {
 	public static final String DELETE_COMPUTERS_BY_COMPANY_ID = "DELETE FROM computer WHERE computer.company_id = ?";
 	public static final String LAST_COMPANY_ID = "SELECT MAX(id) AS id FROM company;";
 	
-	private HikariConfig config = new HikariConfig("/config.properties");
-    private HikariDataSource ds = new HikariDataSource( config );
-
-	public Connection getConnection() throws SQLException {
-		return ds.getConnection();
-	}
+	@Autowired
+	private HikariConnectionProvider hikariConnectionProvider;
 
 	private static final Logger logger = LoggerFactory.getLogger(DAOCompany.class);
 
 	public void insertCompany(String name) throws NotAValidCompanyException {
-		try(Connection connection = this.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(INSERT)){
 			if(name == null || name.equals("")) {
 				throw new NotAValidCompanyException(Constant.NAME_IS_MANDATORY);
@@ -55,7 +51,7 @@ public class DAOCompany {
 	}
 
 	public void deleteCompany(int id) throws CantConnectException, CompanyNotFoundException {
-		try(Connection connection = this.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement deleteComputersStatement = connection.prepareStatement(DELETE_COMPUTERS_BY_COMPANY_ID);
 				PreparedStatement deleteCompanyStatement = connection.prepareStatement(DELETE)){
 			try{
@@ -84,7 +80,7 @@ public class DAOCompany {
 	public List<Company> list() {
 		List<Company> companies = new ArrayList<>();
 
-		try(Connection connection = this.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
 				ResultSet resultat = statement.executeQuery();){
 			while ( resultat.next() ) {
@@ -106,7 +102,7 @@ public class DAOCompany {
 		List<Company> companies = new ArrayList<>();
 		int offset = index * limit;
 		ResultSet resultat = null;
-		try(Connection connection = this.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PAGINATED)){
 			statement.setInt(1, offset);
 			statement.setInt(2, limit);
@@ -137,7 +133,7 @@ public class DAOCompany {
 
 	public int countCompanies() {
 		int count = 0;
-		try(Connection connection = this.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(COUNT);
 				ResultSet resultat = statement.executeQuery();){
 
@@ -152,7 +148,7 @@ public class DAOCompany {
 	
 	public int getLastCompanyId() {
 		int lastId = 0;
-		try(Connection connection = this.getConnection();
+		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
 				PreparedStatement statement = connection.prepareStatement(LAST_COMPANY_ID);
 				ResultSet resultat = statement.executeQuery();){
 
