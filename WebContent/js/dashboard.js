@@ -149,49 +149,49 @@ $(function() {
 	case 1:
 		var icon = $(".fa-sort").eq(0);
 		icon.parent().attr("href","?orderBy="+2);
-		icon.addClass("fa-sort-desc");
+		icon.addClass("fa-sort-asc");
 		icon.removeClass("fa-sort");
 		break;
 	case 2:
 		var icon = $(".fa-sort").eq(0);
 		icon.parent().attr("href","?orderBy="+0);
-		icon.addClass("fa-sort-asc");
+		icon.addClass("fa-sort-desc");
 		icon.removeClass("fa-sort");
 		break;
 	case 3:
 		var icon = $(".fa-sort").eq(1);
 		icon.parent().attr("href","?orderBy="+4);
-		icon.addClass("fa-sort-desc");
+		icon.addClass("fa-sort-asc");
 		icon.removeClass("fa-sort");
 		break;
 	case 4:
 		var icon = $(".fa-sort").eq(1);
 		icon.parent().attr("href","?orderBy="+0);
-		icon.addClass("fa-sort-asc");
+		icon.addClass("fa-sort-desc");
 		icon.removeClass("fa-sort");
 		break;
 	case 5:
 		var icon = $(".fa-sort").eq(2);
 		icon.parent().attr("href","?orderBy="+6);
-		icon.addClass("fa-sort-desc");
+		icon.addClass("fa-sort-asc");
 		icon.removeClass("fa-sort");
 		break;
 	case 6:
 		var icon = $(".fa-sort").eq(2);
 		icon.parent().attr("href","?orderBy="+0);
-		icon.addClass("fa-sort-asc");
+		icon.addClass("fa-sort-desc");
 		icon.removeClass("fa-sort");
 		break;
 	case 7:
 		var icon = $(".fa-sort").eq(3);
 		icon.parent().attr("href","?orderBy="+8);
-		icon.addClass("fa-sort-desc");
+		icon.addClass("fa-sort-asc");
 		icon.removeClass("fa-sort");
 		break;
 	case 8:
 		var icon = $(".fa-sort").eq(3);
 		icon.parent().attr("href","?orderBy="+0);
-		icon.addClass("fa-sort-asc");
+		icon.addClass("fa-sort-desc");
 		icon.removeClass("fa-sort");
 		break;
 	default:
