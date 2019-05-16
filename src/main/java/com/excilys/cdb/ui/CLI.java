@@ -12,12 +12,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.excilys.cdb.controller.ChoiceMenuEnum;
 import com.excilys.cdb.controller.Controller;
 import com.excilys.cdb.controller.PageMenuEnum;
+import com.excilys.cdb.dto.DTOCompany;
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.NotAChoiceException;
 import com.excilys.cdb.exception.NotAnIntegerException;
 import com.excilys.cdb.exception.WrongComputerArgumentException;
 import com.excilys.cdb.main.AppConfig;
-import com.excilys.cdb.mapper.DTOCompany;
-import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 
 public class CLI {

@@ -1,4 +1,4 @@
-package com.excilys.cdb.mapper;
+package com.excilys.cdb.dto;
 
 public class DTOComputer {
 

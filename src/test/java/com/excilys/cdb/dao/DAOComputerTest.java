@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.main.AppConfig;
-import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.DAOComputer;
@@ -39,28 +39,28 @@ public class DAOComputerTest {
 	public void insertFullComputerTest() throws  NotAValidComputerException, CantConnectException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		assertTrue("Can't insert Computer",dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
+		dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
 																  .withId(1)
 																  .withIntroduced(introduced)
 																  .withDiscontinued(discontinued)
 																  .withCompanyId(20)
-																  .build()));
+																  .build());
 	}
 
 	@Test
-	public void insertComputerWithNameTest() throws NotAValidComputerException, CantConnectException {
-		assertTrue("Can't insert Computer",dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
+	public void insertComputerWithNameTest() throws NotAValidComputerException {
+		dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
 				  												  .withId(1)
-				  												  .build()));
+				  												  .build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void insertNullComputerTest() throws NotAValidComputerException, CantConnectException {
+	public void insertNullComputerTest() throws NotAValidComputerException {
 		dao.insertComputer(new Computer.ComputerBuilder(null).build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException, CantConnectException {
+	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException {
 		dao.insertComputer(new Computer.ComputerBuilder("WrongCompanyId")
 				  			   .withId(1)
 				  			   .withCompanyId(100)
@@ -70,7 +70,7 @@ public class DAOComputerTest {
 	// Update
 
 	@Test
-	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
+	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
 		dao.updateComputer(600, new Computer.ComputerBuilder("Laptop")
@@ -82,21 +82,21 @@ public class DAOComputerTest {
 	}
 
 	@Test
-	public void updateComputerWithNameTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
+	public void updateComputerWithNameTest() throws NotAValidComputerException, ComputerNotFoundException {
 		dao.updateComputer(600, new Computer.ComputerBuilder("Laptop")
 				   					.withId(600)
 									.build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void updateNullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
+	public void updateNullComputerTest() throws NotAValidComputerException, ComputerNotFoundException {
 		dao.updateComputer(599,new Computer.ComputerBuilder(null)
 				   				   .withId(1)
 				   				   .build());
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
-	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
+	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException {
 		dao.updateComputer(9999,new Computer.ComputerBuilder("Name")
 				   					.withId(1)
 				   					.build());

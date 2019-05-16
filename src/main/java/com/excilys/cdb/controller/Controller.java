@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.excilys.cdb.dto.DTOCompany;
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
-import com.excilys.cdb.mapper.DTOCompany;
-import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.persistence.OrderByEnum;
 import com.excilys.cdb.service.ServiceCompany;
@@ -20,17 +20,17 @@ import com.excilys.cdb.ui.CLI;
 
 @Component
 public class Controller {
-	
+
 	private ServiceCompany serviceCompany;
 	private ServiceComputer serviceComputer;
-	
+
 	public Controller(ServiceCompany serviceCompany, ServiceComputer serviceComputer) {
 		this.serviceCompany = serviceCompany;
 		this.serviceComputer = serviceComputer;
 	}
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
-	
+
 	/**
 	 * Send the choice of the user to the dedicated service
 	 * @param choice of the user
@@ -44,7 +44,7 @@ public class Controller {
 				logger.warn("Page Not found", e);
 			}
 			break;
-			
+
 		case LIST_COMPANIES:
 			try {
 				cli.showCompanies(serviceCompany.list(0));
@@ -52,7 +52,7 @@ public class Controller {
 				logger.warn("Page Not found", e);
 			}
 			break;
-			
+
 		case SHOW_COMPUTER_DETAIL:
 			int detailId = cli.askInteger("Please enter an Id (Integer)");
 			try {
@@ -63,32 +63,31 @@ public class Controller {
 				logger.warn("Computer Not found", e);
 			}
 			break;
-			
+
 		case CREATE_COMPUTER:
 			DTOComputer computer;
-			try {
-				Optional<DTOComputer> optionalComputer = cli.askComputerCreationInformation();
-				if(optionalComputer.isPresent()) {
-					computer = optionalComputer.get();
-					cli.printCreatedMessage(serviceComputer.insert(computer));
-				} else {
-					logger.warn("Computer is not present");
+			Optional<DTOComputer> optionalComputerCreated = cli.askComputerCreationInformation();
+			if(optionalComputerCreated.isPresent()) {
+				computer = optionalComputerCreated.get();
+				try{
+					serviceComputer.insert(computer);
+					cli.printCreatedMessage(true);
+				} catch(NotAValidComputerException e) {
+					cli.printCreatedMessage(false);
+					logger.warn("Computer not valid");
 				}
-			} catch (NotAValidComputerException e) {
-				cli.printException(e);
-				logger.warn("Computer not valid");
-			} catch (CantConnectException e) {
-				logger.warn("Can't connect");
+			} else {
+				logger.warn("Computer is not present");
 			}
 			break;
-			
+
 		case UPDATE_COMPUTER:
 			DTOComputer dtoComputer;
 			try {
 				int id = cli.askComputerUpdateId();
-				Optional<DTOComputer> optionalComputer = cli.askComputerCreationInformation();
-				if(optionalComputer.isPresent()) {
-					dtoComputer = optionalComputer.get();
+				Optional<DTOComputer> optionalComputerUpdated = cli.askComputerCreationInformation();
+				if(optionalComputerUpdated.isPresent()) {
+					dtoComputer = optionalComputerUpdated.get();
 					serviceComputer.update(id, dtoComputer);
 					cli.printUpdatedMessage(true);
 				}
@@ -96,7 +95,7 @@ public class Controller {
 				cli.printException(e);
 			} 
 			break;
-			
+
 		case DELETE_COMPUTER:
 			int deleteId = cli.askInteger("Please enter the Id of the Computer you want to Delete.");
 			try {
@@ -105,12 +104,12 @@ public class Controller {
 			} catch (CantConnectException | ComputerNotFoundException e) {
 				cli.printDeletedMessage(false, deleteId);
 			}
-			
+
 			break;
 		}
 		cli.startChoice();
 	}
-	
+
 	/**
 	 * 
 	 * @param <T>
@@ -131,7 +130,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case NEXT_PAGE:
 			try {
 				page.setList(serviceCompany.list(page.incrementIndex()).getList());
@@ -151,7 +150,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case FIRST_PAGE:
 			try {
 				page.setList(serviceCompany.list(0).getList());
@@ -161,7 +160,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case LAST_PAGE:
 			try {
 				int lastSlice = serviceCompany.getLastPage();
@@ -172,14 +171,14 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case QUIT:
 			cli.startChoice();
 			break;
 		}
 		return isOk;
 	}
-	
+
 	public boolean sendToServiceComputer(CLI cli, PageMenuEnum choice, Page<DTOComputer> page) {
 		boolean isOk = true;
 		switch(choice) { 
@@ -192,7 +191,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case NEXT_PAGE:
 			try {
 				page.setList(serviceComputer.search(page.incrementIndex(), 50, "", OrderByEnum.DEFAULT).getList());
@@ -202,7 +201,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case SET_PAGE:
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
@@ -213,7 +212,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case FIRST_PAGE:
 			try {
 				page.setList(serviceComputer.search(0, 50, "", OrderByEnum.DEFAULT).getList());
@@ -223,7 +222,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case LAST_PAGE:
 			try {
 				int lastSlice = serviceComputer.lastPage();
@@ -234,7 +233,7 @@ public class Controller {
 				cli.printException(e);
 			}
 			break;
-			
+
 		case QUIT:
 			cli.startChoice();
 			break;

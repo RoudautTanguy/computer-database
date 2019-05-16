@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.exception.PageNotFoundException;
-import com.excilys.cdb.mapper.DTOCompany;
 import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.persistence.DAOCompany;

@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
-import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
@@ -39,11 +39,11 @@ public class ServiceComputer {
 	 * @throws NotAValidComputerException 
 	 * @throws CantConnectException 
 	 */
-	public boolean insert(DTOComputer dtoComputer) throws NotAValidComputerException, CantConnectException {
+	public void insert(DTOComputer dtoComputer) throws NotAValidComputerException {
 		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		try{
 			validator.validateComputer(computer);
-			return daoComputer.insertComputer(computer);
+			daoComputer.insertComputer(computer);
 		} catch(NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");

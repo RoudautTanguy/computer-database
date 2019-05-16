@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.constant.Constant;
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.model.Computer;
 
 @Component

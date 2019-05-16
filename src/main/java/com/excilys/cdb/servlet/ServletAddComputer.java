@@ -13,11 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.excilys.cdb.exception.CantConnectException;
+import com.excilys.cdb.dto.DTOCompany;
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.main.AppConfig;
-import com.excilys.cdb.mapper.DTOCompany;
-import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
 
@@ -71,13 +70,6 @@ public class ServletAddComputer extends HttpServlet{
 			response.sendRedirect(request.getContextPath() + "/dashboard");
 		} catch (NotAValidComputerException e) {
 			logger.warn("This computer is not valid", e);
-			try {
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			} catch (IOException e1) {
-				logger.error(IO_EXCEPTION_MESSAGE,e1);
-			}
-		} catch (CantConnectException e) {
-			logger.error("Can't connect to the DB", e);
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			} catch (IOException e1) {

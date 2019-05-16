@@ -13,11 +13,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.excilys.cdb.constant.Constant;
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.main.AppConfig;
-import com.excilys.cdb.mapper.DTOComputer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.persistence.OrderByEnum;
 import com.excilys.cdb.service.ServiceComputer;

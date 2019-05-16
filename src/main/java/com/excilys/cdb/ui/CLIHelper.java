@@ -13,11 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.constant.Constant;
+import com.excilys.cdb.dto.DTOCompany;
+import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.NotAChoiceException;
 import com.excilys.cdb.exception.NotAnIntegerException;
 import com.excilys.cdb.exception.WrongComputerArgumentException;
-import com.excilys.cdb.mapper.DTOCompany;
-import com.excilys.cdb.mapper.DTOComputer;
 
 public class CLIHelper {
 
