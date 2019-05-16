@@ -21,8 +21,7 @@ import com.excilys.cdb.model.Computer;
 @Repository
 public class DAOComputer{
 
-	public static final  String INSERT = "INSERT into computer (name, introduced, discontinued, company_id)"
-			+ " values (?, ?, ?, ?)";
+	public static final  String INSERT = "INSERT into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?)";
 	public static final String DELETE = "DELETE FROM computer where id = ?";
 	public static final String UPDATE = "UPDATE computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
 	public static final String SEARCH_WITH_NAMES_PAGINATED = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id,company.name AS company_name "

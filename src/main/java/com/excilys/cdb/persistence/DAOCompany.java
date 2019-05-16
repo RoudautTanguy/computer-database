@@ -1,8 +1,5 @@
 package com.excilys.cdb.persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
@@ -13,9 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb.constant.Constant;
-import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidCompanyException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -34,13 +31,11 @@ public class DAOCompany {
 	public static final String DELETE_COMPUTERS_BY_COMPANY_ID = "DELETE FROM computer WHERE computer.company_id = ?";
 	public static final String LAST_COMPANY_ID = "SELECT MAX(id) AS id FROM company;";
 
-	private HikariConnectionProvider hikariConnectionProvider;
 	private JdbcTemplate jdbcTemplate;
 
 	private static final Logger logger = LoggerFactory.getLogger(DAOCompany.class);
 
 	public DAOCompany(HikariConnectionProvider hikariConnectionProvider) {
-		this.hikariConnectionProvider = hikariConnectionProvider;
 		this.jdbcTemplate = new JdbcTemplate(hikariConnectionProvider.getDs());
 	}
 
@@ -59,31 +54,19 @@ public class DAOCompany {
 		}
 	}
 
-	public void deleteCompany(int id) throws CantConnectException, CompanyNotFoundException {
-		try(Connection connection = hikariConnectionProvider.getDs().getConnection();
-				PreparedStatement deleteComputersStatement = connection.prepareStatement(DELETE_COMPUTERS_BY_COMPANY_ID);
-				PreparedStatement deleteCompanyStatement = connection.prepareStatement(DELETE)){
-			try{
-				connection.setAutoCommit(false);
-				deleteComputersStatement.setInt(1, id);
-				deleteComputersStatement.executeUpdate();
-
-				deleteCompanyStatement.setInt(1, id);
-				if(deleteCompanyStatement.executeUpdate()==0) {
-					connection.rollback();
-					throw new CompanyNotFoundException("The company "+id+" doesn't exist.");
-				} else {
-					connection.commit();
-				}
-			} catch(SQLException e) {
-				connection.rollback();
-				throw e;
-			}
-
-		} catch (SQLException e) {
-			logger.error(Constant.CANT_CONNECT,e);
-			throw new CantConnectException(Constant.CANT_CONNECT);
+	@Transactional
+	public void deleteCompany(int id) throws CompanyNotFoundException {
+		if(id<0) {
+			throw new CompanyNotFoundException("The company "+id+" doesn't exist.");
 		}
+		Object[] params = {
+				new SqlParameterValue(Types.INTEGER, id)
+		};
+		jdbcTemplate.update(DELETE_COMPUTERS_BY_COMPANY_ID, params);
+		if(jdbcTemplate.update(DELETE, params)==0) {
+			throw new CompanyNotFoundException("The company "+id+" doesn't exist.");
+		} 
+
 	}
 
 	/**
