@@ -6,9 +6,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlParameterValue;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,50 +23,75 @@ import com.excilys.cdb.model.Company;
 @Repository
 public class DAOCompany {
 
-	public static final String INSERT = "INSERT into company (name) values (?)";
-	public static final String SELECT_ALL = "SELECT * FROM company;";
-	public static final String SELECT_ALL_PAGINATED = "SELECT * FROM company LIMIT ?,?;";
 	public static final String COUNT = "SELECT COUNT(*) AS count FROM company;";
-	public static final String DELETE = "DELETE FROM company WHERE company.id = ?";
-	public static final String DELETE_COMPUTERS_BY_COMPANY_ID = "DELETE FROM computer WHERE computer.company_id = ?";
+	public static final String DELETE = "DELETE FROM company WHERE company.id = :id";
+	public static final String DELETE_COMPUTERS_BY_COMPANY_ID = "DELETE FROM computer WHERE computer.company_id = :id";
+	public static final String INSERT = "INSERT into company (name) values (:name)";
 	public static final String LAST_COMPANY_ID = "SELECT MAX(id) AS id FROM company;";
-
-	private JdbcTemplate jdbcTemplate;
+	public static final String SELECT_ALL = "SELECT company.id, company.name FROM company;";
+	public static final String SELECT_ALL_PAGINATED = "SELECT company.id, company.name FROM company LIMIT :offset,:limit;";
+	
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	private static final Logger logger = LoggerFactory.getLogger(DAOCompany.class);
 
 	public DAOCompany(HikariConnectionProvider hikariConnectionProvider) {
-		this.jdbcTemplate = new JdbcTemplate(hikariConnectionProvider.getDs());
+		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(hikariConnectionProvider.getDataSource());
 	}
-
-	public void insertCompany(String name) throws NotAValidCompanyException {
-		if(name == null || name.equals("")) {
-			throw new NotAValidCompanyException(Constant.NAME_IS_MANDATORY);
-		} else {
-			try{
-				Object[] params = {
-						new SqlParameterValue(Types.VARCHAR, name)
-				};
-				jdbcTemplate.update(INSERT, params);
-			} catch (DuplicateKeyException e) {
-				logger.error("Company {} already exist : {}", name ,e);
-			}
-		}
+	
+	/**
+	 * Count companies
+	 * @return the count
+	 */
+	public int countCompanies() {
+		return namedParameterJdbcTemplate.queryForObject(COUNT, new MapSqlParameterSource(), Integer.class);
 	}
-
+	
+	/**
+	 * Delete company and associated computers
+	 * @param id of the company
+	 * @throws CompanyNotFoundException if company is not found
+	 */
 	@Transactional
 	public void deleteCompany(int id) throws CompanyNotFoundException {
 		if(id<0) {
 			throw new CompanyNotFoundException("The company "+id+" doesn't exist.");
 		}
-		Object[] params = {
-				new SqlParameterValue(Types.INTEGER, id)
-		};
-		jdbcTemplate.update(DELETE_COMPUTERS_BY_COMPANY_ID, params);
-		if(jdbcTemplate.update(DELETE, params)==0) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("id", id,Types.INTEGER);
+		
+		namedParameterJdbcTemplate.update(DELETE_COMPUTERS_BY_COMPANY_ID, params);
+		if(namedParameterJdbcTemplate.update(DELETE, params)==0) {
 			throw new CompanyNotFoundException("The company "+id+" doesn't exist.");
 		} 
 
+	}
+
+	/**
+	 * Insert company
+	 * @param name of the company
+	 * @throws NotAValidCompanyException if the name is null or empty
+	 */
+	public void insertCompany(String name) throws NotAValidCompanyException {
+		if(name == null || name.equals("")) {
+			throw new NotAValidCompanyException(Constant.NAME_IS_MANDATORY);
+		} else {
+			try{
+				MapSqlParameterSource params = new MapSqlParameterSource();
+				params.addValue("name", name,Types.VARCHAR);
+				namedParameterJdbcTemplate.update(INSERT, params);
+			} catch (DuplicateKeyException e) {
+				logger.error("Company {} already exist : {}", name ,e);
+			}
+		}
+	}
+	
+	/**
+	 * Get the last company id
+	 * @return id of the last company in database
+	 */
+	public int getLastCompanyId() {
+		return namedParameterJdbcTemplate.queryForObject(LAST_COMPANY_ID, new MapSqlParameterSource(), Integer.class);
 	}
 
 	/**
@@ -75,7 +100,7 @@ public class DAOCompany {
 	 */
 	public List<Company> list() {
 		RowMapper<Company> rowMapper = new CompanyRowMapper();
-		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+		return namedParameterJdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
 	/**
@@ -91,32 +116,15 @@ public class DAOCompany {
 		}
 		int offset = index * limit;
 		RowMapper<Company> rowMapper = new CompanyRowMapper();
-		Object[] params = {
-				new SqlParameterValue(Types.INTEGER, offset),
-				new SqlParameterValue(Types.INTEGER, limit)
-		};
-		List<Company> companies = jdbcTemplate.query(SELECT_ALL_PAGINATED, rowMapper, params);
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("offset", offset,Types.INTEGER);
+		params.addValue("limit", limit,Types.INTEGER);
+		List<Company> companies = namedParameterJdbcTemplate.query(SELECT_ALL_PAGINATED, params, rowMapper);
 		if(companies.isEmpty()) {
 			throw new PageNotFoundException("This page doesn't exist");
 		} else {
 			return companies;
 		}
-	}
-
-	/**
-	 * Count companies
-	 * @return the count
-	 */
-	public int countCompanies() {
-		return jdbcTemplate.queryForObject(COUNT, Integer.class);
-	}
-
-	/**
-	 * Get the last company id
-	 * @return id of the last company in database
-	 */
-	public int getLastCompanyId() {
-		return jdbcTemplate.queryForObject(LAST_COMPANY_ID, Integer.class);
 	}
 
 }

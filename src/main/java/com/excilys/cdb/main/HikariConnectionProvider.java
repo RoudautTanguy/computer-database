@@ -9,9 +9,9 @@ import com.zaxxer.hikari.HikariDataSource;
 public class HikariConnectionProvider {
 
 	private HikariConfig config = new HikariConfig("/config.properties");
-    private HikariDataSource ds = new HikariDataSource( config );
+    private HikariDataSource dataSource = new HikariDataSource( config );
     
-    public HikariDataSource getDs() {
-    	return this.ds;
+    public HikariDataSource getDataSource() {
+    	return this.dataSource;
     }
 }
