@@ -14,7 +14,7 @@ public class MapperCompany {
 	 * @return the corresponding DTO
 	 */
 	public DTOCompany mapModelToDTO(Company company) {
-		return new DTOCompany(Integer.toString(company.getId()),company.getName());
+		return new DTOCompany(company.getId(),company.getName());
 	}
 	
 	/**
@@ -23,6 +23,6 @@ public class MapperCompany {
 	 * @return the corresponding model
 	 */
 	public Company mapDTOToModel(DTOCompany dtoCompany) {
-		return new Company(Integer.parseInt(dtoCompany.getId()),dtoCompany.getName());
+		return new Company(dtoCompany.getId(),dtoCompany.getName());
 	}
 }

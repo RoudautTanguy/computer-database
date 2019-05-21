@@ -82,13 +82,9 @@ public class CLIHelper {
 			throw new WrongComputerArgumentException("Name is mandatory !");
 		}
 		if(parsedLine.length == 1) {
-			return new DTOComputer.DTOComputerBuilder(parsedLine[0]).build();
+			return new DTOComputer(parsedLine[0]);
 		} else if (parsedLine.length == 4) {
-			return new DTOComputer.DTOComputerBuilder(parsedLine[0])
-					.withIntroduced(parsedLine[1])
-					.withDiscontinued(parsedLine[2])
-					.withCompany(parsedLine[3])
-					.build();
+			return new DTOComputer(parsedLine[0]);
 		} else {
 			String message = "Wrong number of argument !";
 			logger.error("{} Input : {}",message,line);
@@ -138,7 +134,7 @@ public class CLIHelper {
 	 */
 	public static void listCompaniesHelper(String[] headers, List<DTOCompany> companies) {
 		int maxIdLength = companies.stream()
-				.map(DTOCompany::getId)
+				.map(dto -> Integer.toString(dto.getId()))
 				.mapToInt(String::length)
 				.max().orElse(headers[0].length());
 		int maxNameLength = companies.stream()
@@ -169,7 +165,7 @@ public class CLIHelper {
 			return;
 		}
 		int maxIdLength = 			Math.max(headers[0].length(), computers.stream()
-				.map(DTOComputer::getId)
+				.map(dto -> Integer.toString(dto.getId()))
 				.mapToInt(String::length)
 				.max().orElse(headers[0].length()));
 		int maxNameLength =			Math.max(headers[1].length(),computers.stream()

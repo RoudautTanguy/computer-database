@@ -46,11 +46,7 @@ public class ComputerProcessingController {
 		String introduced = requestParams.get("introduced").replaceAll(Constant.SANITIZER_REPLACER, "_");
 		String discontinued = requestParams.get("discontinued").replaceAll(Constant.SANITIZER_REPLACER, "_");
 		String companyId = requestParams.get("companyId");
-		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(computerName)
-				.withIntroduced(introduced)
-				.withDiscontinued(discontinued)
-				.withCompany(companyId)
-				.build();
+		DTOComputer dtoComputer = new DTOComputer(0,computerName,introduced,discontinued,companyId);
 		serviceComputer.insert(dtoComputer);
 		return "redirect:/dashboard";
 
@@ -78,11 +74,7 @@ public class ComputerProcessingController {
 		String introduced = requestParams.get("introduced").replaceAll(Constant.SANITIZER_REPLACER, "_");
 		String discontinued = requestParams.get("discontinued").replaceAll(Constant.SANITIZER_REPLACER, "_");
 		String companyId = requestParams.get("companyId");
-		DTOComputer dtoComputer = new DTOComputer.DTOComputerBuilder(computerName)
-				.withIntroduced(introduced)
-				.withDiscontinued(discontinued)
-				.withCompany(companyId)
-				.build();
+		DTOComputer dtoComputer = new DTOComputer(0,computerName,introduced,discontinued,companyId);
 		try {
 			int parseId = Integer.parseInt(id);
 			serviceComputer.update(parseId,dtoComputer);

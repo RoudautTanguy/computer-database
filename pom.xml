@@ -20,6 +20,7 @@
 		<selenium-java-version>3.141.59</selenium-java-version>
 		<webdrivermanager-version>3.4.0</webdrivermanager-version>
 		<spring-version>5.1.7.RELEASE</spring-version>
+		<validation-api-version>2.0.1.Final</validation-api-version>
 
 		<!-- Plugins -->
 		<maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
@@ -100,6 +101,12 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${validation-api-version}</version>
+		</dependency>
+
 
 	</dependencies>
 

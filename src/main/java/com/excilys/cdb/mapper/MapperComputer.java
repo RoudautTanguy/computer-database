@@ -28,7 +28,7 @@ public class MapperComputer {
 	 * @return the corresponding DTO
 	 */
 	public DTOComputer mapModelToDTO(Computer computer) {
-		String id = Integer.toString(computer.getId());
+		int id = computer.getId();
 		String name = computer.getName();
 		String introduced = "";
 		if(computer.getIntroduced() != null) {
@@ -42,12 +42,7 @@ public class MapperComputer {
 		if(computer.getCompanyId() != null) {
 			company = Integer.toString(computer.getCompanyId());
 		}
-		return new DTOComputer.DTOComputerBuilder(name)
-							  .withId(id)
-							  .withIntroduced(introduced)
-							  .withDiscontinued(discontinued)
-							  .withCompany(company)
-							  .build();
+		return new DTOComputer(id,name,introduced,discontinued,company);
 	}
 	
 	/**
@@ -56,7 +51,7 @@ public class MapperComputer {
 	 * @return the corresponding model
 	 */
 	public Computer mapDTOToModel(DTOComputer computer) {
-		int id = Integer.parseInt(computer.getId());
+		int id = computer.getId();
 		String name = computer.getName();
 		Computer newComputer = new Computer.ComputerBuilder(name).withId(id).build();
 		Optional<Timestamp> optionalIntroduced = tryParse(computer.getIntroduced());

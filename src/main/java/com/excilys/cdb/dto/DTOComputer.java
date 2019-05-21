@@ -1,65 +1,43 @@
 package com.excilys.cdb.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
+
+import com.excilys.cdb.validator.CheckDateFormat;
+
 public class DTOComputer {
 
-	private String id;
+	@PositiveOrZero
+	private int id;
+	@NotEmpty
 	private String name;
+	@CheckDateFormat(pattern = "dd-MM-yyyy")
 	private String introduced;
+	@CheckDateFormat(pattern = "dd-MM-yyyy")
 	private String discontinued;
 	private String company;
 	
-	public static class DTOComputerBuilder {
-		//required
-		private final String name;
-
-		//optional
-		private String id = Integer.toString(0);
-		private String introduced = "";
-		private String discontinued = "";
-		private String company = "";
-
-		public DTOComputerBuilder(String name) {
-			this.name = name;
-		}
-
-		public DTOComputerBuilder withId(String id) {
-			this.id = id;
-			return this;
-		}
-
-		public DTOComputerBuilder withIntroduced(String introduced) {
-			this.introduced = introduced;
-			return this;
-		}
-
-		public DTOComputerBuilder withDiscontinued(String discontinued) {
-			this.discontinued = discontinued;
-			return this;
-		}
-
-		public DTOComputerBuilder withCompany(String company) {
-			this.company = company;
-			return this;
-		}
-
-		public DTOComputer build() {
-			return new DTOComputer(this);
-		}
+	public DTOComputer(int id, String name, String introduced, String discontinued, String company) {
+		this.id = id;
+		this.name = name;
+		this.introduced = introduced;
+		this.discontinued = discontinued;
+		this.company = company;
 	}
 	
-	private DTOComputer(DTOComputerBuilder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
-		this.introduced = builder.introduced;
-		this.discontinued = builder.discontinued;
-		this.company = builder.company;
+	public DTOComputer(String name) {
+		this.id = 0;
+		this.name = name;
+		this.introduced = null;
+		this.discontinued = null;
+		this.company = null;
 	}
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -109,7 +87,7 @@ public class DTOComputer {
 		int result = 1;
 		result = prime * result + ((company == null) ? 0 : company.hashCode());
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + id;
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -136,12 +114,8 @@ public class DTOComputer {
 		} else if (!discontinued.equals(other.discontinued)) {
 			return false;
 		}
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id)) {
+		if (id != other.id)
 			return false;
-		}
 		if (introduced == null) {
 			if (other.introduced != null)
 				return false;
@@ -156,7 +130,7 @@ public class DTOComputer {
 		}
 		return true;
 	}
-	
+
 	
 	
 }
