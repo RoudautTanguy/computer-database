@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+
 <html>
 <head>
 <title>Computer Database</title>
@@ -22,29 +24,29 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form id="addComputer" action="addComputer" method="POST">
+                    <form:form id="addComputer" action="addComputer" method="POST" modelAttribute="dtoComputer">
                         <fieldset>
                         	<legend>Computer</legend>
                             <div id="name-group" class="form-group">
-                                <label class="control-label" for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">
+                                <form:label path="name" class="control-label" for="computerName">Computer name</form:label>
+                                <form:input path="name" type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name"/>
                             </div>
                             <div id="introduced-group" class="form-group">
-                                <label class="control-label" for="introduced">Introduced date</label>
-                                <input type="text" class="form-control" id="introduced" name="introduced" placeholder="Introduced date">
+                                <form:label path="introduced" class="control-label" for="introduced">Introduced date</form:label>
+                                <form:input path="introduced" type="text" class="form-control" id="introduced" name="introduced" placeholder="Introduced date"/>
                             </div>
                             <div id="discontinued-group" class="form-group">
-                                <label class="control-label" for="discontinued">Discontinued date</label>
-                                <input type="text" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date">
+                                <form:label path="discontinued" class="control-label" for="discontinued">Discontinued date</form:label>
+                                <form:input path="discontinued" type="text" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date"/>
                             </div>
                             <div id="company-group" class="form-group">
-                                <label class="control-label" for="companyId">Company</label>
-                                <select class="form-control" id="companyId" name="companyId">
+                                <form:label path="company" class="control-label" for="companyId">Company</form:label>
+                                <form:select path="company" class="form-control" id="companyId" name="companyId">
                                     <option value="0">--</option>
                                     <c:forEach items="${ companies }" var="company">
                                     	<option value="${ company.id }">${ company.name }</option>
                                     </c:forEach>
-                                </select>
+                                </form:select>
                             </div>                  
                         </fieldset>
                         <div class="actions pull-right">
@@ -52,7 +54,7 @@
                             or
                             <a href="dashboard" class="btn btn-default">Cancel</a>
                         </div>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </div>

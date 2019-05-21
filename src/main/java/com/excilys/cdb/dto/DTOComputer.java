@@ -17,6 +17,10 @@ public class DTOComputer {
 	private String discontinued;
 	private String company;
 	
+	public DTOComputer() {
+		this("");
+	}
+	
 	public DTOComputer(int id, String name, String introduced, String discontinued, String company) {
 		this.id = id;
 		this.name = name;
@@ -26,11 +30,7 @@ public class DTOComputer {
 	}
 	
 	public DTOComputer(String name) {
-		this.id = 0;
-		this.name = name;
-		this.introduced = null;
-		this.discontinued = null;
-		this.company = null;
+		this(0,name,null,null,null);
 	}
 	
 	public int getId() {

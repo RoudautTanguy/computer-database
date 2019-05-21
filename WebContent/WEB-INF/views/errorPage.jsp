@@ -26,7 +26,7 @@
 			<div class="errorMsg">${errorMsg}</div>
 			<div class="info">Check the URL you entered for any mistakes
 				and try again.</div>
-			<a class="btn btn-primary">Go Home</a>
+			<a class="btn btn-primary" href="dashboard">Go Home</a>
 		</div>
 	</section>
 

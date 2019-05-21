@@ -11,7 +11,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidCompanyException;
-import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.main.AppConfig;
 import com.excilys.cdb.model.Computer;
@@ -36,7 +35,7 @@ public class DAOCompanyTest {
 	
 	//Insert & Delete
 	@Test
-	public void insertAndDeleteCompany() throws NotAValidCompanyException, NotAValidComputerException, CompanyNotFoundException {
+	public void insertAndDeleteCompany() throws NotAValidCompanyException, CompanyNotFoundException {
 		int count = dao.countCompanies();
 		dao.insertCompany("TestCompany");
 		assertTrue("Company is not inserted",dao.countCompanies()>count);

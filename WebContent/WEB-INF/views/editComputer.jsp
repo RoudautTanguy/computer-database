@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
 <title>Computer Database</title>
@@ -28,42 +29,42 @@
 					<div class="label label-default pull-right">id: ${id}</div>
 					<h1>Edit Computer</h1>
 
-					<form id="editComputer" action="editComputer" method="POST">
-						<input type="hidden" name="id" value="${id}" id="id" />
+					<form:form id="editComputer" action="editComputer" method="POST" modelAttribute="dtoComputer">
+						<form:input path="id" type="hidden" name="id" value="${id}" id="id" />
 						<fieldset>
 							<legend>Computer</legend>
 							<div class="form-group">
-								<label class="control-label" for="computerName">Computer name</label> 
-								<input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" 
-									value="${computer.name}">
+								<form:label path="name" class="control-label" for="computerName">Computer name</form:label> 
+								<form:input path="name" type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" 
+									value="${computer.name}"/>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="introduced">Introduced date</label> 
-								<input type="text" class="form-control" id="introduced" name="introduced" placeholder="Introduced date"
-									value="${computer.introduced}">
+								<form:label path="introduced" class="control-label" for="introduced">Introduced date</form:label> 
+								<form:input path="introduced" type="text" class="form-control" id="introduced" name="introduced" placeholder="Introduced date"
+									value="${computer.introduced}"/>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="discontinued">Discontinued date</label> 
-								<input type="text" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date"
-									value="${computer.discontinued}">
+								<form:label path="discontinued" class="control-label" for="discontinued">Discontinued date</form:label> 
+								<form:input path="discontinued" type="text" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date"
+									value="${computer.discontinued}"/>
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="companyId">Company</label> 
-								<select class="form-control" id="companyId" name="companyId">
+								<form:label path="company" class="control-label" for="companyId">Company</form:label> 
+								<form:select path="company" class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${ companies }" var="company">
 										<option value="${ company.id }" <c:if test='${ company.name == computer.company }'> selected </c:if>>${ company.name }</option>
 										
 
 									</c:forEach>
-								</select>
+								</form:select>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
 							<input type="submit" value="Edit" class="btn btn-primary">
 							or <a href="dashboard" class="btn btn-default">Cancel</a>
 						</div>
-					</form>
+					</form:form>
 				</div>
 			</div>
 		</div>

@@ -36,7 +36,7 @@ public class DAOComputerTest {
 	// Insert 
 
 	@Test
-	public void insertFullComputerTest() throws  NotAValidComputerException, CompanyNotFoundException {
+	public void insertFullComputerTest() throws CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
 		dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
@@ -48,19 +48,19 @@ public class DAOComputerTest {
 	}
 
 	@Test
-	public void insertComputerWithNameTest() throws NotAValidComputerException, CompanyNotFoundException {
+	public void insertComputerWithNameTest() throws CompanyNotFoundException {
 		dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
 				  												  .withId(1)
 				  												  .build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void insertNullComputerTest() throws NotAValidComputerException, CompanyNotFoundException {
+	public void insertNullComputerTest() throws CompanyNotFoundException {
 		dao.insertComputer(new Computer.ComputerBuilder(null).build());
 	}
 
 	@Test(expected = CompanyNotFoundException.class)
-	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException, CompanyNotFoundException {
+	public void insertComputerWithInvalidCompanyIdTest() throws CompanyNotFoundException {
 		dao.insertComputer(new Computer.ComputerBuilder("WrongCompanyId")
 				  			   .withId(1)
 				  			   .withCompanyId(100)
