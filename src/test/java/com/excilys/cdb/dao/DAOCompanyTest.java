@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.excilys.cdb.exception.CantConnectException;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidCompanyException;
 import com.excilys.cdb.exception.NotAValidComputerException;
@@ -31,13 +30,13 @@ public class DAOCompanyTest {
 	//Delete
 
 	@Test(expected = CompanyNotFoundException.class)
-	public void cantDeleteCompanyWithNegativeIdTest() throws CantConnectException, CompanyNotFoundException {
+	public void cantDeleteCompanyWithNegativeIdTest() throws CompanyNotFoundException {
 		dao.deleteCompany(-1);
 	}
 	
 	//Insert & Delete
 	@Test
-	public void insertAndDeleteCompany() throws NotAValidCompanyException, NotAValidComputerException, CantConnectException, CompanyNotFoundException {
+	public void insertAndDeleteCompany() throws NotAValidCompanyException, NotAValidComputerException, CompanyNotFoundException {
 		int count = dao.countCompanies();
 		dao.insertCompany("TestCompany");
 		assertTrue("Company is not inserted",dao.countCompanies()>count);

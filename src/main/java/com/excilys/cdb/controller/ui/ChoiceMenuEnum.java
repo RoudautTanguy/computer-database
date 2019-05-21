@@ -1,4 +1,4 @@
-package com.excilys.cdb.controller;
+package com.excilys.cdb.controller.ui;
 
 public enum ChoiceMenuEnum {
 	LIST_COMPUTERS("List computers"),

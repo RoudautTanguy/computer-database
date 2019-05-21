@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.dto.DTOComputer;
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -33,6 +34,7 @@ public class DAOComputer{
 			+ "company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id = :id ;";
 	public static final String UPDATE = "UPDATE computer set name = :name, introduced = :introduced, discontinued = :discontinued, company_id = :company_id WHERE id = :id";
 
+
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	private ComputerRowMapper rowMapper;
 
@@ -42,7 +44,7 @@ public class DAOComputer{
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(hikariConnectionProvider.getDataSource());
 		this.rowMapper = rowMapper;
 	}
-	
+
 	/**
 	 * Count computers with search parameter
 	 * @param search : if null or empty count all computers else count computers which have search in their name or company name
@@ -52,7 +54,7 @@ public class DAOComputer{
 		search = search==null?"":search;
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("search", "%" + search + "%", Types.VARCHAR);
-		
+
 		return namedParameterJdbcTemplate.queryForObject(COUNT, params, Integer.class);
 	}
 
@@ -71,31 +73,25 @@ public class DAOComputer{
 		}
 		logger.info("Computer {} deleted", id);
 	}
-	
+
 	/**
 	 * Insert a computer
 	 * @param computer to insert
-	 * @throws NotAValidComputerException if name is null or empty
+	 * @throws CompanyNotFoundException 
 	 */
-	public void insertComputer(Computer computer) throws NotAValidComputerException {
-		if(computer.getName()==null || computer.getName().equals("")) {
-			String message = "Name is mandatory to insert a new Computer";
-			logger.warn(message);
-			throw new NotAValidComputerException(message);
-		} else {
-			try{
-				MapSqlParameterSource params = new MapSqlParameterSource();
-				params.addValue("name", computer.getName(), Types.VARCHAR);
-				params.addValue("introduced", computer.getIntroduced(), Types.TIMESTAMP);
-				params.addValue("discontinued", computer.getDiscontinued(), Types.TIMESTAMP);
-				params.addValue("company_id", computer.getCompanyId(), Types.INTEGER);
-				
-				namedParameterJdbcTemplate.update(INSERT, params);
-			} catch (DataIntegrityViolationException e) {
-				logger.error("Trying to insert a computer with an inexisting computer id");
-				throw new NotAValidComputerException("The company "+computer.getCompanyId() + " doesn't exist !");
-			} 
-		}
+	public void insertComputer(Computer computer) throws CompanyNotFoundException {
+		try{
+			MapSqlParameterSource params = new MapSqlParameterSource();
+			params.addValue("name", computer.getName(), Types.VARCHAR);
+			params.addValue("introduced", computer.getIntroduced(), Types.TIMESTAMP);
+			params.addValue("discontinued", computer.getDiscontinued(), Types.TIMESTAMP);
+			params.addValue("company_id", computer.getCompanyId()==0?null:computer.getCompanyId(), Types.INTEGER);
+
+			namedParameterJdbcTemplate.update(INSERT, params);
+		} catch (DataIntegrityViolationException e) {
+			logger.error("Trying to insert a computer with an inexisting computer id : {}", computer.getCompanyId());
+			throw new CompanyNotFoundException("The company "+computer.getCompanyId() + " doesn't exist !");
+		} 
 
 	}
 
@@ -125,9 +121,9 @@ public class DAOComputer{
 				params.addValue("name", computer.getName(), Types.VARCHAR);
 				params.addValue("introduced", computer.getIntroduced(), Types.TIMESTAMP);
 				params.addValue("discontinued", computer.getDiscontinued(), Types.TIMESTAMP);
-				params.addValue("company_id", computer.getCompanyId(), Types.INTEGER);
+				params.addValue("company_id", computer.getCompanyId()==0?null:computer.getCompanyId(), Types.INTEGER);
 				params.addValue("id", id, Types.INTEGER);
-				
+
 				int affectedRows = namedParameterJdbcTemplate.update(UPDATE, params);
 				if(affectedRows == 0) {
 					logger.warn("0 computer updated");
@@ -148,19 +144,20 @@ public class DAOComputer{
 	 * @param orderBy to know the order of the query
 	 * @return list of computers
 	 * @throws PageNotFoundException
+	 * @throws ComputerNotFoundException 
 	 */
-	public List<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
+	public List<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws ComputerNotFoundException, PageNotFoundException{
 		checkIndexAndLimit(index, limit);
 		int offset = index * limit;
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("search", "%" + search + "%", Types.VARCHAR);
 		params.addValue("offset", offset, Types.INTEGER);
 		params.addValue("limit", limit, Types.INTEGER);
-		
+
 		String query = String.format(SEARCH_WITH_NAMES_PAGINATED,orderBy.getQuery());
 		List<DTOComputer> computers = namedParameterJdbcTemplate.query(query, params, rowMapper);
 		if(computers.isEmpty()) {
-			throw new PageNotFoundException("This page doesn't exist");
+			throw new ComputerNotFoundException("No computer found.. Try again !");
 		} else {
 			return computers;
 		}
@@ -175,7 +172,7 @@ public class DAOComputer{
 	public DTOComputer find(int idComputer) throws ComputerNotFoundException{
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", idComputer, Types.INTEGER);
-		
+
 		List<DTOComputer> computers = namedParameterJdbcTemplate.query(SELECT_BY_ID, params, rowMapper);
 		if(computers.isEmpty()) {
 			throw new ComputerNotFoundException("This page doesn't exist");
@@ -186,7 +183,7 @@ public class DAOComputer{
 		}
 	}
 
-	
+
 	/**
 	 * Check if index and limit are correct
 	 * @param index of a page

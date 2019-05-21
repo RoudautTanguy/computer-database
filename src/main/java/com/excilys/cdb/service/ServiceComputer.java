@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb.dto.DTOComputer;
-import com.excilys.cdb.exception.CantConnectException;
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -37,16 +37,17 @@ public class ServiceComputer {
 	 * @param computer
 	 * @return if the computer is inserted or not
 	 * @throws NotAValidComputerException 
+	 * @throws CompanyNotFoundException 
 	 * @throws CantConnectException 
 	 */
-	public void insert(DTOComputer dtoComputer) throws NotAValidComputerException {
+	public void insert(DTOComputer dtoComputer) throws NotAValidComputerException, CompanyNotFoundException {
 		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		try{
 			validator.validateComputer(computer);
 			daoComputer.insertComputer(computer);
 		} catch(NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
-			throw new NotAValidComputerException("This is not a valid Computer");
+			throw e;
 		}
 	}
 	
@@ -57,7 +58,7 @@ public class ServiceComputer {
 	 * @throws ComputerNotFoundException 
 	 * @throws CantConnectException 
 	 */
-	public void delete(int id) throws CantConnectException, ComputerNotFoundException{
+	public void delete(int id) throws ComputerNotFoundException{
 		daoComputer.deleteComputer(id);
 	}
 	
@@ -70,7 +71,7 @@ public class ServiceComputer {
 	 * @throws ComputerNotFoundException 
 	 * @throws CantConnectException 
 	 */
-	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CantConnectException {
+	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException {
 		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		try {
 			validator.validateComputer(computer);
@@ -86,8 +87,9 @@ public class ServiceComputer {
 	 * @return the current page of computer
 	 * @throws PageNotFoundException 
 	 * @return page
+	 * @throws ComputerNotFoundException 
 	 */
-	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException{
+	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException, ComputerNotFoundException{
 		search = search == null?"":search;
 		return new Page<>(daoComputer.search(index, limit, search, orderBy), index, limit, "");
 	}
@@ -97,8 +99,9 @@ public class ServiceComputer {
 	 * @return the current page of computer
 	 * @throws PageNotFoundException 
 	 * @return page
+	 * @throws ComputerNotFoundException 
 	 */
-	public Page<DTOComputer> search(String search) throws PageNotFoundException{
+	public Page<DTOComputer> search(String search) throws PageNotFoundException, ComputerNotFoundException{
 		search = search == null?"":search;
 		return new Page<>(daoComputer.search(0, COMPUTERS_NUMBER_PER_PAGE, search, OrderByEnum.DEFAULT), 0, COMPUTERS_NUMBER_PER_PAGE, "");
 	}

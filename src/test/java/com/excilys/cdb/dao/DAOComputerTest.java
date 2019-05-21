@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.cdb.dto.DTOComputer;
-import com.excilys.cdb.exception.CantConnectException;
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -36,7 +36,7 @@ public class DAOComputerTest {
 	// Insert 
 
 	@Test
-	public void insertFullComputerTest() throws  NotAValidComputerException, CantConnectException {
+	public void insertFullComputerTest() throws  NotAValidComputerException, CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
 		dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
@@ -48,19 +48,19 @@ public class DAOComputerTest {
 	}
 
 	@Test
-	public void insertComputerWithNameTest() throws NotAValidComputerException {
+	public void insertComputerWithNameTest() throws NotAValidComputerException, CompanyNotFoundException {
 		dao.insertComputer(new Computer.ComputerBuilder("AttariComputerTest")
 				  												  .withId(1)
 				  												  .build());
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void insertNullComputerTest() throws NotAValidComputerException {
+	public void insertNullComputerTest() throws NotAValidComputerException, CompanyNotFoundException {
 		dao.insertComputer(new Computer.ComputerBuilder(null).build());
 	}
 
-	@Test(expected = NotAValidComputerException.class)
-	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException {
+	@Test(expected = CompanyNotFoundException.class)
+	public void insertComputerWithInvalidCompanyIdTest() throws NotAValidComputerException, CompanyNotFoundException {
 		dao.insertComputer(new Computer.ComputerBuilder("WrongCompanyId")
 				  			   .withId(1)
 				  			   .withCompanyId(100)
@@ -105,7 +105,7 @@ public class DAOComputerTest {
 	// Delete
 
 	@Test
-	public void getLastComputerAndDeleteComputerTest() throws CantConnectException, ComputerNotFoundException {
+	public void getLastComputerAndDeleteComputerTest() throws ComputerNotFoundException {
 		int id = dao.getLastComputerId();
 		dao.deleteComputer(id);
 		id = dao.getLastComputerId();
@@ -113,29 +113,29 @@ public class DAOComputerTest {
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
-	public void deleteComputerWithNegativeIdTest() throws CantConnectException, ComputerNotFoundException {
+	public void deleteComputerWithNegativeIdTest() throws ComputerNotFoundException {
 		dao.deleteComputer(-1);
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
-	public void deleteComputerNotInDatabaseTest() throws CantConnectException, ComputerNotFoundException {
+	public void deleteComputerNotInDatabaseTest() throws ComputerNotFoundException {
 		dao.deleteComputer(9999);
 	}
 
 	// Search
 
 	@Test(expected = PageNotFoundException.class)
-	public void listWithNegativeIndexTest() throws PageNotFoundException {
+	public void listWithNegativeIndexTest() throws PageNotFoundException, ComputerNotFoundException {
 		dao.search(-1, 50, "", OrderByEnum.DEFAULT);
 	}
 
 	@Test(expected = PageNotFoundException.class)
-	public void listWithNegativeLimitTest() throws PageNotFoundException {
+	public void listWithNegativeLimitTest() throws PageNotFoundException, ComputerNotFoundException {
 		dao.search(50, -1, "", OrderByEnum.DEFAULT);
 	}
 
-	@Test(expected = PageNotFoundException.class)
-	public void listWithNoResultTest() throws PageNotFoundException {
+	@Test(expected = ComputerNotFoundException.class)
+	public void listWithNoResultTest() throws PageNotFoundException, ComputerNotFoundException {
 		dao.search(50, 50, "", OrderByEnum.DEFAULT);
 	}
 

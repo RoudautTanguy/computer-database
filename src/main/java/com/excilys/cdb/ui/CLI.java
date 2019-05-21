@@ -9,9 +9,9 @@ import java.util.stream.Stream;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.excilys.cdb.controller.ChoiceMenuEnum;
-import com.excilys.cdb.controller.Controller;
-import com.excilys.cdb.controller.PageMenuEnum;
+import com.excilys.cdb.controller.ui.ChoiceMenuEnum;
+import com.excilys.cdb.controller.ui.Controller;
+import com.excilys.cdb.controller.ui.PageMenuEnum;
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.NotAChoiceException;

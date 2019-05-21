@@ -1,4 +1,4 @@
-package com.excilys.cdb.controller;
+package com.excilys.cdb.controller.ui;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
-import com.excilys.cdb.exception.CantConnectException;
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
@@ -42,6 +42,9 @@ public class Controller {
 				cli.showComputers(serviceComputer.search(""));
 			} catch (PageNotFoundException e) {
 				logger.warn("Page Not found", e);
+			} catch (ComputerNotFoundException e) {
+				logger.warn(e.getMessage());
+				cli.printException(e);
 			}
 			break;
 
@@ -75,6 +78,9 @@ public class Controller {
 				} catch(NotAValidComputerException e) {
 					cli.printCreatedMessage(false);
 					logger.warn("Computer not valid");
+				} catch (CompanyNotFoundException e) {
+					cli.printCreatedMessage(false);
+					logger.warn("Company not found");
 				}
 			} else {
 				logger.warn("Computer is not present");
@@ -91,7 +97,7 @@ public class Controller {
 					serviceComputer.update(id, dtoComputer);
 					cli.printUpdatedMessage(true);
 				}
-			} catch(IllegalArgumentException | NotAValidComputerException | ComputerNotFoundException | CantConnectException e) {
+			} catch(IllegalArgumentException | NotAValidComputerException | ComputerNotFoundException e) {
 				cli.printException(e);
 			} 
 			break;
@@ -101,7 +107,7 @@ public class Controller {
 			try {
 				serviceComputer.delete(deleteId);
 				cli.printDeletedMessage(true, deleteId);
-			} catch (CantConnectException | ComputerNotFoundException e) {
+			} catch (ComputerNotFoundException e) {
 				cli.printDeletedMessage(false, deleteId);
 			}
 
@@ -185,7 +191,7 @@ public class Controller {
 		case PREVIOUS_PAGE:
 			try {
 				page.setList(serviceComputer.search(page.decrementIndex(), 50, "", OrderByEnum.DEFAULT).getList());
-			} catch (PageNotFoundException e) {
+			} catch (PageNotFoundException | ComputerNotFoundException e) {
 				isOk = false;
 				page.incrementIndex();
 				cli.printException(e);
@@ -195,7 +201,7 @@ public class Controller {
 		case NEXT_PAGE:
 			try {
 				page.setList(serviceComputer.search(page.incrementIndex(), 50, "", OrderByEnum.DEFAULT).getList());
-			} catch (PageNotFoundException e) {
+			} catch (PageNotFoundException | ComputerNotFoundException e) {
 				isOk = false;
 				page.decrementIndex();
 				cli.printException(e);
@@ -207,7 +213,7 @@ public class Controller {
 			try {
 				page.setList(serviceComputer.search(pageNumber, 50, "", OrderByEnum.DEFAULT).getList());
 				page.setIndex(pageNumber);
-			} catch (PageNotFoundException e) {
+			} catch (PageNotFoundException | ComputerNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
 			}
@@ -217,7 +223,7 @@ public class Controller {
 			try {
 				page.setList(serviceComputer.search(0, 50, "", OrderByEnum.DEFAULT).getList());
 				page.setIndex(0);
-			} catch (PageNotFoundException e) {
+			} catch (PageNotFoundException | ComputerNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
 			}
@@ -228,7 +234,7 @@ public class Controller {
 				int lastSlice = serviceComputer.lastPage();
 				page.setList(serviceComputer.search(lastSlice, 50, "", OrderByEnum.DEFAULT).getList());
 				page.setIndex(lastSlice);
-			} catch (PageNotFoundException e) {
+			} catch (PageNotFoundException | ComputerNotFoundException e) {
 				isOk = false;
 				cli.printException(e);
 			}

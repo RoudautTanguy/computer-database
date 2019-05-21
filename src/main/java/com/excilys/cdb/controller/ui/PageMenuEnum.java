@@ -1,4 +1,4 @@
-package com.excilys.cdb.controller;
+package com.excilys.cdb.controller.ui;
 
 public enum PageMenuEnum {
 	PREVIOUS_PAGE("\u2190 Previous Page"),

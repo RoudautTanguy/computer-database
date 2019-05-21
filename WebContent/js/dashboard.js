@@ -203,7 +203,7 @@ $(function() {
 	
 	//Keep the size param
 	if(size){
-		$(".pagination li a").each(function(){
+		$("#pagination li a").each(function(){
 			$(this).attr("href",$(this).attr("href")+"&size="+size);
 		});
 		

@@ -2,6 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
+<link rel="icon" href="favicon.ico" />
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
@@ -18,7 +19,7 @@
     </header>
 
     <section id="main">
-        <div class="container">
+        <div id="container" class="container">
             <h1 id="homeTitle">
                 <c:out value="<b class=\"number\">${ count }</b> Computers found" escapeXml="false">Error</c:out> 
             </h1>
@@ -36,7 +37,7 @@
             </div>
         </div>
 
-        <form id="deleteForm" action="#" method="POST">
+        <form id="deleteForm" method="POST">
             <input type="hidden" name="selection" value="">
         </form>
 

@@ -1,50 +1,85 @@
 body {
-    background: #f2f2f2;
-    padding-top: 70px;
-    padding-bottom: 70px;
+	background: #f2f2f2;
+	padding-top: 70px;
+	padding-bottom: 70px;
 }
 
 footer {
-    position:fixed;
-    bottom:0;
-    width:100%;
-    background:#FEFEFE;
-    border-top:1px solid #CCC;
-    height:60px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background: #FEFEFE;
+	border-top: 1px solid #CCC;
+	height: 60px;
 }
 
 footer .pagination {
-    margin:10px 0px;
+	margin: 10px 0px;
 }
 
 footer .btn-group {
-    margin:10px 10px;
+	margin: 10px 10px;
 }
 
 input[type='checkbox'] {
-    margin: 0px;
-    padding:0px;
-    border-radius: 5px;
-    white-space: nowrap;
+	margin: 0px;
+	padding: 0px;
+	border-radius: 5px;
+	white-space: nowrap;
 }
 
-.pagination > li >a.active {
-  background-color: #eee;
+.pagination>li>a.active {
+	background-color: #eee;
 }
 
 .number {
-  color: #449d44;
+	color: #449d44;
 }
 
 .disabled {
-    pointer-events:none; 
-    opacity:0.6;
+	pointer-events: none;
+	opacity: 0.6;
 }
 
 .alert {
-  margin-top: 5px;
+	margin-top: 5px;
 }
 
-.fa.fa-sort-asc,.fa.fa-sort-desc, .fa.fa-sort {
+.fa.fa-sort-asc, .fa.fa-sort-desc, .fa.fa-sort {
 	cursor: pointer;
+}
+
+.errorCode {
+	background: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72,
+		#a8eb12);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	font-family: 'Fjalla One', sans-serif;
+	font-size: 200px;
+	line-height: 1;
+	margin: auto;
+	display: inline;
+}
+
+.errorMsg {
+	color: #444;
+	font-size: 36px;
+	font-weight: 300;
+	line-height: 1.1;
+	margin-bottom: 25px;
+	margin-top: 0;
+	padding: 0 15px;
+}
+
+.info{
+	color:#666;
+	font-size:1em;
+}
+
+#container {
+	text-align: center;
+}
+
+a.btn.btn-primary {
+    margin-top: 10px;
 }
