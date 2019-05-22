@@ -1,5 +1,6 @@
 //On load
 $(function() {
+	
     // Default: hide edit mode
     $(".editMode").hide();
     
@@ -229,4 +230,14 @@ $(function() {
 	}
 });
 
+//Lang selector
+$(function(){
+	
+	var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)language\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+	$(".lang-selector").children().each(function(){
+		if($(this).text().toUpperCase()===cookieValue.toUpperCase()){
+			$(this).addClass("bold");
+		}
+	});
+});
 

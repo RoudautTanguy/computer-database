@@ -1,6 +1,7 @@
 //On load
 $(function() {
 	$(document).ready(function(){
+
 		$("#introduced").datepicker({
 			dateFormat: 'dd-mm-yy',
 			onSelect: function(selected) {
@@ -18,19 +19,19 @@ $(function() {
 			}
 		});  
 	});
-	
+
 	$("#addComputer").on("submit",function(e){
 		$(".alert").remove();
 		$(".has-error").removeClass("has-error");
-		
+
 		var name = $("#computerName").val();
 		if(name.trim().length === 0){
 			e.preventDefault();
 			$('#computerName').after('<div class="alert alert-danger" role="alert">'+
 					'Please enter a valid name'+
-					'</div>');
+			'</div>');
 			$('#computerName').parent().addClass("has-error");
-			
+
 		}
 		var regex = new RegExp("\\d{2}-\\d{2}-\\d{4}$");
 		var introduced = $("#introduced").val();
@@ -39,7 +40,7 @@ $(function() {
 			console.log(introduced);
 			$('#introduced').after('<div class="alert alert-danger" role="alert">'+
 					'Please enter a valid date'+
-					'</div>');
+			'</div>');
 			$('#introduced').parent().addClass("has-error");
 		}
 		var discontinued = $("#discontinued").val();
@@ -47,17 +48,28 @@ $(function() {
 			e.preventDefault();
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">'+
 					'Please enter a valid date'+
-					'</div>');
+			'</div>');
 			$('#discontinued').parent().addClass("has-error");
 		}
-		
+
 		if((!introduced && !!discontinued) || (!!introduced && !!discontinued && $("#introduced").datepicker('getDate') >= $("#discontinued").datepicker('getDate'))){
 			e.preventDefault();
 			$('#discontinued').after('<div class="alert alert-danger" role="alert">'+
 					'Please make sure that discontinued is after introduced'+
-					'</div>');
+			'</div>');
 			$('#discontinued').parent().addClass("has-error");
 		}
 	});
 
+});
+
+//Lang selector
+$(function(){
+	
+	var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)language\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+	$(".lang-selector").children().each(function(){
+		if($(this).text().toUpperCase()===cookieValue.toUpperCase()){
+			$(this).addClass("bold");
+		}
+	});
 });

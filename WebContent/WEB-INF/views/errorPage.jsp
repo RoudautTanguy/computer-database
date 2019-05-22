@@ -17,6 +17,9 @@
 		<div class="container">
 			<a class="navbar-brand" href="dashboard"> Application - Computer
 				Database </a>
+			<div class="lang-selector">
+				<a href="?lang=en">EN</a> <a href="?lang=fr">FR</a>
+			</div>
 		</div>
 	</header>
 

@@ -1,6 +1,7 @@
 //On load
 $(function() {
 	$(document).ready(function(){
+		
 		$("#introduced").datepicker({
 			dateFormat: 'dd-mm-yy',
 			onSelect: function(selected) {
@@ -59,4 +60,26 @@ $(function() {
 		}
 	});
 
+});
+
+//Lang selector
+$(function(){
+	
+	var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)language\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+	$(".lang-selector").children().each(function(){
+		if($(this).text().toUpperCase()===cookieValue.toUpperCase()){
+			$(this).addClass("bold");
+		}
+	});
+
+	let url = new URL(window.location.href);
+	let searchParams = new URLSearchParams(url.search);
+	var id = searchParams.get('id');
+	
+	//Keep the id param
+	if(id){
+		$(".lang-selector a").each(function(){
+			$(this).attr("href",$(this).attr("href")+"&id="+id);
+		});
+	}
 });
