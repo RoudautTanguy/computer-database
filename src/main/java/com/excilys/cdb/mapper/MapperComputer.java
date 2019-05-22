@@ -39,7 +39,7 @@ public class MapperComputer {
 			discontinued = dateFormat.format(computer.getDiscontinued());
 		}
 		String company = "";
-		if(computer.getCompanyId() != null) {
+		if(computer.getCompanyId() != null && computer.getCompanyId() != 0) {
 			company = Integer.toString(computer.getCompanyId());
 		}
 		return new DTOComputer(id,name,introduced,discontinued,company);

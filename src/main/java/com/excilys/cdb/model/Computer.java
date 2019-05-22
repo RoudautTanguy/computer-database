@@ -18,7 +18,7 @@ public class Computer {
 		private int id = 0;
 		private Timestamp introduced = null;
 		private Timestamp discontinued = null;
-		private Integer companyId = null;
+		private Integer companyId = 0;
 
 		public ComputerBuilder(String name) {
 			this.name = name;

@@ -30,7 +30,7 @@ public class DTOComputer {
 	}
 	
 	public DTOComputer(String name) {
-		this(0,name,null,null,null);
+		this(0,name,"","","");
 	}
 	
 	public int getId() {

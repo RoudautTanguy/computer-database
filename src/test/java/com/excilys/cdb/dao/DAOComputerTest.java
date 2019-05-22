@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
@@ -25,6 +26,7 @@ import com.excilys.cdb.persistence.OrderByEnum;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class})
+@WebAppConfiguration
 public class DAOComputerTest {
 
 	@Autowired
@@ -54,11 +56,6 @@ public class DAOComputerTest {
 				  												  .build());
 	}
 
-	@Test(expected = NotAValidComputerException.class)
-	public void insertNullComputerTest() throws CompanyNotFoundException {
-		dao.insertComputer(new Computer.ComputerBuilder(null).build());
-	}
-
 	@Test(expected = CompanyNotFoundException.class)
 	public void insertComputerWithInvalidCompanyIdTest() throws CompanyNotFoundException {
 		dao.insertComputer(new Computer.ComputerBuilder("WrongCompanyId")
@@ -86,13 +83,6 @@ public class DAOComputerTest {
 		dao.updateComputer(600, new Computer.ComputerBuilder("Laptop")
 				   					.withId(600)
 									.build());
-	}
-
-	@Test(expected = NotAValidComputerException.class)
-	public void updateNullComputerTest() throws NotAValidComputerException, ComputerNotFoundException {
-		dao.updateComputer(599,new Computer.ComputerBuilder(null)
-				   				   .withId(1)
-				   				   .build());
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
