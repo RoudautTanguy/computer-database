@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <html>
 <head>
+<link rel="icon" href="favicon.ico" />
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
@@ -25,16 +27,25 @@
 
 	<section id="main">
 		<div id="container" class="container">
+
 			<div class="errorCode">${errorCode}</div>
-			<div class="errorMsg">${errorMsg}</div>
-			<div class="info">Check the URL you entered for any mistakes
-				and try again.</div>
-			<a class="btn btn-primary" href="dashboard">Go Home</a>
+			<div class="errorMsg">
+				<spring:message code="${errorMsg}" />
+			</div>
+			<c:if test="${not empty info}">
+				<div class="info">
+					<spring:message code="${info}" />
+				</div>
+			</c:if>
+
+			<a class="btn btn-primary" href="dashboard"> 
+				<spring:message code="error.home_btn"/>
+			</a>
 		</div>
 	</section>
 
 	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
+	<script src="${pageContext.request.contextPath}/js/error.js"></script>
 </body>
 </html>

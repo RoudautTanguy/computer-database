@@ -49,6 +49,10 @@ input[type='checkbox'] {
 
 .number {
 	color: #449d44;
+	background: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72,
+		#a8eb12);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .disabled {
@@ -69,8 +73,8 @@ input[type='checkbox'] {
 		#a8eb12);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
-	font-family: 'Fjalla One', sans-serif;
 	font-size: 200px;
+	font-weight: bold;
 	line-height: 1;
 	margin: auto;
 	display: inline;
