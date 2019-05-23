@@ -21,7 +21,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - Computer
 				Database </a>
 			<div class="lang-selector">
 				<a href="?lang=en">EN</a> <a href="?lang=fr">FR</a>

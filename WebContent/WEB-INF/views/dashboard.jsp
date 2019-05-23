@@ -18,7 +18,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - Computer
 				Database </a>
 			<div class="lang-selector">
 				<a href="?lang=en">EN</a> <a href="?lang=fr">FR</a>
@@ -68,13 +68,14 @@
 						<!-- Variable declarations for passing labels as parameters -->
 						<!-- Table header for Computer Name -->
 
-						<th class="editMode" style="width: 60px; height: 22px;"><input
-							type="checkbox" id="selectall" /> <span
-							style="vertical-align: top;"> - <a href="#"
-								id="deleteSelected" onclick="$.fn.deleteSelected();"> <em
-									class="fa fa-trash-o fa-lg"></em>
-							</a>
-						</span></th>
+						<th class="editMode" style="width: 60px; height: 22px;">
+							<input type="checkbox" id="selectall" /> 
+							<span style="vertical-align: top;"> - 
+								<a id="deleteSelected" onclick="$.fn.deleteSelected();"> 
+									<em class="fa fa-trash-o fa-lg"></em>
+								</a>
+							</span>
+						</th>
 						<th>Computer name <a><em class="fa fa-sort"></em></a>
 						</th>
 						<th>Introduced date <a><em class="fa fa-sort"></em></a>
@@ -94,7 +95,7 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer.id}"></td>
-							<td><a href="editComputer?id=${computer.id}" onclick=""><c:out
+							<td><a href="editComputer/${computer.id}" onclick=""><c:out
 										value="${computer.name}" escapeXml="true"></c:out></a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>

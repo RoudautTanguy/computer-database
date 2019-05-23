@@ -9,8 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
@@ -50,8 +50,8 @@ public class ComputerProcessingController {
 
 	//Edit Computer
 
-	@GetMapping("/editComputer")
-	public String editComputer(@RequestParam("id") String pId, final ModelMap model) throws ComputerNotFoundException{
+	@GetMapping("/editComputer/{id}")
+	public String editComputer(@PathVariable("id") String pId, final ModelMap model) throws ComputerNotFoundException{
 		int id = -1;
 		id = Integer.parseInt(pId);
 		model.addAttribute("id", id);

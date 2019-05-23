@@ -20,7 +20,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - Computer
 				Database </a>
 			<div class="lang-selector">
 				<a href="?lang=en">EN</a> <a href="?lang=fr">FR</a>
@@ -45,8 +45,8 @@
 								<spring:message code="all.computer_name" var="computer_name"/>
 								<form:label path="name" class="control-label" for="computerName">${computer_name}</form:label>
 								<form:input path="name" type="text" class="form-control"
-									id="computerName" name="${computer_name}"
-									placeholder="Computer name" value="${computer.name}" />
+									id="computerName" name="computer_name"
+									placeholder="${computer_name}" value="${computer.name}" />
 							</div>
 							<div class="form-group">
 							<spring:message code="all.introduced" var="introduced"/>
@@ -80,8 +80,9 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Edit" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+						<spring:message code="all.edit" var="edit"/>
+							<input type="submit" value="${edit}" class="btn btn-primary">
+							<a href="${pageContext.request.contextPath}/dashboard" class="btn btn-default"><spring:message code="all.cancel"/></a>
 						</div>
 					</form:form>
 				</div>
