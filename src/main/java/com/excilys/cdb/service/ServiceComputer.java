@@ -11,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
@@ -33,6 +32,7 @@ public class ServiceComputer {
 	private DAOComputer daoComputer;
 	
 	private static Logger logger = LoggerFactory.getLogger( ServiceComputer.class );
+	public static final String PAGE_DOESNT_EXIST = "This page doesn't exist";
 	
 	public ServiceComputer(Validator validator, MapperComputer mapperComputer, DAOComputer daoComputer) {
 		this.daoComputer = daoComputer;
@@ -135,7 +135,7 @@ public class ServiceComputer {
 	public void checkPositive(int... numbers) throws PageNotFoundException {
 		int[] arrayNumbers = Arrays.stream(numbers).filter(n -> n>=0).toArray();
 		if(numbers.length != arrayNumbers.length) {
-			throw new PageNotFoundException(Constant.PAGE_DOESNT_EXIST);
+			throw new PageNotFoundException(PAGE_DOESNT_EXIST);
 		}
 	}
 }

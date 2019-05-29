@@ -8,17 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
-import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Page;
-import com.excilys.cdb.persistence.ComputerRepository;
 import com.excilys.cdb.persistence.OrderByEnum;
 import com.excilys.cdb.service.ServiceComputer;
 import com.excilys.cdb.service.ServicePagination;
@@ -28,14 +24,10 @@ public class DashboardController {
 
 	private ServiceComputer serviceComputer;
 	private ServicePagination servicePagination;
-	private ComputerRepository computerRepository;
-	private MapperComputer mapperComputer;
 	
-	public DashboardController(ServiceComputer serviceComputer, ServicePagination servicePagination, ComputerRepository computerRepository, MapperComputer mapperComputer) {
+	public DashboardController(ServiceComputer serviceComputer, ServicePagination servicePagination) {
 		this.serviceComputer = serviceComputer;
 		this.servicePagination = servicePagination;
-		this.computerRepository = computerRepository;
-		this.mapperComputer = mapperComputer;
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
@@ -78,18 +70,6 @@ public class DashboardController {
 			}
 		}
 		return "redirect:/dashboard";
-	}
-	
-	@GetMapping("/test/{search}")
-	@ResponseBody
-	public int test(@PathVariable("search") String search) {
-		return computerRepository.countByNameContainingAndCompanyContaining("%"+search+"%");
-	}
-	
-	@GetMapping("/find/{id}")
-	@ResponseBody
-	public DTOComputer findComputer(@PathVariable("id") int id) {
-		return mapperComputer.mapModelToDTO(computerRepository.findById(id));
 	}
 
 	private int getPageAttribute(String page) {

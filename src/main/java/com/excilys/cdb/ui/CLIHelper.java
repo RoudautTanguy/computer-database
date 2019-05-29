@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.NotAChoiceException;
@@ -23,6 +22,8 @@ public class CLIHelper {
 
 	private static Scanner in = new Scanner(System.in);
 	private static final Logger logger = LoggerFactory.getLogger(CLIHelper.class);
+	
+	public static final String CHOICE_NOT_POSSIBLE_FORMAT = "Le choix %s n'est pas possible !";
 
 	private CLIHelper() {
 		throw new IllegalStateException("Utility class");
@@ -40,12 +41,12 @@ public class CLIHelper {
 			if(intChoice>=1 && intChoice<=choices.length) {
 				return intChoice;
 			} else {
-				String message = String.format(Constant.CHOICE_NOT_POSSIBLE_FORMAT, choice);
+				String message = String.format(CHOICE_NOT_POSSIBLE_FORMAT, choice);
 				logger.warn(message);
 				throw new NotAChoiceException(message);
 			}
 		} catch (NumberFormatException e) {
-			String message = String.format(Constant.CHOICE_NOT_POSSIBLE_FORMAT, choice);
+			String message = String.format(CHOICE_NOT_POSSIBLE_FORMAT, choice);
 			logger.warn(message);
 			throw new NotAChoiceException(message);
 		}

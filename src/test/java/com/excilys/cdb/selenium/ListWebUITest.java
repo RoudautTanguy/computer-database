@@ -18,8 +18,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import com.excilys.cdb.constant.Constant;
-
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class ListWebUITest {
@@ -28,6 +26,7 @@ public class ListWebUITest {
 	private static final String PROJECT_URL = "http://localhost:8080/computer-database/";
 	private static final String NUMBER_COMPUTER_CSS = "b.number";
 	private static final String RESULTS_ID = "results";
+	public static final String NUMBER_OF_ELEMENT_NOT_CORRECT = "Number of element in list isn't correct.";
 
 	@BeforeClass
 	public static void setupClass() {
@@ -125,20 +124,20 @@ public class ListWebUITest {
 	public void correctNumberInListTest() {
 		driver.get(PROJECT_URL+"?size=10");
 		WebElement pagination = driver.findElement(By.id(RESULTS_ID));
-		assertEquals(Constant.NUMBER_OF_ELEMENT_NOT_CORRECT,10,pagination.findElements(By.tagName("tr")).size());
+		assertEquals(NUMBER_OF_ELEMENT_NOT_CORRECT,10,pagination.findElements(By.tagName("tr")).size());
 	}
 	
 	@Test
 	public void correctNumberInListSize50Test() {
 		driver.get(PROJECT_URL+"?size=50");
 		WebElement pagination = driver.findElement(By.id(RESULTS_ID));
-		assertEquals(Constant.NUMBER_OF_ELEMENT_NOT_CORRECT,50,pagination.findElements(By.tagName("tr")).size());
+		assertEquals(NUMBER_OF_ELEMENT_NOT_CORRECT,50,pagination.findElements(By.tagName("tr")).size());
 	}
 	
 	@Test
 	public void correctNumberInListSize100Test() {
 		driver.get(PROJECT_URL+"?size=100");
 		WebElement pagination = driver.findElement(By.id(RESULTS_ID));
-		assertEquals(Constant.NUMBER_OF_ELEMENT_NOT_CORRECT,100,pagination.findElements(By.tagName("tr")).size());
+		assertEquals(NUMBER_OF_ELEMENT_NOT_CORRECT,100,pagination.findElements(By.tagName("tr")).size());
 	}
 }
