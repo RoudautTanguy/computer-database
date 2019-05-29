@@ -4,11 +4,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>computer-database</groupId>
 	<artifactId>computer-database</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<version>${application-version}</version>
+	<packaging>pom</packaging>
 	<name>computer-database</name>
 
+
+	<modules>
+        	<module>core</module>
+        	<module>persistence</module>
+        	<module>service</module>
+        	<module>binding</module>
+        	<module>webapp</module>
+        	<module>console</module>
+    	</modules>
+
 	<properties>
+		<application-version>1.0</application-version>
+		<module-version>1.0<module-version>
 		<!-- Dependencies -->
 		<mysql-connector-java-version>8.0.15</mysql-connector-java-version>
 		<slf4j-api-version>1.7.26</slf4j-api-version>
