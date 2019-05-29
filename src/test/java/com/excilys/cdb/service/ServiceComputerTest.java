@@ -23,7 +23,6 @@ import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.persistence.OrderByEnum;
-import com.excilys.cdb.service.ServiceComputer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class})
@@ -61,7 +60,7 @@ public class ServiceComputerTest {
 	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Laptop",introduced,discontinued,new Company(36,"Lenovo Group"))));
+		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo",introduced,discontinued,new Company(36,"Lenovo Group"))));
 	}
 
 	@Test
@@ -71,7 +70,7 @@ public class ServiceComputerTest {
 
 	@Test(expected = ComputerNotFoundException.class)
 	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
-		service.update(9999, mapperComputer.mapModelToDTO(new Computer(200,"Laptop",null,null,new Company(36,"Lenovo Group"))));
+		service.update(9999, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo Laptop",null,null,new Company(36,"Lenovo Group"))));
 	}
 
 	// Delete

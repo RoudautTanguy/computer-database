@@ -28,7 +28,7 @@ public class MapperComputerTest {
 	MapperComputer mapper;
 	
 	private static final String APPLE_COMPUTER = "AppleComputer";
-	private Company APPLE_COMPANY = new Company(1,"Apple Inc.");
+	private static final Company APPLE_COMPANY = new Company(1,"Apple Inc.");
 
 	@Test
 	public void mapModelToDTOTest() {

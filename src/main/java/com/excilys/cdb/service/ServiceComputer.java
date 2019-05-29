@@ -3,6 +3,7 @@ package com.excilys.cdb.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ public class ServiceComputer {
 	
 	private static Logger logger = LoggerFactory.getLogger( ServiceComputer.class );
 	public static final String PAGE_DOESNT_EXIST = "This page doesn't exist";
+	public static final String COMPUTER_DOESNT_EXIST = "The computer %d doesn't exist";
 	
 	public ServiceComputer(Validator validator, MapperComputer mapperComputer, DAOComputer daoComputer) {
 		this.daoComputer = daoComputer;
@@ -59,14 +61,14 @@ public class ServiceComputer {
 		} catch(IllegalArgumentException e) {
 			throw new ComputerNotFoundException("The id is null !");
 		} catch(EmptyResultDataAccessException e) {
-			throw new ComputerNotFoundException("The computer "+id+" doesn't exist");
+			throw new ComputerNotFoundException(String.format(COMPUTER_DOESNT_EXIST, id));
 		}
 		
 	}
 	
 	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
-		if(daoComputer.findById(id)==null) {
-			throw new ComputerNotFoundException("The computer "+id+" doesn't exist");
+		if(!daoComputer.findById(id).isPresent()) {
+			throw new ComputerNotFoundException(String.format(COMPUTER_DOESNT_EXIST, id));
 		}
 		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		computer.setId(id);
@@ -87,7 +89,7 @@ public class ServiceComputer {
 			dtoComputers.add(mapperComputer.mapModelToDTO(computer));
 		}
 		if(dtoComputers.isEmpty()) {
-			throw new PageNotFoundException("Page Not Found");
+			throw new PageNotFoundException(PAGE_DOESNT_EXIST);
 		} else {
 			return new Page<>(dtoComputers, index, limit, "");
 		}
@@ -100,18 +102,18 @@ public class ServiceComputer {
 			dtoComputers.add(mapperComputer.mapModelToDTO(computer));
 		}
 		if(dtoComputers.isEmpty()) {
-			throw new PageNotFoundException("Page Not Found");
+			throw new PageNotFoundException(PAGE_DOESNT_EXIST);
 		} else {
 			return new Page<>(dtoComputers, 0, COMPUTERS_NUMBER_PER_PAGE, "");
 		}
 	}
 	
 	public DTOComputer find(int id) throws ComputerNotFoundException{
-		Computer computer = daoComputer.findById(id);
-		if(computer == null) {
-			throw new ComputerNotFoundException("Computer "+id+" doesn't exist");
+		Optional<Computer> computer = daoComputer.findById(id);
+		if(!computer.isPresent()) {
+			throw new ComputerNotFoundException(String.format(COMPUTER_DOESNT_EXIST, id));
 		} else {
-			return mapperComputer.mapModelToDTO(computer);
+			return mapperComputer.mapModelToDTO(computer.get());
 		}
 	}
 	

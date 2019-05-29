@@ -25,7 +25,7 @@ public class ValidatorTest {
 	Validator validator;
 	
 	private static final String GOOD_COMPUTER = "Good Computer";
-	private Company APPLE_COMPANY = new Company(1,"Apple Inc.");
+	private static final Company APPLE_COMPANY = new Company(1,"Apple Inc.");
 
 	@Test
 	public void validateGoodComputerTest() throws NotAValidComputerException, CompanyNotFoundException {
