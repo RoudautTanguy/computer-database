@@ -99,7 +99,7 @@
 										value="${computer.name}" escapeXml="true"></c:out></a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>
-							<td>${computer.company}</td>
+							<td>${computer.companyName}</td>
 
 						</tr>
 					</c:forEach>

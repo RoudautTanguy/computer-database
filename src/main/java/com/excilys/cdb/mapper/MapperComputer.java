@@ -11,16 +11,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.dto.DTOComputer;
+import com.excilys.cdb.exception.CompanyNotFoundException;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.service.ServiceCompany;
 
 @Component
 public class MapperComputer {
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	ServiceCompany serviceCompany;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MapperComputer.class);
+	
+	public MapperComputer(ServiceCompany serviceCompany) {
+		this.serviceCompany = serviceCompany;
+	}
 	
 	/**
 	 * Map a model Computer to his DTO
@@ -38,45 +45,36 @@ public class MapperComputer {
 		if(computer.getDiscontinued() != null) {
 			discontinued = dateFormat.format(computer.getDiscontinued());
 		}
-		String company = "";
-		if(computer.getCompanyId() != null && computer.getCompanyId() != 0) {
-			company = Integer.toString(computer.getCompanyId());
+		Integer companyId = null;
+		String companyName = "";
+		if(computer.getCompany() != null) {
+			companyName = computer.getCompany().getName();
+			companyId = computer.getCompany().getId();
 		}
-		return new DTOComputer(id,name,introduced,discontinued,company);
+		return new DTOComputer(id,name,introduced,discontinued,companyId,companyName);
 	}
 	
 	/**
 	 * Map a DTO Computer to his model
 	 * @param computer
 	 * @return the corresponding model
+	 * @throws CompanyNotFoundException 
 	 */
-	public Computer mapDTOToModel(DTOComputer computer) {
+	public Computer mapDTOToModel(DTOComputer computer) throws CompanyNotFoundException {
 		int id = computer.getId();
 		String name = computer.getName();
-		Computer newComputer = new Computer.ComputerBuilder(name).withId(id).build();
-		Optional<Timestamp> optionalIntroduced = tryParse(computer.getIntroduced());
-		Optional<Timestamp> optionalDiscontinued = tryParse(computer.getDiscontinued());
-		
-		if(optionalIntroduced.isPresent()) {
-			newComputer.setIntroduced(optionalIntroduced.get());
-		} else {
-			String introduced = computer.getIntroduced().replaceAll(Constant.SANITIZER_REPLACER, "_");
-			logger.warn("Can't parse introduced date {}", introduced);
+		Timestamp introduced = tryParse(computer.getIntroduced()).orElse(null);
+		Timestamp discontinued = tryParse(computer.getDiscontinued()).orElse(null);
+		Integer companyId = computer.getCompanyId();
+		if(companyId!=null) {
+			Optional<Company> company = this.serviceCompany.findById(companyId);
+			if(company.isPresent()) {
+				return new Computer(id,name,introduced,discontinued,company.get());
+			} else {
+				throw new CompanyNotFoundException("Company "+companyId+" doesn't exist");
+			}
 		}
-		if(optionalDiscontinued.isPresent()) {
-			newComputer.setDiscontinued(optionalDiscontinued.get());
-		} else {
-			String discontinued = computer.getDiscontinued().replaceAll(Constant.SANITIZER_REPLACER, "_");
-			logger.warn("Can't parse introduced date {}", discontinued);
-		}
-		
-		try {
-			newComputer.setCompanyId(Integer.parseInt(computer.getCompany()));
-		} catch(NumberFormatException e) {
-			String company = computer.getCompany();
-			logger.warn("Can't parse company id {}", company);
-		}
-		return newComputer;
+		return new Computer(id,name,introduced,discontinued,null);
 	}
 	
 	Optional<Timestamp> tryParse(String dateString){

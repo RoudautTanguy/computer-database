@@ -61,8 +61,8 @@
 									placeholder="${discontinued}" />
 							</div>
 							<div id="company-group" class="form-group">
-								<form:label path="company" class="control-label" for="companyId"><spring:message code="all.company" /></form:label>
-								<form:select path="company" class="form-control" id="companyId"
+								<form:label path="companyName" class="control-label" for="companyId"><spring:message code="all.company" /></form:label>
+								<form:select path="companyName" class="form-control" id="companyId"
 									name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${ companies }" var="company">

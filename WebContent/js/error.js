@@ -10,7 +10,7 @@ $(function() {
 		}
 	});
 	if(haveBold === false){
-		document.cookie = "language=en";
+		document.cookie = "language=en;path=/";
 	}
 	
 	let url = new URL(window.location.href);

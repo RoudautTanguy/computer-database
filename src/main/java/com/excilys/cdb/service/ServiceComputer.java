@@ -1,9 +1,17 @@
 package com.excilys.cdb.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.excilys.cdb.constant.Constant;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
@@ -32,92 +40,83 @@ public class ServiceComputer {
 		this.validator = validator;
 	}
 	
-	/**
-	 * Insert a new computer
-	 * @param computer
-	 * @return if the computer is inserted or not
-	 * @throws NotAValidComputerException 
-	 * @throws CompanyNotFoundException 
-	 * @throws CantConnectException 
-	 */
 	public void insert(DTOComputer dtoComputer) throws NotAValidComputerException, CompanyNotFoundException {
 		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		try{
 			validator.validateComputer(computer);
-			daoComputer.insertComputer(computer);
+			daoComputer.save(computer);
 		} catch(NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw e;
+		} catch(DataAccessException e) {
+			throw new CompanyNotFoundException("Company not found");
 		}
 	}
 	
-	/**
-	 * Delete a computer by is id
-	 * @param id of the computer
-	 * @return if the computer is deleted or not
-	 * @throws ComputerNotFoundException 
-	 * @throws CantConnectException 
-	 */
-	public void delete(int id) throws ComputerNotFoundException{
-		daoComputer.deleteComputer(id);
+	public void delete(int id) throws ComputerNotFoundException {
+		try {
+			daoComputer.deleteById(id);
+		} catch(IllegalArgumentException e) {
+			throw new ComputerNotFoundException("The id is null !");
+		} catch(EmptyResultDataAccessException e) {
+			throw new ComputerNotFoundException("The computer "+id+" doesn't exist");
+		}
+		
 	}
 	
-	/**
-	 * Update a computer
-	 * @param id of the computer to update
-	 * @param computer the new computer
-	 * @return if the computer is updated or not
-	 * @throws NotAValidComputerException 
-	 * @throws ComputerNotFoundException 
-	 * @throws CantConnectException 
-	 */
-	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException {
+	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
+		if(daoComputer.findById(id)==null) {
+			throw new ComputerNotFoundException("The computer "+id+" doesn't exist");
+		}
 		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
+		computer.setId(id);
 		try {
 			validator.validateComputer(computer);
-			daoComputer.updateComputer(id, computer);
+			daoComputer.save(computer);
 		} catch (NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
 		}
 	}
 	
-	/**
-	 * List all the computers with pagination and names instead of id
-	 * @return the current page of computer
-	 * @throws PageNotFoundException 
-	 * @return page
-	 * @throws ComputerNotFoundException 
-	 */
-	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException, ComputerNotFoundException{
+	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException {
+		checkPositive(index,limit);
 		search = search == null?"":search;
-		return new Page<>(daoComputer.search(index, limit, search, orderBy), index, limit, "");
+		List<DTOComputer> dtoComputers = new ArrayList<>();
+		for(Computer computer:daoComputer.findAllByNameContains(search, PageRequest.of(index, limit, orderBy.getSort()))) {
+			dtoComputers.add(mapperComputer.mapModelToDTO(computer));
+		}
+		if(dtoComputers.isEmpty()) {
+			throw new PageNotFoundException("Page Not Found");
+		} else {
+			return new Page<>(dtoComputers, index, limit, "");
+		}
 	}
-	
-	/**
-	 * List all the computers with pagination and names instead of id
-	 * @return the current page of computer
-	 * @throws PageNotFoundException 
-	 * @return page
-	 * @throws ComputerNotFoundException 
-	 */
-	public Page<DTOComputer> search(String search) throws PageNotFoundException, ComputerNotFoundException{
+
+	public Page<DTOComputer> search(String search) throws PageNotFoundException{
 		search = search == null?"":search;
-		return new Page<>(daoComputer.search(0, COMPUTERS_NUMBER_PER_PAGE, search, OrderByEnum.DEFAULT), 0, COMPUTERS_NUMBER_PER_PAGE, "");
+		List<DTOComputer> dtoComputers = new ArrayList<>();
+		for(Computer computer:daoComputer.findAllByNameContains(search, PageRequest.of(0, COMPUTERS_NUMBER_PER_PAGE))) {
+			dtoComputers.add(mapperComputer.mapModelToDTO(computer));
+		}
+		if(dtoComputers.isEmpty()) {
+			throw new PageNotFoundException("Page Not Found");
+		} else {
+			return new Page<>(dtoComputers, 0, COMPUTERS_NUMBER_PER_PAGE, "");
+		}
 	}
 	
-	/**
-	 * Find a computer by is id
-	 * @param id of the computer
-	 * @return the computer if found
-	 * @throws ComputerNotFoundException if not found
-	 */
-	public DTOComputer find(int id) throws ComputerNotFoundException {
-		return daoComputer.find(id);
+	public DTOComputer find(int id) throws ComputerNotFoundException{
+		Computer computer = daoComputer.findById(id);
+		if(computer == null) {
+			throw new ComputerNotFoundException("Computer "+id+" doesn't exist");
+		} else {
+			return mapperComputer.mapModelToDTO(computer);
+		}
 	}
 	
-	public int count(String search) {
-		return daoComputer.countComputers(search);
+	public int countByName(String search) {
+		return daoComputer.countByNameContaining(search==null?"":search);
 	}
 	
 	public int lastPage() {
@@ -125,7 +124,18 @@ public class ServiceComputer {
 	}
 	
 	public int lastPage(int limit, String search) {
-		int count = count(search);
+		int count = countByName(search);
 		return (count%limit==0)?count/limit:count/limit+1;
+	}
+
+	public int getLastComputerId() {
+		return daoComputer.findTopByOrderByIdDesc().getId();
+	}
+	
+	public void checkPositive(int... numbers) throws PageNotFoundException {
+		int[] arrayNumbers = Arrays.stream(numbers).filter(n -> n>=0).toArray();
+		if(numbers.length != arrayNumbers.length) {
+			throw new PageNotFoundException(Constant.PAGE_DOESNT_EXIST);
+		}
 	}
 }

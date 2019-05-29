@@ -1,24 +1,26 @@
 package com.excilys.cdb.persistence;
 
+import org.springframework.data.domain.Sort;
+
 public enum OrderByEnum {
-	DEFAULT(""),
-	ORDER_BY_NAME_ASC("ORDER BY computer.name ASC"),
-	ORDER_BY_NAME_DESC("ORDER BY computer.name DESC"),
-	ORDER_BY_INTRODUCED_ASC("ORDER BY computer.introduced IS NULL, computer.introduced ASC"),
-	ORDER_BY_INTRODUCED_DESC("ORDER BY computer.introduced IS NULL, computer.introduced DESC"),
-	ORDER_BY_DISCONTINUED_ASC("ORDER BY computer.discontinued IS NULL, computer.discontinued ASC"),
-	ORDER_BY_DISCONTINUED_DESC("ORDER BY computer.discontinued IS NULL, computer.discontinued DESC"),
-	ORDER_BY_COMPANY_NAME_ASC("ORDER BY company.name IS NULL, company.name ASC"),
-	ORDER_BY_COMPANY_NAME_DESC("ORDER BY company.name IS NULL, company.name DESC");
+	DEFAULT(Sort.by("id")),
+	ORDER_BY_NAME_ASC(Sort.by("name")),
+	ORDER_BY_NAME_DESC(Sort.by("name").descending()),
+	ORDER_BY_INTRODUCED_ASC(Sort.by("introduced")),
+	ORDER_BY_INTRODUCED_DESC(Sort.by("introduced").descending()),
+	ORDER_BY_DISCONTINUED_ASC(Sort.by("discontinued")),
+	ORDER_BY_DISCONTINUED_DESC(Sort.by("discontinued").descending()),
+	ORDER_BY_COMPANY_NAME_ASC(Sort.by("cp.name")),
+	ORDER_BY_COMPANY_NAME_DESC(Sort.by("cp.name").descending());
 	
-	private String query;
+	private Sort sort;
 	
-	private OrderByEnum(String pQuery) {
-		this.query = pQuery;
+	private OrderByEnum(Sort sort) {
+		this.sort = sort;
 	}
 
-	public String getQuery() {
-		return query;
+	public Sort getSort() {
+		return sort;
 	}
 	
 }

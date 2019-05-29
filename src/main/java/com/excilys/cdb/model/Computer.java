@@ -2,59 +2,43 @@ package com.excilys.cdb.model;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "computer")
 public class Computer {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column(name="name")
 	private String name;
+	@Column(name="introduced", nullable=true)
 	private Timestamp introduced;
+	@Column(name="discontinued", nullable=true)
 	private Timestamp discontinued;
-	private Integer companyId;
+	@ManyToOne(fetch = FetchType.EAGER, optional = true, targetEntity = Company.class)
+	@JoinColumn(name = "company_id", referencedColumnName = "id")
+	private Company company;
 
-	public static class ComputerBuilder {
-		//required
-		private final String name;
 
-		//optional
-		private int id = 0;
-		private Timestamp introduced = null;
-		private Timestamp discontinued = null;
-		private Integer companyId = 0;
-
-		public ComputerBuilder(String name) {
-			this.name = name;
-		}
-
-		public ComputerBuilder withId(int id) {
-			this.id = id;
-			return this;
-		}
-
-		public ComputerBuilder withIntroduced(Timestamp introduced) {
-			this.introduced = introduced;
-			return this;
-		}
-
-		public ComputerBuilder withDiscontinued(Timestamp discontinued) {
-			this.discontinued = discontinued;
-			return this;
-		}
-
-		public ComputerBuilder withCompanyId(Integer companyId) {
-			this.companyId = companyId;
-			return this;
-		}
-
-		public Computer build() {
-			return new Computer(this);
-		}
-	}
-
-	private Computer(ComputerBuilder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
-		this.introduced = builder.introduced;
-		this.discontinued = builder.discontinued;
-		this.companyId = builder.companyId;
+	public Computer() {}
+	
+	public Computer(int id, String name, Timestamp introduced, Timestamp discontinued, Company company) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.introduced = introduced;
+		this.discontinued = discontinued;
+		this.company = company;
 	}
 
 	public int getId() {
@@ -88,13 +72,13 @@ public class Computer {
 	public void setDiscontinued(Timestamp discontinued) {
 		this.discontinued = discontinued;
 	}
-
-	public Integer getCompanyId() {
-		return companyId;
+	
+	public Company getCompany() {
+		return company;
 	}
 
-	public void setCompanyId(Integer companyId) {
-		this.companyId = companyId;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	@Override
@@ -102,14 +86,14 @@ public class Computer {
 		return "Computer@" + this.id + ":" + this.name + 
 				"[Introduced:" + this.introduced +
 				"Discontinued:" + this.discontinued + 
-				"CompanyId:"+this.companyId + "]";
+				"CompanyId:"+this.company + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((company == null) ? 0 : company.hashCode());
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
@@ -126,10 +110,10 @@ public class Computer {
 		if (getClass() != obj.getClass())
 			return false;
 		Computer other = (Computer) obj;
-		if (companyId == null) {
-			if (other.companyId != null)
+		if (company == null) {
+			if (other.company != null)
 				return false;
-		} else if (!companyId.equals(other.companyId)) {
+		} else if (!company.equals(other.company)) {
 			return false;
 		}
 		if (discontinued == null) {

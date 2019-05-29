@@ -10,8 +10,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.main.AppConfig;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,55 +25,36 @@ public class ValidatorTest {
 	Validator validator;
 	
 	private static final String GOOD_COMPUTER = "Good Computer";
+	private Company APPLE_COMPANY = new Company(1,"Apple Inc.");
 
 	@Test
-	public void validateGoodComputerTest() throws NotAValidComputerException {
+	public void validateGoodComputerTest() throws NotAValidComputerException, CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		validator.validateComputer(new Computer.ComputerBuilder(GOOD_COMPUTER)
-											   .withId(1)
-											   .withIntroduced(introduced)
-											   .withDiscontinued(discontinued)
-											   .withCompanyId(1)
-											   .build());
+		validator.validateComputer(new Computer(1,GOOD_COMPUTER,introduced,discontinued,APPLE_COMPANY));
 	}
 
 	@Test
-	public void validateGoodComputerWithoutDiscontinuedTest() throws NotAValidComputerException {
+	public void validateGoodComputerWithoutDiscontinuedTest() throws NotAValidComputerException, CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
-		validator.validateComputer(new Computer.ComputerBuilder(GOOD_COMPUTER)
-				   .withId(1)
-				   .withIntroduced(introduced)
-				   .withCompanyId(1)
-				   .build());
+		validator.validateComputer(new Computer(1,GOOD_COMPUTER,introduced,null,APPLE_COMPANY));
 	}
 
 	@Test
-	public void validateGoodComputerWithoutDatesTest() throws NotAValidComputerException {
-		validator.validateComputer(new Computer.ComputerBuilder(GOOD_COMPUTER)
-				   .withId(1)
-				   .withCompanyId(1)
-				   .build());
+	public void validateGoodComputerWithoutDatesTest() throws NotAValidComputerException, CompanyNotFoundException {
+		validator.validateComputer(new Computer(1,GOOD_COMPUTER,null,null,APPLE_COMPANY));
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void dontValidateWrongComputerTest() throws NotAValidComputerException {
+	public void dontValidateWrongComputerTest() throws NotAValidComputerException, CompanyNotFoundException {
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		validator.validateComputer(new Computer.ComputerBuilder("Wrong Computer")
-				   .withId(1)
-				   .withDiscontinued(discontinued)
-				   .withCompanyId(1)
-				   .build());
+		validator.validateComputer(new Computer(1,"Wrong Computer",null,discontinued,APPLE_COMPANY));
 	}
 
 	@Test(expected = NotAValidComputerException.class)
-	public void dontValidateComputerWithoutNameTest() throws NotAValidComputerException {
+	public void dontValidateComputerWithoutNameTest() throws NotAValidComputerException, CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
-		validator.validateComputer(new Computer.ComputerBuilder(null)
-				   .withId(1)
-				   .withIntroduced(introduced)
-				   .withCompanyId(1)
-				   .build());
+		validator.validateComputer(new Computer(1,null,introduced,null,APPLE_COMPANY));
 	}
 
 }

@@ -41,9 +41,6 @@ public class Controller {
 			try {
 				cli.showComputers(serviceComputer.search(""));
 			} catch (PageNotFoundException e) {
-				logger.warn("Page Not found", e);
-			} catch (ComputerNotFoundException e) {
-				logger.warn(e.getMessage());
 				cli.printException(e);
 			}
 			break;
@@ -52,36 +49,33 @@ public class Controller {
 			try {
 				cli.showCompanies(serviceCompany.list(0));
 			} catch (PageNotFoundException e) {
-				logger.warn("Page Not found", e);
+				cli.printException(e);
 			}
 			break;
 
 		case SHOW_COMPUTER_DETAIL:
 			int detailId = cli.askInteger("Please enter an Id (Integer)");
+			DTOComputer computer;
 			try {
-				DTOComputer computer = serviceComputer.find(detailId);
+				computer = serviceComputer.find(detailId);
 				cli.showComputerDetails(computer);
 			} catch (ComputerNotFoundException e) {
 				cli.printException(e);
-				logger.warn("Computer Not found", e);
 			}
 			break;
 
 		case CREATE_COMPUTER:
-			DTOComputer computer;
 			Optional<DTOComputer> optionalComputerCreated = cli.askComputerCreationInformation();
 			if(optionalComputerCreated.isPresent()) {
-				computer = optionalComputerCreated.get();
 				try{
-					serviceComputer.insert(computer);
+					serviceComputer.insert(optionalComputerCreated.get());
 					cli.printCreatedMessage(true);
 				} catch(NotAValidComputerException e) {
 					cli.printCreatedMessage(false);
 					logger.warn("Computer not valid");
 				} catch (CompanyNotFoundException e) {
-					cli.printCreatedMessage(false);
-					logger.warn("Company not found");
-				}
+					cli.printException(e);
+				} 
 			} else {
 				logger.warn("Computer is not present");
 			}
@@ -97,22 +91,21 @@ public class Controller {
 					serviceComputer.update(id, dtoComputer);
 					cli.printUpdatedMessage(true);
 				}
-			} catch(IllegalArgumentException | NotAValidComputerException | ComputerNotFoundException e) {
+			} catch(IllegalArgumentException | NotAValidComputerException | ComputerNotFoundException | CompanyNotFoundException e) {
 				cli.printException(e);
-			} 
+			}
 			break;
 
 		case DELETE_COMPUTER:
 			int deleteId = cli.askInteger("Please enter the Id of the Computer you want to Delete.");
 			try {
 				serviceComputer.delete(deleteId);
-				cli.printDeletedMessage(true, deleteId);
 			} catch (ComputerNotFoundException e) {
-				cli.printDeletedMessage(false, deleteId);
+				cli.printException(e);
 			}
-
 			break;
 		}
+
 		cli.startChoice();
 	}
 
@@ -131,8 +124,6 @@ public class Controller {
 			try {
 				page.setList(serviceCompany.list(page.decrementIndex()).getList());
 			} catch (PageNotFoundException e) {
-				isOk = false;
-				page.incrementIndex();
 				cli.printException(e);
 			}
 			break;
@@ -141,8 +132,6 @@ public class Controller {
 			try {
 				page.setList(serviceCompany.list(page.incrementIndex()).getList());
 			} catch (PageNotFoundException e) {
-				isOk = false;
-				page.decrementIndex();
 				cli.printException(e);
 			}
 			break;
@@ -150,32 +139,29 @@ public class Controller {
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
 				page.setList(serviceCompany.list(pageNumber).getList());
-				page.setIndex(pageNumber);
 			} catch (PageNotFoundException e) {
-				isOk = false;
 				cli.printException(e);
 			}
+			page.setIndex(pageNumber);
 			break;
 
 		case FIRST_PAGE:
 			try {
 				page.setList(serviceCompany.list(0).getList());
-				page.setIndex(0);
 			} catch (PageNotFoundException e) {
-				isOk = false;
 				cli.printException(e);
 			}
+			page.setIndex(0);
 			break;
 
 		case LAST_PAGE:
+			int lastSlice = serviceCompany.getLastPage();
 			try {
-				int lastSlice = serviceCompany.getLastPage();
 				page.setList(serviceCompany.list(lastSlice).getList());
-				page.setIndex(lastSlice);
 			} catch (PageNotFoundException e) {
-				isOk = false;
 				cli.printException(e);
 			}
+			page.setIndex(lastSlice);
 			break;
 
 		case QUIT:
@@ -191,9 +177,7 @@ public class Controller {
 		case PREVIOUS_PAGE:
 			try {
 				page.setList(serviceComputer.search(page.decrementIndex(), 50, "", OrderByEnum.DEFAULT).getList());
-			} catch (PageNotFoundException | ComputerNotFoundException e) {
-				isOk = false;
-				page.incrementIndex();
+			} catch (PageNotFoundException e) {
 				cli.printException(e);
 			}
 			break;
@@ -201,9 +185,7 @@ public class Controller {
 		case NEXT_PAGE:
 			try {
 				page.setList(serviceComputer.search(page.incrementIndex(), 50, "", OrderByEnum.DEFAULT).getList());
-			} catch (PageNotFoundException | ComputerNotFoundException e) {
-				isOk = false;
-				page.decrementIndex();
+			} catch (PageNotFoundException e) {
 				cli.printException(e);
 			}
 			break;
@@ -212,32 +194,29 @@ public class Controller {
 			int pageNumber = cli.askInteger("Please enter the number of the page.");
 			try {
 				page.setList(serviceComputer.search(pageNumber, 50, "", OrderByEnum.DEFAULT).getList());
-				page.setIndex(pageNumber);
-			} catch (PageNotFoundException | ComputerNotFoundException e) {
-				isOk = false;
+			} catch (PageNotFoundException e) {
 				cli.printException(e);
 			}
+			page.setIndex(pageNumber);
 			break;
 
 		case FIRST_PAGE:
 			try {
 				page.setList(serviceComputer.search(0, 50, "", OrderByEnum.DEFAULT).getList());
-				page.setIndex(0);
-			} catch (PageNotFoundException | ComputerNotFoundException e) {
-				isOk = false;
+			} catch (PageNotFoundException e) {
 				cli.printException(e);
 			}
+			page.setIndex(0);
 			break;
 
 		case LAST_PAGE:
+			int lastSlice = serviceComputer.lastPage();
 			try {
-				int lastSlice = serviceComputer.lastPage();
 				page.setList(serviceComputer.search(lastSlice, 50, "", OrderByEnum.DEFAULT).getList());
-				page.setIndex(lastSlice);
-			} catch (PageNotFoundException | ComputerNotFoundException e) {
-				isOk = false;
+			} catch (PageNotFoundException e) {
 				cli.printException(e);
 			}
+			page.setIndex(lastSlice);
 			break;
 
 		case QUIT:

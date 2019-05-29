@@ -15,22 +15,24 @@ public class DTOComputer {
 	private String introduced;
 	@CheckDateFormat(pattern = "dd-MM-yyyy")
 	private String discontinued;
-	private String company;
+	private Integer companyId;
+	private String companyName;
 	
 	public DTOComputer() {
 		this("");
 	}
 	
-	public DTOComputer(int id, String name, String introduced, String discontinued, String company) {
+	public DTOComputer(int id, String name, String introduced, String discontinued, Integer companyId, String companyName) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.company = company;
+		this.companyId = companyId;
+		this.companyName = companyName;
 	}
 	
 	public DTOComputer(String name) {
-		this(0,name,"","","");
+		this(0,name,"","",null,"");
 	}
 	
 	public int getId() {
@@ -64,13 +66,21 @@ public class DTOComputer {
 	public void setDiscontinued(String discontinued) {
 		this.discontinued = discontinued;
 	}
-
-	public String getCompany() {
-		return company;
+	
+	public Integer getCompanyId() {
+		return companyId;
 	}
 
-	public void setCompany(String company) {
-		this.company = company;
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 	
 	@Override
@@ -78,14 +88,14 @@ public class DTOComputer {
 		return "DTOComputer@" + this.id + ":" + this.name + 
 				"[Introduced:" + this.introduced +
 				"Discontinued:" + this.discontinued + 
-				"Company:"+this.company + "]";
+				"Company:"+this.companyName + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((company == null) ? 0 : company.hashCode());
+		result = prime * result + ((companyName == null) ? 0 : companyName.hashCode());
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
@@ -102,10 +112,10 @@ public class DTOComputer {
 		if (getClass() != obj.getClass())
 			return false;
 		DTOComputer other = (DTOComputer) obj;
-		if (company == null) {
-			if (other.company != null)
+		if (companyName == null) {
+			if (other.companyName != null)
 				return false;
-		} else if (!company.equals(other.company)) {
+		} else if (!companyName.equals(other.companyName)) {
 			return false;
 		}
 		if (discontinued == null) {

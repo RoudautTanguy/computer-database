@@ -1,9 +1,30 @@
 package com.excilys.cdb.model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "company")
 public class Company {
 
+	@Id()
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column(name = "name")
 	private String name;
+	
+	@OneToMany(mappedBy = "company",orphanRemoval=true,cascade = CascadeType.ALL)
+	private Set<Computer> computers;
+	
+	public Company() {}
 	
 	public Company(int pId, String pName) {
 		this.id = pId;
@@ -26,6 +47,14 @@ public class Company {
 		this.name = name;
 	}
 	
+	public Set<Computer> getComputers() {
+		return computers;
+	}
+
+	public void setComputers(Set<Computer> computers) {
+		this.computers = computers;
+	}
+
 	@Override
 	public String toString() {
 		return "Company@" + this.id + ":" + this.name;

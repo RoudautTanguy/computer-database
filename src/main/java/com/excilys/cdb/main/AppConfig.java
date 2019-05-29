@@ -23,6 +23,7 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = "com.excilys.cdb",
 			   excludeFilters = @Filter(type=FilterType.REGEX,pattern= {"com\\.excilys\\.cdb\\.exception\\..*",
 					   "com\\\\.excilys\\\\.cdb\\\\.model\\\\..*",
+					   "com\\\\.excilys\\\\.cdb\\\\.persistence\\\\..*",
 					   "com\\\\.excilys\\\\.cdb\\\\.ui\\\\..*"}))
 public class AppConfig implements WebMvcConfigurer{
 

@@ -7,18 +7,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.persistence.DAOCompany;
 
 @Component
 public class Validator {
 
+	private DAOCompany daoCompany;
+	
+	public Validator(DAOCompany daoCompany) {
+		this.daoCompany = daoCompany;
+	}
+	
 	private static Logger logger = LoggerFactory.getLogger( Validator.class );
 
-	public void validateComputer(Computer computer) throws NotAValidComputerException{
+	public void validateComputer(Computer computer) throws NotAValidComputerException, CompanyNotFoundException{
 		validateNameIsPresent(computer.getName());
 		validateDiscontinuedDateIsNullIfIntroducedIsNull(computer.getIntroduced(), computer.getDiscontinued());
 		validateDiscontinuedDateIsAfterIntroducedDate(computer.getIntroduced(),computer.getDiscontinued());
+		validateCompanyExist(computer.getCompany());
+	}
+
+	private void validateCompanyExist(Company company) throws CompanyNotFoundException {
+		if(company!=null && !daoCompany.findById(company.getId()).isPresent()) {
+			throw new CompanyNotFoundException("The company "+company.getId()+" doesn't exist");
+		}
 	}
 
 	private void validateNameIsPresent(String name) throws NotAValidComputerException {

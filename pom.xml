@@ -21,6 +21,9 @@
 		<webdrivermanager-version>3.4.0</webdrivermanager-version>
 		<spring-version>5.1.7.RELEASE</spring-version>
 		<validation-api-version>2.0.1.Final</validation-api-version>
+		<spring-data-version>2.1.8.RELEASE</spring-data-version>
+		<hibernate-version>4.3.11.Final</hibernate-version>
+		<hibernate-jpa-version>1.0.0.Final</hibernate-jpa-version>
 
 		<!-- Plugins -->
 		<maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
@@ -106,6 +109,34 @@
 			<artifactId>validation-api</artifactId>
 			<version>${validation-api-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+			<version>${spring-data-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>${hibernate-jpa-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+
+
+
 
 
 	</dependencies>

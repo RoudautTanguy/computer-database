@@ -182,7 +182,7 @@ public class CLIHelper {
 				.max().orElse(headers[3].length()));
 
 		int maxCompanyIdLength = 	Math.max(headers[4].length(),computers.stream()
-				.map(DTOComputer::getCompany)
+				.map(DTOComputer::getCompanyName)
 				.mapToInt(String::length)
 				.max().orElse(headers[4].length()));
 
@@ -199,7 +199,7 @@ public class CLIHelper {
 		System.out.format(computerFormater,headers[0], headers[1],headers[2],headers[3],headers[4]);
 		System.out.println(borderLine);
 		for(DTOComputer computer:computers) {
-			System.out.format(computerFormater,computer.getId(), computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), computer.getCompany());
+			System.out.format(computerFormater,computer.getId(), computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), computer.getCompanyName());
 		}
 		System.out.println(borderLine);
 	}

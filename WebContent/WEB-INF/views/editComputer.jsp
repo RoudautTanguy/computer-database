@@ -66,13 +66,13 @@
 									value="${computer.discontinued}" />
 							</div>
 							<div class="form-group">
-								<form:label path="company" class="control-label" for="companyId"><spring:message code="all.company"/></form:label>
-								<form:select path="company" class="form-control" id="companyId"
+								<form:label path="companyName" class="control-label" for="companyId"><spring:message code="all.company"/></form:label>
+								<form:select path="companyName" class="form-control" id="companyId"
 									name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${ companies }" var="company">
 										<option value="${ company.id }"
-											<c:if test='${ company.name == computer.company }'> selected </c:if>>${ company.name }</option>
+											<c:if test='${ company.name == computer.companyName }'> selected </c:if>>${ company.name }</option>
 
 
 									</c:forEach>

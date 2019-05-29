@@ -67,7 +67,7 @@ public class ComputerProcessingController {
 	}
 
 	@PostMapping("/editComputer")
-	public String editComputer(@ModelAttribute("dtoComputer") DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException{
+	public String editComputer(@ModelAttribute("dtoComputer") DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException{
 		try {
 			int parseId = dtoComputer.getId();
 			serviceComputer.update(parseId,dtoComputer);
