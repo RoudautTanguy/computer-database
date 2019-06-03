@@ -85,8 +85,8 @@ public class Computer {
 	public String toString() {
 		return "Computer@" + this.id + ":" + this.name + 
 				"[Introduced:" + this.introduced +
-				"Discontinued:" + this.discontinued + 
-				"CompanyId:"+this.company + "]";
+				" Discontinued:" + this.discontinued + 
+				" Company:"+this.company + "]";
 	}
 
 	@Override

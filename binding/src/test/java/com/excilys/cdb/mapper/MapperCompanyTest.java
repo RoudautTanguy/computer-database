@@ -23,6 +23,7 @@ public class MapperCompanyTest {
 	}
 	
 	private static final String APPLE_COMPANY = "Apple";
+	
 	@Test
 	public void mapModelToDTOTest(){
 		Company company = new Company(1,APPLE_COMPANY);
