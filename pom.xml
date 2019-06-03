@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.excilys</groupId>
 	<artifactId>computer-database</artifactId>
-	<version>${application-version}</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 	<name>computer-database</name>
 
@@ -18,7 +18,6 @@
 	</modules>
 
 	<properties>
-		<application-version>1.0</application-version>
 		<module-version>1.0</module-version>
 		<!-- Dependencies -->
 		<mysql-connector-java-version>8.0.15</mysql-connector-java-version>
