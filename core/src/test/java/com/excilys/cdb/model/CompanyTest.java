@@ -1,11 +1,9 @@
-package test.java.com.excilys.cdb.model;
+package com.excilys.cdb.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
-
-import com.excilys.cdb.model.Company;
 
 public class CompanyTest {
 
@@ -31,6 +29,6 @@ public class CompanyTest {
 	
 	@Test
 	public void companyToStringTest() {
-		assertEquals("Company to String isn't the expected string",new Company(23,"Lenovo").toString(),"Company@23:Lenovo");
+		assertEquals("Company to String isn't the expected string","Company@23:Lenovo",new Company(23,"Lenovo").toString());
 	}
 }
