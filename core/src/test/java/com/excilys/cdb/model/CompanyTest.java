@@ -1,11 +1,10 @@
-package test.java.com.excilys.cdb.model;
+package com.excilys.cdb.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
-import com.excilys.cdb.model.Company;
 
 public class CompanyTest {
 

@@ -14,9 +14,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class AddComputerWebUITest {
-
+	
 	private WebDriver driver;
-	private static final String PROJECT_URL = "http://localhost:8080/computer-database/addComputer";
+	private static final String PROJECT_URL = "http://localhost:8080/webapp/addComputer";
 	private static final String SUBMIT_BUTTON = "input[type=submit]";
 	private static final String ALERT_DANGER = ".alert.alert-danger";
 	

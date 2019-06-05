@@ -23,7 +23,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class ListWebUITest {
 
 	private WebDriver driver;
-	private static final String PROJECT_URL = "http://localhost:8080/computer-database/";
+	private static final String PROJECT_URL = "http://localhost:8080/webapp/";
 	private static final String NUMBER_COMPUTER_CSS = "b.number";
 	private static final String RESULTS_ID = "results";
 	public static final String NUMBER_OF_ELEMENT_NOT_CORRECT = "Number of element in list isn't correct.";
