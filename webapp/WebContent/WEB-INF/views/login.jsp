@@ -20,8 +20,9 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - Computer
-				Database </a>
+			<a class="navbar-brand"
+				href="${pageContext.request.contextPath}/dashboard"> Application
+				- Computer Database </a>
 			<div class="lang-selector">
 				<a href="?lang=en">EN</a> <a href="?lang=fr">FR</a>
 			</div>
@@ -31,7 +32,26 @@
 	<section id="main">
 		<div class="container">
 			<div class="row">
-				
+				<div class="col-xs-8 col-xs-offset-2 box">
+					<h1>Login</h1>
+					<form id="login" action="login" method="POST">
+						<div class="form-group">
+							<label class="control-label" for="username">Username</label>
+							<input type="text" class="form-control"
+								id="username" name="username"
+								placeholder="Username" />
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="password">Username</label>
+							<input type="password" class="form-control"
+								id="password" name="password"
+								placeholder="Password" />
+						</div>
+						<div>
+							<input type="submit" value="Sign In" class="btn btn-primary">
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	</section>

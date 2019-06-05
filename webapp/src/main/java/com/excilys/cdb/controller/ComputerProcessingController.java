@@ -29,15 +29,10 @@ public class ComputerProcessingController {
 	private ServiceCompany serviceCompany;
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerProcessingController.class);
-
-	@GetMapping("/login")
-    public String login() {
-        return "login";
-    }
 	
 	//Add Computer
 
-	@GetMapping("/addeComputer")
+	@GetMapping("/addComputer")
 	public String addComputer(final ModelMap model){
 		List<DTOCompany> companies = serviceCompany.list();
 		model.addAttribute("companies", companies);
