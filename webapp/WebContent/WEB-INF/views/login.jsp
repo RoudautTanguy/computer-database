@@ -55,8 +55,7 @@
           <label for="password" class="sr-only">Password</label>
           <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
         </p>
-<input name="_csrf" type="hidden" value="daafcea4-2930-473a-acf8-faec69dd00e6">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button class="btn btn-primary" type="submit">Sign in</button>
       </form>
 					</fieldset>
 				</div>
