@@ -33,24 +33,32 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<h1>Login</h1>
-					<form id="login" action="login" method="POST">
-						<div class="form-group">
-							<label class="control-label" for="username">Username</label>
-							<input type="text" class="form-control"
-								id="username" name="username"
-								placeholder="Username" />
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="password">Username</label>
-							<input type="password" class="form-control"
-								id="password" name="password"
-								placeholder="Password" />
-						</div>
-						<div>
-							<input type="submit" value="Sign In" class="btn btn-primary">
-						</div>
-					</form>
+					<fieldset>
+						<legend>Please Login</legend>
+						<c:if test="${error}">
+							<div class="alert alert-danger">
+								Invalid username and password.
+							</div>
+						</c:if>
+						<c:if test="${logout}">
+							<div class="alert alert-success">
+								You have been logged out.
+							</div>
+						</c:if>
+						<form class="form-signin" method="post" action="/webapp/login">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <p>
+          <label for="username" class="sr-only">Username</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
+        </p>
+        <p>
+          <label for="password" class="sr-only">Password</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
+        </p>
+<input name="_csrf" type="hidden" value="daafcea4-2930-473a-acf8-faec69dd00e6">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+					</fieldset>
 				</div>
 			</div>
 		</div>

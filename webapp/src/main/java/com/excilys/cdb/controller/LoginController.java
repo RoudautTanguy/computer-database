@@ -1,33 +1,29 @@
 package com.excilys.cdb.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import com.excilys.cdb.dto.DTOCompany;
-import com.excilys.cdb.dto.DTOComputer;
-import com.excilys.cdb.service.ServiceCompany;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
 
-	@Autowired
-	private ServiceCompany serviceCompany;
-	
 	@GetMapping("/login")
-    public String login() {
+    public String login(Model model, @RequestParam(value = "error", required = false) String error,
+    		@RequestParam(value = "logout", required = false) String logout) {
+        if (error != null) {
+        	model.addAttribute("error", true);
+        }
+
+        if (logout != null) {
+        	model.addAttribute("logout", true);
+        }
+        
         return "login";
     }
 	
-	@GetMapping("/test")
-    public String test(final ModelMap model) {
-		List<DTOCompany> companies = serviceCompany.list();
-		model.addAttribute("companies", companies);
-		DTOComputer dtoComputer = new DTOComputer();
-		model.addAttribute("dtoComputer",dtoComputer);
-		return "addComputer";
-    }
+	@GetMapping("/logout")
+	public String getLogout() {
+		return "logout";
+	}
 }

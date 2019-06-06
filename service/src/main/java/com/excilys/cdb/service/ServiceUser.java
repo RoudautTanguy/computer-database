@@ -25,6 +25,7 @@ public class ServiceUser implements UserDetailsService{
 		if(!optUser.isPresent()) {
 			throw new UsernameNotFoundException(username);
 		}
+		System.out.println(optUser.get());
 		return optUser.get();
     }
 }
