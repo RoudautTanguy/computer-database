@@ -14,33 +14,51 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.excilys.cdb.dao.OrderByEnum;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.exceptions.BadRequestException;
 import com.excilys.cdb.service.ServiceComputer;
-import com.mysql.cj.exceptions.WrongArgumentException;
+import com.excilys.cdb.service.ServicePagination;
 
 @RestController
 @RequestMapping("/api/v1/computers/")
 public class ComputerRestController {
 
 	private ServiceComputer serviceComputer;
+	private ServicePagination servicePagination;
 	
-	public ComputerRestController(ServiceComputer serviceComputer) {
+	public ComputerRestController(ServiceComputer serviceComputer, ServicePagination servicePagination) {
 		this.serviceComputer = serviceComputer;
+		this.servicePagination = servicePagination;
 	}
 	
 	@GetMapping("/")
 	@ResponseStatus(HttpStatus.FOUND)
 	public List<DTOComputer> findAll(@RequestParam(value="search", required = false) String search,
-									 @RequestParam(value="range",required = false) String range)throws PageNotFoundException {
+									 @RequestParam(value="range",required = false) String range,
+									 @RequestParam(value="sort", required = false) String sort,
+									 @RequestParam(value="desc", required = false) String desc)throws PageNotFoundException, BadRequestException {
 		String[] rangeArr = range.split("-");
 		if(rangeArr.length != 2) {
-			throw new WrongArgumentException("Range expect 2 param");
+			throw new BadRequestException("Range expect 2 param");
 		}
-		return this.serviceComputer.search(search).getList();
+		int first = Integer.parseInt(rangeArr[0]);
+		int last = Integer.parseInt(rangeArr[1]);
+		if(first > last) {
+			throw new BadRequestException("First element after Last element");
+		}
+		int limit = last - first;
+		if(first == last) {
+			throw new PageNotFoundException("No element");
+		}
+		int page = first / limit;
+		OrderByEnum orderBy = servicePagination.getOrderBy(sort, desc!=null);
+		
+		return this.serviceComputer.search(page,limit,search,orderBy).getList();
 	}
 	
 	@GetMapping("/{id}")

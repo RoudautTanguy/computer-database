@@ -1,8 +1,14 @@
 package com.excilys.cdb.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.excilys.cdb.dao.OrderByEnum;
 
 @Service
 public class ServicePagination {
@@ -53,5 +59,16 @@ public class ServicePagination {
 	 */
 	public int getPagination(int lastPage, int currentPage) {
 		return Math.max(3, Math.min(lastPage -2, currentPage));
+	}
+	
+	public OrderByEnum getOrderBy(String sort, boolean desc) {
+		OrderByEnum orderBy = OrderByEnum.DEFAULT;
+		if(sort != null && sort != "") {
+			List<OrderByEnum> sortList = Stream.of(OrderByEnum.values()).filter((OrderByEnum order) -> sort.equals(order.getSortFieldName())).collect(Collectors.toList());
+			if(sortList.size()==2) {
+				orderBy = desc?sortList.get(1):sortList.get(0);
+			}
+		}
+		return orderBy;
 	}
 }

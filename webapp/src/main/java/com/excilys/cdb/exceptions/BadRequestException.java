@@ -1,17 +1,18 @@
-package com.excilys.cdb.exception;
+package com.excilys.cdb.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class NotAValidComputerException extends Exception {
+public class BadRequestException extends Exception{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public NotAValidComputerException(String message) {
+	
+	public BadRequestException(String message) {
 		super(message);
 	}
+
 }
