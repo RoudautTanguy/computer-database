@@ -103,14 +103,14 @@ a.btn.btn-primary {
     margin-top: 10px;
 }
 
-.lang-selector{
+.lang-selector, .float-right{
 	float: right;
 	font-size: 14px;
 	font-weight: normal;
 	padding: 15px;
 }
 
-.lang-selector a {
+.lang-selector a, .float-right a {
     color: #999;
 }
 

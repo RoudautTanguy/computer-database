@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ public class DashboardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 	@GetMapping(value= {"/","/dashboard"})
 	public String dashboard(@RequestParam(value = "page", required = false) String pPage,
 			@RequestParam(value = "orderBy", required = false) String pOrderBy,
@@ -59,6 +61,7 @@ public class DashboardController {
 		return "dashboard";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/dashboard") 
 	public String deleteComputers(@RequestParam Map<String, String> requestParams) throws ComputerNotFoundException{
 		String[] idComputers = requestParams.get("selection").split(",");

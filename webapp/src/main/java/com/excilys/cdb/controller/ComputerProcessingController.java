@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +30,10 @@ public class ComputerProcessingController {
 	private ServiceCompany serviceCompany;
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerProcessingController.class);
-
+	
 	//Add Computer
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/addComputer")
 	public String addComputer(final ModelMap model){
 		List<DTOCompany> companies = serviceCompany.list();
@@ -41,6 +43,7 @@ public class ComputerProcessingController {
 		return "addComputer";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/addComputer")
 	public String addComputer(@ModelAttribute("dtoComputer") DTOComputer dtoComputer) throws NotAValidComputerException, CompanyNotFoundException {
 		serviceComputer.insert(dtoComputer);
@@ -50,6 +53,7 @@ public class ComputerProcessingController {
 
 	//Edit Computer
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/editComputer/{id}")
 	public String editComputer(@PathVariable("id") String pId, final ModelMap model) throws ComputerNotFoundException{
 		int id = -1;
@@ -66,6 +70,7 @@ public class ComputerProcessingController {
 		return "editComputer";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/editComputer")
 	public String editComputer(@ModelAttribute("dtoComputer") DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException{
 		try {

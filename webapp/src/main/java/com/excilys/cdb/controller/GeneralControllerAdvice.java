@@ -1,7 +1,8 @@
 package com.excilys.cdb.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,12 +22,16 @@ public class GeneralControllerAdvice {
 	static final String ERROR_MESSAGE = "errorMsg";
 	
 	@GetMapping("/errors")
-	public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
-		
+	public ModelAndView renderErrorPage(HttpServletResponse httpResponse) {
 		ModelAndView model = new ModelAndView(PAGE_NAME);
-		model.addObject(ERROR_CODE, 404);
-		model.addObject(ERROR_MESSAGE,"error.resources_not_found");
-		model.addObject("info","error.404_info");
+		int errorCode = httpResponse.getStatus();
+		model.addObject(ERROR_CODE, errorCode);
+		if(errorCode == 404) {
+			model.addObject(ERROR_MESSAGE,"error.resources_not_found");
+			model.addObject("info","error.404_info");
+		} else if(errorCode == 403) {
+			model.addObject(ERROR_MESSAGE,"error.forbidden");
+		} 
 		return model;
 	}
 
@@ -56,6 +61,14 @@ public class GeneralControllerAdvice {
         model.addObject(ERROR_MESSAGE, "error.internal_server_error");
         return model;
     }
+	
+	@ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+	public ModelAndView handle(AuthenticationCredentialsNotFoundException e) {
+		ModelAndView model = new ModelAndView(PAGE_NAME);
+        model.addObject(ERROR_CODE, 403);
+        model.addObject(ERROR_MESSAGE, "error.forbidden");
+        return model;
+	}
 	
 	@ExceptionHandler(Exception.class)
     public ModelAndView handleException(NotAValidComputerException e) {

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
-
 public class CompanyTest {
 
 	@Test
@@ -30,6 +29,6 @@ public class CompanyTest {
 	
 	@Test
 	public void companyToStringTest() {
-		assertEquals("Company to String isn't the expected string",new Company(23,"Lenovo").toString(),"Company@23:Lenovo");
+		assertEquals("Company to String isn't the expected string","Company@23:Lenovo",new Company(23,"Lenovo").toString());
 	}
 }

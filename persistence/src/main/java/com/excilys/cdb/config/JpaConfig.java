@@ -37,7 +37,7 @@ public class JpaConfig {
         dataSourceConfig.setUsername(env.getRequiredProperty("dataSource.user"));
         dataSourceConfig.setPassword(env.getRequiredProperty("dataSource.password"));
  
-        return new HikariDataSource(dataSourceConfig);
+        return (DataSource) new HikariDataSource(dataSourceConfig);
     }
 	
 	@Bean
