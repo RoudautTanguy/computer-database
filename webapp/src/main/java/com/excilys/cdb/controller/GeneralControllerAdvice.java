@@ -24,9 +24,14 @@ public class GeneralControllerAdvice {
 	@GetMapping("/errors")
 	public ModelAndView renderErrorPage(HttpServletResponse httpResponse) {
 		ModelAndView model = new ModelAndView(PAGE_NAME);
-		model.addObject(ERROR_CODE, httpResponse.getStatus());
-		model.addObject(ERROR_MESSAGE,"error.resources_not_found");
-		model.addObject("info","error.404_info");
+		int errorCode = httpResponse.getStatus();
+		model.addObject(ERROR_CODE, errorCode);
+		if(errorCode == 404) {
+			model.addObject(ERROR_MESSAGE,"error.resources_not_found");
+			model.addObject("info","error.404_info");
+		} else if(errorCode == 403) {
+			model.addObject(ERROR_MESSAGE,"error.forbidden");
+		} 
 		return model;
 	}
 

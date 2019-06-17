@@ -7,12 +7,9 @@
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link href="${pageContext.request.contextPath}/css/bootstrap.min.css"
-	rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/css/font-awesome.css"
-	rel="stylesheet" type="text/css" media="screen">
-<link href="${pageContext.request.contextPath}/css/main.css"
-	rel="stylesheet" type="text/css" media="screen">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/css/font-awesome.css" rel="stylesheet" type="text/css" media="screen">
+<link href="${pageContext.request.contextPath}/css/main.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -29,9 +26,11 @@
 		<div id="container" class="container">
 
 			<div class="errorCode">${errorCode}</div>
-			<div class="errorMsg">
-				<spring:message code="${errorMsg}" />
-			</div>
+			<c:if test="${not empty errorMsg}">
+				<div class="errorMsg">
+					<spring:message code="${errorMsg}" />
+				</div>
+			</c:if>
 			<c:if test="${not empty info}">
 				<div class="info">
 					<spring:message code="${info}" />

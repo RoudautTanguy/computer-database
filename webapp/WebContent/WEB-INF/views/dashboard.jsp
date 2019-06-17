@@ -8,18 +8,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="${pageContext.request.contextPath}/css/bootstrap.min.css"
-	rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/css/font-awesome.css"
-	rel="stylesheet" type="text/css" media="screen">
-<link href="${pageContext.request.contextPath}/css/main.css"
-	rel="stylesheet" type="text/css" media="screen">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${pageContext.request.contextPath}/css/font-awesome.css" rel="stylesheet" type="text/css" media="screen">
+<link href="${pageContext.request.contextPath}/css/main.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard"> Application - Computer
 				Database </a>
+			<div class="float-right"><a href="${pageContext.request.contextPath}/logout">Logout</a></div>
 			<div class="lang-selector">
 				<a href="?lang=en">EN</a> <a href="?lang=fr">FR</a>
 			</div>
