@@ -2,16 +2,21 @@ package com.excilys.cdb.controller;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
+import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.exceptions.BadRequestException;
 
 @Controller
 @ControllerAdvice
@@ -36,47 +41,52 @@ public class GeneralControllerAdvice {
 	}
 
 	@ExceptionHandler(ComputerNotFoundException.class)
-    public ModelAndView handleComputerNotFoundException(ComputerNotFoundException e) {
- 
-        ModelAndView model = new ModelAndView(PAGE_NAME);
-        model.addObject(ERROR_CODE, 404);
-        model.addObject(ERROR_MESSAGE, "error.computer_not_found");
-        return model;
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	@ResponseBody
+    public Object handleComputerNotFoundException(ComputerNotFoundException e) {
+		return e.getMessage();
     }
 	
 	@ExceptionHandler(CompanyNotFoundException.class)
-    public ModelAndView handleCompanyNotFoundException(CompanyNotFoundException e) {
- 
-        ModelAndView model = new ModelAndView(PAGE_NAME);
-        model.addObject(ERROR_CODE, 404);
-        model.addObject(ERROR_MESSAGE, "error.company_not_found");
-        return model;
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	@ResponseBody
+    public Object handleCompanyNotFoundException(CompanyNotFoundException e) {
+		return e.getMessage();
+    }
+	
+	@ExceptionHandler(PageNotFoundException.class)
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public Object handlePageNotFound(PageNotFoundException e) {
+        return e.getMessage();
     }
 	
 	@ExceptionHandler(NotAValidComputerException.class)
-    public ModelAndView handleNotAValidComputerException(NotAValidComputerException e) {
- 
-        ModelAndView model = new ModelAndView(PAGE_NAME);
-        model.addObject(ERROR_CODE, 500);
-        model.addObject(ERROR_MESSAGE, "error.internal_server_error");
-        return model;
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Object handleNotAValidComputerException(NotAValidComputerException e) {
+		return e.getMessage();
+    }
+	
+	@ExceptionHandler(BadRequestException.class)
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Object handleBadRequestException(BadRequestException e) {
+		return e.getMessage();
     }
 	
 	@ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
-	public ModelAndView handle(AuthenticationCredentialsNotFoundException e) {
-		ModelAndView model = new ModelAndView(PAGE_NAME);
-        model.addObject(ERROR_CODE, 403);
-        model.addObject(ERROR_MESSAGE, "error.forbidden");
-        return model;
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+    @ResponseBody
+	public Object handle(AuthenticationCredentialsNotFoundException e) {
+		return e.getMessage();
 	}
 	
 	@ExceptionHandler(Exception.class)
-    public ModelAndView handleException(NotAValidComputerException e) {
- 
-        ModelAndView model = new ModelAndView(PAGE_NAME);
-        model.addObject(ERROR_CODE, 501);
-        model.addObject(ERROR_MESSAGE, "error.not_implemented");
-        return model;
+	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public Object handleException(NotAValidComputerException e) {
+		return e.getMessage();
     }
 	
 }
