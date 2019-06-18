@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,15 +21,18 @@ public class Company {
 	private int id;
 	@Column(name = "name")
 	private String name;
+	@Column(name="version")
+	private int version;
 	
-	@OneToMany(mappedBy = "company",orphanRemoval=true,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "company",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<Computer> computers;
 	
 	public Company() {}
 	
-	public Company(int pId, String pName) {
+	public Company(int pId, String pName, int version) {
 		this.id = pId;
 		this.name = pName;
+		this.version = version;
 	}
 
 	public int getId() {
@@ -53,6 +57,14 @@ public class Company {
 
 	public void setComputers(Set<Computer> computers) {
 		this.computers = computers;
+	}
+	
+	public int getVersion() {
+		return version;
+	}
+	
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 	@Override
@@ -88,6 +100,5 @@ public class Company {
 		}
 		return true;
 	}
-	
-	
+
 }

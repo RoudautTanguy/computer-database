@@ -44,7 +44,7 @@ public class MapperComputer {
 			companyName = computer.getCompany().getName();
 			companyId = computer.getCompany().getId();
 		}
-		return new DTOComputer(id,name,introduced,discontinued,companyId,companyName);
+		return new DTOComputer(id,name,introduced,discontinued,companyId,companyName,computer.getVersion());
 	}
 	
 	/**
@@ -60,9 +60,9 @@ public class MapperComputer {
 		Timestamp discontinued = tryParse(computer.getDiscontinued()).orElse(null);
 		Company company = null;
 		if(computer.getCompanyId() != null && computer.getName() != null) {
-			company = new Company(computer.getCompanyId(),computer.getCompanyName());
+			company = new Company(computer.getCompanyId(),computer.getCompanyName(), computer.getVersion());
 		}
-		return new Computer(id,name,introduced,discontinued,company);
+		return new Computer(id,name,introduced,discontinued,company,computer.getVersion());
 	}
 	
 	Optional<Timestamp> tryParse(String dateString){

@@ -43,17 +43,17 @@ public class ServiceComputerTest {
 	public void insertFullComputerTest() throws NotAValidComputerException, CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"AttariComputerTest",introduced,discontinued,new Company(20,"Atari"))));
+		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"AttariComputerTest",introduced,discontinued,new Company(20,"Atari",0),0)));
 	}
 
 	@Test
 	public void insertComputerWithNameTest() throws NotAValidComputerException, CompanyNotFoundException {
-		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"AttariComputerTest",null,null,null)));
+		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"AttariComputerTest",null,null,null,0)));
 	}
 
 	@Test(expected = CompanyNotFoundException.class)
 	public void insertComputerWithInvalidCompanyTest() throws NotAValidComputerException, CompanyNotFoundException {
-		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"WrongCompanyId",null,null,new Company(100,"NotWorkingCompany"))));
+		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"WrongCompanyId",null,null,new Company(100,"NotWorkingCompany",0),0)));
 	}
 
 	// Update
@@ -62,17 +62,17 @@ public class ServiceComputerTest {
 	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo",introduced,discontinued,new Company(36,"Lenovo Group"))));
+		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo",introduced,discontinued,new Company(36,"Lenovo Group",0),0)));
 	}
 
 	@Test
 	public void updateComputerWithNameTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
-		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Laptop",null,null,null)));
+		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Laptop",null,null,null,0)));
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
 	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
-		service.update(9999, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo Laptop",null,null,new Company(36,"Lenovo Group"))));
+		service.update(9999, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo Laptop",null,null,new Company(36,"Lenovo Group",0),0)));
 	}
 
 	// Delete
@@ -117,7 +117,7 @@ public class ServiceComputerTest {
 	@Test
 	public void findComputerTest() throws ComputerNotFoundException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2004,1,1).atStartOfDay());
-		DTOComputer dtoComputer = mapperComputer.mapModelToDTO(new Computer(283,"Nintendo DS",introduced,null,new Company(24,"Nintendo")));
+		DTOComputer dtoComputer = mapperComputer.mapModelToDTO(new Computer(283,"Nintendo DS",introduced,null,new Company(24,"Nintendo",0),0));
 		assertEquals("The Computer is not the expected one",service.find(283), dtoComputer);
 	}
 

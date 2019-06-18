@@ -9,10 +9,12 @@ public class DTOCompany {
 	private int id;
 	@NotEmpty
 	private String name;
+	private int version;
 
-	public DTOCompany(int pId, String pName){
+	public DTOCompany(int pId, String pName, int version){
 		this.id = pId;
 		this.name = pName;
+		this.version = version;
 	}
 
 	public int getId() {
@@ -29,6 +31,10 @@ public class DTOCompany {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public int getVersion() {
+		return version;
 	}
 
 	@Override

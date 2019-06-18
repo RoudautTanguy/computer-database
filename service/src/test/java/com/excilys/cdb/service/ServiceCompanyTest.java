@@ -10,6 +10,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.excilys.cdb.config.SpringServiceTestConfiguration;
+import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.NotAValidComputerException;
@@ -41,11 +42,11 @@ public class ServiceCompanyTest {
 	@Test
 	public void insertAndDeleteCompany() throws NotAValidComputerException, CompanyNotFoundException {
 		int count = (int) serviceCompany.count();
-		serviceCompany.insert(new Company(0,"TestCompany"));
+		serviceCompany.insert(new DTOCompany(0,"TestCompany",0));
 		assertTrue("Company is not inserted",serviceCompany.count()>count);
 		Company lastCompany = serviceCompany.getLastCompany();
 		int countComputer = serviceComputer.countByName("");
-		serviceComputer.insert(new DTOComputer(1,"ComputerWillBeDeleted","","",lastCompany.getId(),lastCompany.getName()));
+		serviceComputer.insert(new DTOComputer(1,"ComputerWillBeDeleted","","",lastCompany.getId(),lastCompany.getName(),0));
 		assertTrue("Computer is not inserted",serviceComputer.countByName("")>countComputer);
 		serviceCompany.deleteById(lastCompany.getId());
 		assertTrue("Company is not deleted",serviceCompany.count()==count);

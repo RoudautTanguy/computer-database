@@ -32,7 +32,7 @@
 					<div class="label label-default pull-right">id: ${id}</div>
 					<h1><spring:message code="edit_computer.edit_computer"/></h1>
 
-					<form:form id="editComputer" action="editComputer" method="POST"
+					<form:form id="editComputer" method="POST"
 						modelAttribute="dtoComputer">
 						<form:input path="id" type="hidden" name="id" value="${id}"
 							id="id" />

@@ -21,7 +21,7 @@ public class MapperComputerTest {
 	private static MapperComputer mapper;
 	
 	private static final String APPLE_COMPUTER = "AppleComputer";
-	private static final Company APPLE_COMPANY = new Company(1,"Apple Inc.");
+	private static final Company APPLE_COMPANY = new Company(1,"Apple Inc.",0);
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -32,7 +32,7 @@ public class MapperComputerTest {
 
 	@Test
 	public void mapModelToDTOTest() {
-		Computer computer = new Computer(0,APPLE_COMPUTER,null,null,null);
+		Computer computer = new Computer(0,APPLE_COMPUTER,null,null,null,0);
 		DTOComputer dtoComputer = new DTOComputer(APPLE_COMPUTER);
 		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.mapModelToDTO(computer));
 	}
@@ -43,14 +43,14 @@ public class MapperComputerTest {
 		LocalDate today = LocalDate.now();
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(today.atStartOfDay());
-		Computer computer = new Computer(0,APPLE_COMPUTER,introduced,discontinued,APPLE_COMPANY);
-		DTOComputer dtoComputer = new DTOComputer(0,APPLE_COMPUTER,"10-10-2010",today.format(formatter),APPLE_COMPANY.getId(),APPLE_COMPANY.getName());
+		Computer computer = new Computer(0,APPLE_COMPUTER,introduced,discontinued,APPLE_COMPANY,0);
+		DTOComputer dtoComputer = new DTOComputer(0,APPLE_COMPUTER,"10-10-2010",today.format(formatter),APPLE_COMPANY.getId(),APPLE_COMPANY.getName(),0);
 		assertEquals("Mapped DTOComputer isn't equal to expected DTOComputer",dtoComputer,mapper.mapModelToDTO(computer));
 	}
 
 	@Test
 	public void mapDTOToModelTest() {
-		Computer computer = new Computer(0,APPLE_COMPUTER,null,null,null);
+		Computer computer = new Computer(0,APPLE_COMPUTER,null,null,null,0);
 		DTOComputer dtoComputer = new DTOComputer(APPLE_COMPUTER);
 		assertEquals("Mapped Computer isn't equal to expected Computer",computer,mapper.mapDTOToModel(dtoComputer));
 	}
@@ -61,8 +61,8 @@ public class MapperComputerTest {
 		LocalDate today = LocalDate.now();
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(today.atStartOfDay());
-		Computer computer = new Computer(0,APPLE_COMPUTER,introduced,discontinued,APPLE_COMPANY);
-		DTOComputer dtoComputer = new DTOComputer(0,APPLE_COMPUTER,"10-10-2010",today.format(formatter),APPLE_COMPANY.getId(),APPLE_COMPANY.getName());
+		Computer computer = new Computer(0,APPLE_COMPUTER,introduced,discontinued,APPLE_COMPANY,0);
+		DTOComputer dtoComputer = new DTOComputer(0,APPLE_COMPUTER,"10-10-2010",today.format(formatter),APPLE_COMPANY.getId(),APPLE_COMPANY.getName(),0);
 		assertEquals("DTOComputer isn't equal to expected Computer",computer,mapper.mapDTOToModel(dtoComputer));
 	}
 }

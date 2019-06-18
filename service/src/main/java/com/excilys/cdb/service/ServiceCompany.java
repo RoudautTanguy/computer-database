@@ -11,14 +11,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.excilys.cdb.dao.DAOCompany;
+import com.excilys.cdb.dao.DAOComputer;
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Page;
-import com.excilys.cdb.dao.DAOCompany;
-import com.excilys.cdb.dao.DAOComputer;
 
 @Service
 public class ServiceCompany {
@@ -28,6 +28,8 @@ public class ServiceCompany {
 	private DAOCompany daoCompany;
 	private MapperCompany mapperCompany;
 	private DAOComputer daoComputer;
+	
+	private final static String COMPANY_DOESNT_EXIST = "The company %d doesn't exist";
 	
 	public ServiceCompany(DAOCompany daoCompany, DAOComputer daoComputer, MapperCompany mapperCompany) {
 		this.daoCompany = daoCompany;
@@ -62,15 +64,20 @@ public class ServiceCompany {
 	 * @throws PageNotFoundException
 	 */
 	public Page<DTOCompany> list(int index, int limit) throws PageNotFoundException{
-		try {
-			List<DTOCompany> dtoCompanies = daoCompany.findAll(PageRequest.of(index, limit)).stream().map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());		
-			if(dtoCompanies.isEmpty()) {
-				throw new PageNotFoundException("Page Not Found");
-			} else {
-				return new Page<>(dtoCompanies, index, limit, "");
-			}
-		} catch (IllegalArgumentException e) {
+		List<DTOCompany> dtoCompanies = daoCompany.findAll(PageRequest.of(index, limit)).stream().map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());		
+		if(dtoCompanies.isEmpty()) {
 			throw new PageNotFoundException("Page Not Found");
+		} else {
+			return new Page<>(dtoCompanies, index, limit, "");
+		}
+	}
+	
+	public List<DTOCompany> search(int index, int limit, String search) throws PageNotFoundException{
+		List<DTOCompany> dtoCompanies = StreamSupport.stream(daoCompany.findAllByNameContaining(search, PageRequest.of(index, limit)).spliterator(), false).map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());
+		if(dtoCompanies.isEmpty()) {
+			throw new PageNotFoundException("Page Not Found");
+		} else {
+			return dtoCompanies;
 		}
 	}
 	
@@ -82,11 +89,16 @@ public class ServiceCompany {
 		return (int) (daoCompany.count()/COMPANIES_NUMBER_PER_PAGE);
 	}
 	
-	public Optional<Company> findById(Integer id) throws CompanyNotFoundException {
+	public DTOCompany findById(Integer id) throws CompanyNotFoundException {
 		if(id==null) {
 			throw new CompanyNotFoundException("Company with null id can't exist");
 		}
-		return daoCompany.findById(id);
+		Optional<Company> optCompany = daoCompany.findById(id);
+		if(optCompany.isPresent()) {
+			return mapperCompany.mapModelToDTO(optCompany.get());
+		} else {
+			throw new CompanyNotFoundException(String.format(COMPANY_DOESNT_EXIST, id));
+		}
 	}
 
 	@Transactional
@@ -98,7 +110,7 @@ public class ServiceCompany {
 			daoComputer.deleteByCompanyId(id);
 			return daoCompany.deleteById(id);
 		} catch(EmptyResultDataAccessException e) {
-			throw new CompanyNotFoundException("Company doesn't exist.");
+			throw new CompanyNotFoundException(String.format(COMPANY_DOESNT_EXIST, id));
 		}
 	}
 
@@ -110,7 +122,18 @@ public class ServiceCompany {
 		return daoCompany.findTopByOrderByIdDesc();
 	}
 	
-	public void insert(Company company) {
+	public void insert(DTOCompany dtoCompany) {
+		Company company = mapperCompany.mapDTOToModel(dtoCompany);
+		daoCompany.save(company);
+	}
+
+	public void update(int id, DTOCompany dtoCompany) throws CompanyNotFoundException {
+		if(!daoCompany.findById(id).isPresent()) {
+			throw new CompanyNotFoundException(String.format(COMPANY_DOESNT_EXIST, id));
+		}
+		Company company = mapperCompany.mapDTOToModel(dtoCompany);
+		company.setId(id);
+		company.setVersion(company.getVersion() + 1);
 		daoCompany.save(company);
 	}
 	

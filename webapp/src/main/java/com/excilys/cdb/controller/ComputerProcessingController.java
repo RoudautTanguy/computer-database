@@ -55,9 +55,10 @@ public class ComputerProcessingController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/editComputer/{id}")
-	public String editComputer(@PathVariable("id") String pId, final ModelMap model) throws ComputerNotFoundException{
+	public String editComputer(@PathVariable("id") int pId, final ModelMap model) throws ComputerNotFoundException{
 		int id = -1;
-		id = Integer.parseInt(pId);
+		System.out.println("Id: "+pId);
+		id = pId;
 		model.addAttribute("id", id);
 		DTOComputer computer = serviceComputer.find(id);
 		model.addAttribute("computer", computer);

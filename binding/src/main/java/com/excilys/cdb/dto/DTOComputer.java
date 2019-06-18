@@ -17,22 +17,24 @@ public class DTOComputer {
 	private String discontinued;
 	private Integer companyId;
 	private String companyName;
+	private int version;
 	
 	public DTOComputer() {
 		this("");
 	}
 	
-	public DTOComputer(int id, String name, String introduced, String discontinued, Integer companyId, String companyName) {
+	public DTOComputer(int id, String name, String introduced, String discontinued, Integer companyId, String companyName, int version) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
 		this.companyId = companyId;
 		this.companyName = companyName;
+		this.version = version;
 	}
 	
 	public DTOComputer(String name) {
-		this(0,name,"","",null,"");
+		this(0,name,"","",null,"",0);
 	}
 	
 	public int getId() {
@@ -81,6 +83,10 @@ public class DTOComputer {
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
+	}
+	
+	public int getVersion() {
+		return version;
 	}
 	
 	@Override
@@ -141,6 +147,4 @@ public class DTOComputer {
 		return true;
 	}
 
-	
-	
 }

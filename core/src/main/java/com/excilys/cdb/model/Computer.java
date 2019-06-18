@@ -28,17 +28,20 @@ public class Computer {
 	@ManyToOne(fetch = FetchType.EAGER, optional = true, targetEntity = Company.class)
 	@JoinColumn(name = "company_id", referencedColumnName = "id")
 	private Company company;
+	@Column(name="version")
+	private int version;
 
 
 	public Computer() {}
 	
-	public Computer(int id, String name, Timestamp introduced, Timestamp discontinued, Company company) {
+	public Computer(int id, String name, Timestamp introduced, Timestamp discontinued, Company company, int version) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
 		this.company = company;
+		this.version = version;
 	}
 
 	public int getId() {
@@ -79,6 +82,14 @@ public class Computer {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+	
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 	@Override

@@ -74,6 +74,7 @@ public class ServiceComputer {
 		computer.setId(id);
 		try {
 			validator.validateComputer(computer);
+			computer.setVersion(computer.getVersion() + 1);
 			daoComputer.save(computer);
 		} catch (NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
