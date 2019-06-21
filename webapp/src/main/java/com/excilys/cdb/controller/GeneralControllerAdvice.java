@@ -17,6 +17,8 @@ import com.excilys.cdb.exception.ComputerNotFoundException;
 import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
+import com.excilys.cdb.exception.UserNotFoundException;
+import com.excilys.cdb.exception.UsernameAlreadyExistException;
 import com.excilys.cdb.exceptions.BadRequestException;
 
 @Controller
@@ -59,6 +61,20 @@ public class GeneralControllerAdvice {
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)
     @ResponseBody
     public Object handlePageNotFound(PageNotFoundException e) {
+        return e.getMessage();
+    }
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public Object handleUserNotFoundException(UserNotFoundException e) {
+		return e.getMessage();
+	}
+	
+	@ExceptionHandler(UsernameAlreadyExistException.class)
+	@ResponseStatus(code = HttpStatus.CONFLICT)
+    @ResponseBody
+    public Object handleUsernameAlreadyExistException(UsernameAlreadyExistException e) {
         return e.getMessage();
     }
 	

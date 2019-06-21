@@ -6,7 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.excilys.cdb.model.User;
 
-public interface DAOUser  extends CrudRepository<User, Integer>{
+public interface DAOUser  extends CrudRepository<User, Long>{
 
 	Optional<User> findByUsername(String username);
+	
+	public Long deleteById(int id);
 }
