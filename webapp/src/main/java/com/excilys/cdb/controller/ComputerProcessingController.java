@@ -17,6 +17,7 @@ import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
@@ -73,7 +74,7 @@ public class ComputerProcessingController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/editComputer")
-	public String editComputer(@ModelAttribute("dtoComputer") DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException{
+	public String editComputer(@ModelAttribute("dtoComputer") DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException, ConcurentConflictException{
 		try {
 			int parseId = dtoComputer.getId();
 			serviceComputer.update(parseId,dtoComputer);

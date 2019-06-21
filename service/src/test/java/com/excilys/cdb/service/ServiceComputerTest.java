@@ -16,6 +16,7 @@ import com.excilys.cdb.dao.OrderByEnum;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.MapperComputer;
@@ -53,26 +54,44 @@ public class ServiceComputerTest {
 
 	@Test(expected = CompanyNotFoundException.class)
 	public void insertComputerWithInvalidCompanyTest() throws NotAValidComputerException, CompanyNotFoundException {
-		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"WrongCompanyId",null,null,new Company(100,"NotWorkingCompany",0),0)));
+		service.insert(mapperComputer.mapModelToDTO(new Computer(1,"WrongCompanyId",null,null,new Company(1000,"NotWorkingCompany",0),0)));
 	}
 
 	// Update
 
 	@Test
-	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
+	public void updateFullComputerTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException, ConcurentConflictException {
 		Timestamp introduced = Timestamp.valueOf(LocalDate.of(2010,10,10).atStartOfDay());
 		Timestamp discontinued = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo",introduced,discontinued,new Company(36,"Lenovo Group",0),0)));
+		int version = service.find(200).getVersion();
+		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo",introduced,discontinued,new Company(36,"Lenovo Group",0),version)));
 	}
 
 	@Test
-	public void updateComputerWithNameTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
-		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Laptop",null,null,null,0)));
+	public void updateComputerWithNameTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException, ConcurentConflictException {
+		int version = service.find(200).getVersion();
+		service.update(200, mapperComputer.mapModelToDTO(new Computer(200,"Laptop",null,null,null,version)));
 	}
 
 	@Test(expected = ComputerNotFoundException.class)
-	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
-		service.update(9999, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo Laptop",null,null,new Company(36,"Lenovo Group",0),0)));
+	public void updateComputerNotInDatabaseTest() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException, ConcurentConflictException {
+		int version = service.find(200).getVersion();
+		service.update(9999, mapperComputer.mapModelToDTO(new Computer(200,"Lenovo Laptop",null,null,new Company(36,"Lenovo Group",0),version)));
+	}
+	
+	@Test(expected = ConcurentConflictException.class)
+	public void updateComputerWithConflictVersion() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException, ConcurentConflictException {
+		DTOComputer dtoComputer = new DTOComputer(1, "Conflict Computer",null, null, 0, null, 0);
+		service.update(200, dtoComputer);
+		service.update(200, dtoComputer);
+	}
+	
+	@Test(expected = ConcurentConflictException.class)
+	public void updateComputerWithNoConflictVersion() throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException, ConcurentConflictException {
+		DTOComputer dtoComputer = new DTOComputer(1, "Conflict Computer",null, null, 0, null, 0);
+		service.update(200, dtoComputer);
+		dtoComputer = service.find(200);
+		service.update(200, dtoComputer);
 	}
 
 	// Delete

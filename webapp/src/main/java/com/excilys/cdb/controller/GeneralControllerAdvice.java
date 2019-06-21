@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.exceptions.BadRequestException;
@@ -74,6 +75,13 @@ public class GeneralControllerAdvice {
     public Object handleBadRequestException(BadRequestException e) {
 		return e.getMessage();
     }
+	
+	@ExceptionHandler(ConcurentConflictException.class)
+	@ResponseStatus(code = HttpStatus.CONFLICT)
+    @ResponseBody
+	public Object handleConcurentConflictException(ConcurentConflictException e) {
+		return e.getMessage();
+	}
 	
 	@ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)

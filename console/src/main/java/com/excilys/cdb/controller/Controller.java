@@ -10,6 +10,7 @@ import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.model.Page;
@@ -34,8 +35,9 @@ public class Controller {
 	/**
 	 * Send the choice of the user to the dedicated service
 	 * @param choice of the user
+	 * @throws ConcurentConflictException 
 	 */
-	public void sendToService(CLI cli, ChoiceMenuEnum choice) {
+	public void sendToService(CLI cli, ChoiceMenuEnum choice) throws ConcurentConflictException {
 		switch(choice) {
 		case LIST_COMPUTERS:
 			try {
@@ -116,8 +118,9 @@ public class Controller {
 	 * @param choice
 	 * @param page
 	 * @return
+	 * @throws ConcurentConflictException 
 	 */
-	public boolean sendToServiceCompany(CLI cli, PageMenuEnum choice, Page<DTOCompany> page) {
+	public boolean sendToServiceCompany(CLI cli, PageMenuEnum choice, Page<DTOCompany> page) throws ConcurentConflictException {
 		boolean isOk = true;
 		switch(choice) { 
 		case PREVIOUS_PAGE:
@@ -171,7 +174,7 @@ public class Controller {
 		return isOk;
 	}
 
-	public boolean sendToServiceComputer(CLI cli, PageMenuEnum choice, Page<DTOComputer> page) {
+	public boolean sendToServiceComputer(CLI cli, PageMenuEnum choice, Page<DTOComputer> page) throws ConcurentConflictException {
 		boolean isOk = true;
 		switch(choice) { 
 		case PREVIOUS_PAGE:

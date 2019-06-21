@@ -4,6 +4,7 @@ import org.springframework.data.domain.Sort;
 
 public enum OrderByEnum {
 	DEFAULT("id", Sort.by("id")),
+	ORDER_BY_ID_DESC("id", Sort.by("id").descending()),
 	ORDER_BY_NAME_ASC("name", Sort.by("name")),
 	ORDER_BY_NAME_DESC("name", Sort.by("name").descending()),
 	ORDER_BY_INTRODUCED_ASC("introduced", Sort.by("introduced")),

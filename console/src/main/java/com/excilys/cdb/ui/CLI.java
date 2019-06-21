@@ -15,6 +15,7 @@ import com.excilys.cdb.controller.Controller;
 import com.excilys.cdb.controller.PageMenuEnum;
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAChoiceException;
 import com.excilys.cdb.exception.NotAnIntegerException;
 import com.excilys.cdb.exception.WrongComputerArgumentException;
@@ -47,8 +48,9 @@ public class CLI {
 
 	/**
 	 * Show the menu and wait the choice of the user
+	 * @throws ConcurentConflictException 
 	 */
-	public void startChoice() {
+	public void startChoice() throws ConcurentConflictException {
 		int choice = 0;
 		String[] choiceMenu = Stream.of(ChoiceMenuEnum.values()).map(ChoiceMenuEnum::getMenuMessage).toArray(String[]::new);
 		while(choice==0) {
@@ -65,8 +67,9 @@ public class CLI {
 	/**
 	 * Show a list of companies
 	 * @param companies list of companies
+	 * @throws ConcurentConflictException 
 	 */
-	public void showCompanies(Page<DTOCompany> companyPage) {
+	public void showCompanies(Page<DTOCompany> companyPage) throws ConcurentConflictException {
 		int choice = -1;
 		boolean showPage = true;
 		while (choice != 6) {
@@ -88,8 +91,9 @@ public class CLI {
 	/**
 	 * Show a list of computers
 	 * @param computers list of computers
+	 * @throws ConcurentConflictException 
 	 */
-	public void showComputers(Page<DTOComputer> computerPage) {
+	public void showComputers(Page<DTOComputer> computerPage) throws ConcurentConflictException {
 		int choice = -1;
 		boolean showPage = true;
 

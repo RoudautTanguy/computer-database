@@ -1,5 +1,7 @@
 package com.excilys.cdb.dao;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -28,4 +30,6 @@ public interface DAOComputer  extends PagingAndSortingRepository<Computer, Integ
 	public Long deleteByCompanyId(int companyId);
 
 	public Computer findTopByOrderByIdDesc();
+
+	List<Computer> findAllByVersion(int version);
 }

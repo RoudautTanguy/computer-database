@@ -1,7 +1,10 @@
 package com.excilys.cdb.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import javax.transaction.Transactional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,6 +16,7 @@ import com.excilys.cdb.config.SpringServiceTestConfiguration;
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.model.Company;
@@ -40,6 +44,7 @@ public class ServiceCompanyTest {
 	
 	//Insert & Delete
 	@Test
+	@Transactional
 	public void insertAndDeleteCompany() throws NotAValidComputerException, CompanyNotFoundException {
 		int count = (int) serviceCompany.count();
 		serviceCompany.insert(new DTOCompany(0,"TestCompany",0));
@@ -52,6 +57,25 @@ public class ServiceCompanyTest {
 		assertTrue("Company is not deleted",serviceCompany.count()==count);
 		assertTrue("Computer is not deleted",serviceComputer.countByName("")==countComputer);
 	}
+	
+	@Test
+	public void updateCompany() throws CompanyNotFoundException, ConcurentConflictException {
+		serviceCompany.insert(new DTOCompany(0,"TestCompany",0));
+		Company lastCompany = serviceCompany.getLastCompany();
+		serviceCompany.update(lastCompany.getId(), new DTOCompany(0,"NewTestCompany",0));
+		assertEquals("Company is not updated","NewTestCompany",serviceCompany.getLastCompany().getName());
+		serviceCompany.deleteById(lastCompany.getId());
+	}
+	
+	@Test(expected = ConcurentConflictException.class)
+	public void updateCompanyWithConflictVersion() throws CompanyNotFoundException, ConcurentConflictException {
+		serviceCompany.insert(new DTOCompany(0,"TestCompany",0));
+		Company lastCompany = serviceCompany.getLastCompany();
+		DTOCompany insertedCompany = new DTOCompany(0, "Inserted Company", 0);
+		serviceCompany.update(lastCompany.getId(), insertedCompany);
+		serviceCompany.update(lastCompany.getId(), insertedCompany);
+	}
+	
 
 	//Count
 	

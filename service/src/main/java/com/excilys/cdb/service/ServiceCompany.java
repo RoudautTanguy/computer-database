@@ -15,6 +15,7 @@ import com.excilys.cdb.dao.DAOCompany;
 import com.excilys.cdb.dao.DAOComputer;
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.exception.CompanyNotFoundException;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.model.Company;
@@ -64,7 +65,12 @@ public class ServiceCompany {
 	 * @throws PageNotFoundException
 	 */
 	public Page<DTOCompany> list(int index, int limit) throws PageNotFoundException{
-		List<DTOCompany> dtoCompanies = daoCompany.findAll(PageRequest.of(index, limit)).stream().map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());		
+		List<DTOCompany> dtoCompanies;
+		try {
+			dtoCompanies = daoCompany.findAll(PageRequest.of(index, limit)).stream().map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());		
+		} catch(IllegalArgumentException e) {
+			throw new PageNotFoundException("Page index or limit must not be less than zero!");
+		}
 		if(dtoCompanies.isEmpty()) {
 			throw new PageNotFoundException("Page Not Found");
 		} else {
@@ -127,14 +133,33 @@ public class ServiceCompany {
 		daoCompany.save(company);
 	}
 
-	public void update(int id, DTOCompany dtoCompany) throws CompanyNotFoundException {
-		if(!daoCompany.findById(id).isPresent()) {
-			throw new CompanyNotFoundException(String.format(COMPANY_DOESNT_EXIST, id));
-		}
+	public void update(int id, DTOCompany dtoCompany) throws CompanyNotFoundException, ConcurentConflictException {
+		int version = checkConcurentConflict(id, dtoCompany);
 		Company company = mapperCompany.mapDTOToModel(dtoCompany);
 		company.setId(id);
-		company.setVersion(company.getVersion() + 1);
+		company.setVersion(version + 1);
 		daoCompany.save(company);
+	}
+	
+	public List<DTOCompany> searchByVersion(int version) throws PageNotFoundException{
+		List<DTOCompany> dtoCompanies = StreamSupport.stream(daoCompany.findAllByVersion(version).spliterator(), false).map(x -> mapperCompany.mapModelToDTO(x)).collect(Collectors.toList());
+		if(dtoCompanies.isEmpty()) {
+			throw new PageNotFoundException("Page Not Found");
+		} else {
+			return dtoCompanies;
+		}
+	}
+	
+	private int checkConcurentConflict(int id, DTOCompany dtoCompany) throws ConcurentConflictException, CompanyNotFoundException {
+		if(!daoCompany.findById(id).isPresent()) {
+			throw new CompanyNotFoundException(String.format(COMPANY_DOESNT_EXIST, id));
+		} else {
+			Company company = daoCompany.findById(id).get();
+			if(company.getVersion() != dtoCompany.getVersion()) {
+				throw new ConcurentConflictException("This is not the actual version of the object");
+			}
+			return company.getVersion();
+		}
 	}
 	
 	

@@ -16,4 +16,6 @@ public interface DAOCompany extends PagingAndSortingRepository<Company, Integer>
 	public Company findTopByOrderByIdDesc();
 	
 	public List<Company> findAllByNameContaining(String name, Pageable pageable);
+
+	public List<Company> findAllByVersion(int version);
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,22 +14,23 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.excilys.cdb.dao.DAOComputer;
+import com.excilys.cdb.dao.OrderByEnum;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.exception.CompanyNotFoundException;
 import com.excilys.cdb.exception.ComputerNotFoundException;
+import com.excilys.cdb.exception.ConcurentConflictException;
 import com.excilys.cdb.exception.NotAValidComputerException;
 import com.excilys.cdb.exception.PageNotFoundException;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
-import com.excilys.cdb.dao.DAOComputer;
-import com.excilys.cdb.dao.OrderByEnum;
 import com.excilys.cdb.validator.Validator;
 
 @Service
 public class ServiceComputer {
 	
-	private static final int COMPUTERS_NUMBER_PER_PAGE = 50;
+	private static final int COMPUTERS_NUMBER_PER_PAGE = Integer.MAX_VALUE;
 	private Validator validator;
 	private MapperComputer mapperComputer;
 	private DAOComputer daoComputer;
@@ -66,22 +69,20 @@ public class ServiceComputer {
 		
 	}
 	
-	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException {
-		if(!daoComputer.findById(id).isPresent()) {
-			throw new ComputerNotFoundException(String.format(COMPUTER_DOESNT_EXIST, id));
-		}
+	public void update(int id, DTOComputer dtoComputer) throws NotAValidComputerException, ComputerNotFoundException, CompanyNotFoundException, ConcurentConflictException {
+		int version = checkConcurentConflict(id, dtoComputer);
 		Computer computer = mapperComputer.mapDTOToModel(dtoComputer);
 		computer.setId(id);
 		try {
 			validator.validateComputer(computer);
-			computer.setVersion(computer.getVersion() + 1);
+			computer.setVersion(version + 1);
 			daoComputer.save(computer);
 		} catch (NotAValidComputerException e) {
 			logger.warn("Back validation reject this computer : {}", computer);
 			throw new NotAValidComputerException("This is not a valid Computer");
 		}
 	}
-	
+
 	public Page<DTOComputer> search(int index, int limit, String search, OrderByEnum orderBy) throws PageNotFoundException {
 		checkPositive(index,limit);
 		search = search == null?"":search;
@@ -135,10 +136,31 @@ public class ServiceComputer {
 		return daoComputer.findTopByOrderByIdDesc().getId();
 	}
 	
+	public List<DTOComputer> searchByVersion(int version) throws PageNotFoundException{
+		List<DTOComputer> dtoComputers = StreamSupport.stream(daoComputer.findAllByVersion(version).spliterator(), false).map(x -> mapperComputer.mapModelToDTO(x)).collect(Collectors.toList());
+		if(dtoComputers.isEmpty()) {
+			throw new PageNotFoundException("Page Not Found");
+		} else {
+			return dtoComputers;
+		}
+	}
+	
 	public void checkPositive(int... numbers) throws PageNotFoundException {
 		int[] arrayNumbers = Arrays.stream(numbers).filter(n -> n>=0).toArray();
 		if(numbers.length != arrayNumbers.length) {
 			throw new PageNotFoundException(PAGE_DOESNT_EXIST);
+		}
+	}
+	
+	private int checkConcurentConflict(int id, DTOComputer dtoComputer) throws ComputerNotFoundException, ConcurentConflictException {
+		if(!daoComputer.findById(id).isPresent()) {
+			throw new ComputerNotFoundException(String.format(COMPUTER_DOESNT_EXIST, id));
+		} else {
+			Computer computer = daoComputer.findById(id).get();
+			if(computer.getVersion() != dtoComputer.getVersion()) {
+				throw new ConcurentConflictException("This is not the actual version of the object");
+			}
+			return computer.getVersion();
 		}
 	}
 }
